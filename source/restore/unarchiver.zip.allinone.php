@@ -553,7 +553,7 @@ class AKUnarchiverZIP extends AKAbstractUnarchiver
 		if(empty($this->fileHeader->realFile)) $this->fileHeader->realFile = $this->fileHeader->file;
 		$lastSlash = strrpos($this->fileHeader->realFile, '/');
 		$dirName = substr( $this->fileHeader->realFile, 0, $lastSlash);
-		$perms = $this->flagRestorePermissions ? $retArray['permissions'] : 0755;
+		$perms = $this->flagRestorePermissions ? $this->fileHeader->permissions : 0755;
 		$ignore = AKFactory::get('kickstart.setup.ignoreerrors', false) || $this->isIgnoredDirectory($dirName);
 		if( ($this->postProcEngine->createDirRecursive($dirName, $perms) == false) && (!$ignore) ) {
 			$this->setError( AKText::sprintf('COULDNT_CREATE_DIR', $dirName) );

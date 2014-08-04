@@ -14,7 +14,7 @@
  */
 class AKUnarchiverJPA extends AKAbstractUnarchiver
 {
-	private $archiveHeaderData = array();
+	protected $archiveHeaderData = array();
 
 	protected function readArchiveHeader()
 	{
@@ -613,7 +613,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		if(empty($this->fileHeader->realFile)) $this->fileHeader->realFile = $this->fileHeader->file;
 		$lastSlash = strrpos($this->fileHeader->realFile, '/');
 		$dirName = substr( $this->fileHeader->realFile, 0, $lastSlash);
-		$perms = $this->flagRestorePermissions ? $retArray['permissions'] : 0755;
+		$perms = $this->flagRestorePermissions ? $this->fileHeader->permissions : 0755;
 		$ignore = AKFactory::get('kickstart.setup.ignoreerrors', false) || $this->isIgnoredDirectory($dirName);
 		if( ($this->postProcEngine->createDirRecursive($dirName, $perms) == false) && (!$ignore) ) {
 			$this->setError( AKText::sprintf('COULDNT_CREATE_DIR', $dirName) );
@@ -643,7 +643,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 
 			// Read 512Kb
 			$chunk = fread($this->fp, 524288);
-			$size_read = mb_strlen($string,'8bit');
+			$size_read = mb_strlen($chunk,'8bit');
 			//$pos = strpos($chunk, 'JPF');
 			$pos = mb_strpos($chunk, 'JPF', 0, '8bit');
 			if($pos !== false) {
