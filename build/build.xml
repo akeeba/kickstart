@@ -1,0 +1,306 @@
+<?xml version="1.0"?>
+<project name="Kickstart" description="Akeeba Kickstart" default="all" >
+	<property file="./build.properties" />
+	<!-- Default properties, set only if not already assigned in the build.properties file -->
+	<property name="dirs.root" value=".." />
+	<property name="dirs.kickstart" value="../source" />
+	<property name="dirs.translations" value="../translations" />
+	<property name="dirs.release" value="../release" />
+	<property name="version" value="git" />
+
+	<property name="dirs.bin" value="bin" />
+	<property name="dirs.bin.libxml" value="${dirs.bin}/libxml" />
+	<property name="dirs.bin.fop" value="${dirs.bin}/fop" />
+	<property name="dirs.bin.dbxsl" value="${dirs.bin}/dbxsl" />
+	<property name="dirs.bin.release" value="../release" />
+	<property name="dirs.documentation" value="../documentation" />
+
+	<taskdef name="zipme" classname="phingext.ZipmeTask" />
+	<taskdef name="lang" classname="phingext.LangTask" />
+	<taskdef name="gitversion" classname="phingext.GitVersionTask" />
+
+	<!--
+	====================================================================================================
+	Tasks - General
+	====================================================================================================
+	-->
+	
+	<target name="all" description="Makes everything"
+		depends="git,documentation">
+	</target>
+
+	<target name="git" description="Makes only packages, not the documentation"
+		depends="new-release,setup-properties,kickstart">
+	</target>
+
+	<target name="documentation" description="Creates the documentation packages"
+		depends="doc-k-pdf">
+	</target>
+	
+	<target name="new-release" description="Create afresh the release directory">
+		<!-- Recreate the release directory -->
+		<delete dir="${dirs.release}" quiet="yes" includeemptydirs="true" />
+		<mkdir dir="${dirs.release}" />
+	</target>
+	
+	<target name="setup-properties" description="Set up version and build properties">
+		<!-- Initialize the build.date timestamp -->
+		<tstamp>
+			<format property="build.date" pattern="%Y-%m-%d" />
+		</tstamp>
+
+		<!-- Initialize the version if it's not set -->
+		<if>
+			<equals arg1="${version}" arg2="git" />
+			<then>
+				<gitversion workingcopy="${dirs.root}" propertyname="git.lastrevision" />
+				<property name="version" value="rev${git.lastrevision}" override="true" />
+			</then>
+		</if>
+	</target>
+
+	<!--
+	====================================================================================================
+	Tasks - Documentation
+	====================================================================================================
+	-->
+
+    <target name="doc-k-pdf" description="Documentation for Kickstart in PDF format">
+		<exec command="xsltproc --nonet --xinclude --novalid --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/kickstart.fo ${dirs.bin.dbxsl}/fo/docbook.xsl ${dirs.documentation}/kickstart/kickstart-user-guide.xml" dir="${project.basedir}" />
+		<exec command="${dirs.bin.fop}/fop -fo ${dirs.bin.release}/kickstart.fo -pdf ${dirs.bin.release}/kickstart-user-guide.pdf" logoutput="true" />
+		<delete file="${dirs.release}/kickstart.fo" quiet="yes" />
+	</target>
+
+	<!--
+	====================================================================================================
+	Tasks - Utilities
+	====================================================================================================
+	-->
+	
+	<target name="kickstart" depends="setup-properties">
+		<delete file="${dirs.release}/kickstart*.zip" failonerror="false" />
+		<delete file="${dirs.release}/kickstart.php" failonerror="false" />
+		
+		<exec command="php kickstart_build.php" dir="${dirs.kickstart}/buildscripts" />
+		
+		<!-- Kickstart Core -->
+		<append destFile="${dirs.release}/kickstart.php">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+					<token key="KICKSTARTPRO" value="0" />
+				</replacetokens>
+			</filterchain>
+
+            <fileset dir="${dirs.kickstart}/output">
+				<include name="kickstart.php" />
+			</fileset>
+		</append>
+
+		<copy todir="${dirs.release}">
+			<fileset dir="${dirs.kickstart}/dist">
+				<include name="*.js" />
+			</fileset>
+		</copy>
+
+		<copy todir="${dirs.release}">
+			<fileset dir="${dirs.translations}/kickstart">
+				<include name="*.kickstart.ini" />
+			</fileset>
+		</copy>
+		
+		<delete file="${dirs.release}/kickstart-core-${version}.zip" failonerror="false" />
+		<zipme basedir="${dirs.release}" destfile="${dirs.release}/kickstart-core-${version}.zip" includeemptydirs="false">
+			<fileset dir="${dirs.release}">
+				<include name="*kickstart.ini" />
+				<include name="*.js" />
+				<include name="kickstart.php" />
+			</fileset>
+		</zipme>
+		
+		<delete file="${dirs.release}/kickstart.php" failonerror="false" />
+		
+		<!-- Kickstart Pro -->
+		<append destFile="${dirs.release}/kickstart.php">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+					<token key="KICKSTARTPRO" value="1" />
+				</replacetokens>
+			</filterchain>
+			<fileset dir="${dirs.kickstart}/output">
+				<include name="kickstart_pro.php" />
+			</fileset>
+		</append>
+
+		<copy todir="${dirs.release}">
+			<fileset dir="${dirs.kickstart}">
+				<include name="*.js" />
+				<include name="cacert.pem" />
+			</fileset>
+		</copy>
+
+		<copy todir="${dirs.release}">
+			<fileset dir="${dirs.translations}/kickstart">
+				<include name="*.kickstart.ini" />
+			</fileset>
+		</copy>
+		
+		<delete file="${dirs.release}/kickstart-pro-${version}.zip" failonerror="false" />
+
+        <zipme basedir="${dirs.release}" destfile="${dirs.release}/kickstart-pro-${version}.zip" includeemptydirs="false">
+			<fileset dir="${dirs.release}">
+				<include name="*kickstart.ini" />
+				<include name="*.js" />
+				<include name="cacert.pem" />
+				<include name="kickstart.php" />
+			</fileset>
+		</zipme>
+		
+		<delete file="${dirs.release}/kickstart.php" failonerror="false" />
+
+        <delete>
+			<fileset dir="${dirs.release}">
+				<include name="*.kickstart.ini" />
+				<include name="*.js" />
+				<include name="cacert.pem" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="joomlastart" depends="setup-properties">
+
+        <delete file="${dirs.release}/joomlastart*.zip" failonerror="false" />
+		<delete file="${dirs.release}/joomlastart.php" failonerror="false" />
+
+		<exec command="php joomlastart_build.php" dir="${dirs.kickstart}/buildscripts" />
+
+		<!-- Kickstart Core -->
+		<append destFile="${dirs.release}/joomlastart.php">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+			<fileset dir="${dirs.kickstart}/output">
+				<include name="joomlastart.php" />
+			</fileset>
+		</append>
+
+		<copy todir="${dirs.release}">
+			<fileset dir="${dirs.translations}/joomlastart">
+				<include name="*.joomlastart.ini" />
+			</fileset>
+		</copy>
+
+		<delete file="${dirs.release}/joomlastart-${version}.zip" failonerror="false" />
+
+        <zipme basedir="${dirs.release}" destfile="${dirs.release}/joomlastart-${version}.zip" includeemptydirs="false">
+			<fileset dir="${dirs.release}">
+				<include name="*joomlastart.ini" />
+				<include name="joomlastart.php" />
+			</fileset>
+		</zipme>
+
+		<delete file="${dirs.release}/joomlastart.php" failonerror="false" />
+        <delete>
+            <fileset dir="${dirs.release}">
+                <include name="*.joomlastart.ini" />
+                <include name="*.js" />
+                <include name="cacert.pem" />
+            </fileset>
+        </delete>
+
+    </target>
+
+	<!--
+	====================================================================================================
+	Tasks - Project management
+	====================================================================================================
+	-->
+
+	<target name="link" description="Internal linker">
+		<exec command="php ../buildfiles/tools/link.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />
+	</target>
+	
+	<target name="release" depends="setup-properties" description="Upload the release to AkeebaBackup.com">
+		<copy file="./templates/release.json" tofile="${dirs.root}/release.json" overwrite="true">
+			<filterchain id="standard-tokens">
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+					<token key="RELEASEDIR" value="${phing.dir}/${dirs.release}" />
+					<token key="REPODIR" value="${phing.dir}/${dirs.root}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+
+		<exec command="php ${project.basedir}/../../releasemaker/releasemaker/index.php ${project.basedir}/../release.json" dir="${project.basedir}" passthru="true" />
+
+		<delete file="${dirs.root}/release.json" quiet="yes" />
+	</target>
+	
+	<target name="ftpdeploy" depends="kickstart">
+		<gitversion workingcopy="${dirs.root}" propertyname="git.lastrevision" />
+		<!-- Core release -->
+		<echo>Uploading Kickstart Core</echo>
+		<ftpdeploy
+			host="${ftp.host}"
+			port="${ftp.port}"
+			username="${ftp.username}"
+			password="${ftp.password}"
+			dir="${ftp.dir}/kickstart/rev${git.lastrevision}"
+			mode="${ftp.mode}"
+			passive="true"
+			level="debug">
+			<fileset dir="${dirs.root}/kickstart">
+				<include name="CHANGELOG"/>
+			</fileset>			
+			<fileset dir="${dirs.release}">
+				<include name="kickstart-core-rev${git.lastrevision}.zip"/>
+			</fileset>			
+		</ftpdeploy>
+		<!-- Professional release -->
+		<echo>Uploading Kickstart Professional</echo>
+		<ftpdeploy
+			host="${ftp.host}"
+			port="${ftp.port}"
+			username="${ftp.username}"
+			password="${ftp.password}"
+			dir="${ftp.dir}/kickstartpro/rev${git.lastrevision}"
+			mode="${ftp.mode}"
+			passive="true"
+			level="debug">
+			<fileset dir="${dirs.root}/kickstart">
+				<include name="CHANGELOG"/>
+			</fileset>			
+			<fileset dir="${dirs.release}">
+				<include name="kickstart-pro-rev${git.lastrevision}.zip"/>
+			</fileset>			
+		</ftpdeploy>
+	</target>
+	
+	<target name="docsdeploy" depends="docsdeploy-kickstart">
+		<echo>All Kickstart documentation has been uploaded</echo>
+	</target>
+	
+	<target name="docsdeploy-kickstart" >
+		<echo>Uploading Akeeba Kickstart User's Guide</echo>
+		<ftpdeploy
+			host="${ftp.host}"
+			port="${ftp.port}"
+			username="${ftp.username}"
+			password="${ftp.password}"
+			dir="${ftp.dir.docs}/akeeba-kickstart-documentation"
+			mode="${ftp.mode}"
+			passive="true"
+			level="debug">
+			<fileset dir="${dirs.documentation}/kickstart">
+				<include name="*.xml"/>
+			</fileset>			
+		</ftpdeploy>
+	</target>
+</project>

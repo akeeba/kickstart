@@ -1,0 +1,81 @@
+Kickstart 4.0.0
+================================================================================
++ You can list and extract archives in any directory, not just the one Kickstart is in
++ If you use the default backup output directories, Kickstart will automatically look for archives there if the directory where Kickstart is doesn't contain any archives
+
+Kickstart 3.9.0
+================================================================================
+# [HIGH] The Hybrid restoration mode failed to connect to FTP, making it equivalent to using direct file writes every time
+# [HIGH] Kickstart throws a Javascript error on Windows
+# [HIGH] Importing from a URL doesn't work when the remote web server doesn't support Range headers (e.g. when downloading the latest Joomla! release)
+# [LOW] The Hybrid restoration mode wasn't compatible with HHVM (HipHop Virtual Machine, an alternative PHP runtime by Facebook)
+
+Kickstart 3.8.1
+================================================================================
++ Detect if the restored is Joomla!. If not, do not show the "Visit the site's back-end" button to avoid confusion.
++ Support for installing the latest WordPress release using Kickstart
+
+Kickstart 3.8.0
+================================================================================
+~ You now get a warning if you specify a valid FTP directory which is not the directory where kickstart.php is stored in, preventing the most common user error
++ Import archives from a URL
++ Download the latest Joomla! release (install Joomla! without downloading / uploading tons of files!)
++ Hybrid restoration engine: writes files directly, uses FTP if direct file write fails
+# {PRO} [MEDIUM] Symlinks in JPS (encrypted) archives would not be restored
+# [LOW] Trying to extract an archive with a "logs" folder on a Plesk server (which has an unwriteable, system-owned logs folder) led to inability to extract the archive
+# [LOW] Undefined variables in various places which somehow never got reported
+
+Kickstart 3.7.1
+================================================================================
+~ Detect and warn about Internet Explorer 8 or lower
+
+Kickstart 3.7.0
+================================================================================
++ Rename web.config to web.config.bak during extraction to prevent issues with IIS
+# S3 import was broken
+
+Kickstart 3.6.0
+================================================================================
+# Multipart S3 import would fail when the part size was less than 1Mb
+
+Kickstart 3.5.3
+================================================================================
++ Kickstart will now attempt to salvage as much data as possible from corrupt JPA archives
+# Import from S3 would fail on large files
+
+Kickstart 3.5.2
+================================================================================
+# Error messages from S3 would not show up in the interface, making error resolution impossible
++ Added a cacert.pem file in Kickstart Professional's package, allowing servers lacking a CA certificate cache to connect to Amazon S3
+
+Kickstart 3.5.1
+================================================================================
+# Could not restore archives with parts over 2Gb long, except when using the native 64-bit Linux PHP version
+# The Import from S3 feature was broken
+
+Kickstart 3.5.0
+================================================================================
++ #114 Ignore most errors option (May cause partial extraction; use with EXTREME CAUTION!)
++ #118 Import archives from S3
+~ The Javascript libraries (jQuery and JSON2) are now only loaded from a CDN and not included in the script
+
+Kickstart 3.4.2
+================================================================================
+# JPS extraction was unacceptably slow because one request per extracted file was made
+
+Kickstart 3.4.1
+================================================================================
+# When an error occurred, the link to the troubleshooting page wasn't clickable
+# Small layout issues (thank you, @nternetinspired)
+
+Kickstart 3.4.0
+================================================================================
+~ Massive redesign, courtesy of Internet Inspired
+
+Kickstart 3.3.2
+================================================================================
+
++ Update check
++ Kickstart is now self-documenting; there are no excuses for not reading the documentation any more ;)
+~ Kickstart will only attempt to change directory permissions if the directory is unwritable
+# Kickstart changes the permissions of the web root to 0755

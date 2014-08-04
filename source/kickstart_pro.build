@@ -1,0 +1,8 @@
+kickstart/defines.php
+s3/s3.exception.php
+s3/s3.adapter.php
+s3/s3.engine.php
+s3/s3.request.php
+s3/feature.s3import.php
+urlimport/feature.urlimport.php
+BUILD:kickstart_base
