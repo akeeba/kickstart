@@ -1829,7 +1829,7 @@ function echoPage()
 		}
 
 		// Important: operator is CASE-SENSITIVE.
-		// "No operator" seems to be treated as "<."
+		// "No operator" seems to be treated as less than
 		// Any other values seem to make the function return null.
 		switch (operator) {
 		case '>':

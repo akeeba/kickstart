@@ -1,0 +1,1843 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:m="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <info>
+    <title>Akeeba Kickstart 3.0 User's Guide</title>
+
+    <author>
+      <personname><firstname>Nicholas</firstname><othername>K.</othername><surname>Dionysopoulos</surname></personname>
+
+      <affiliation>
+        <orgname>AkeebaBackup.com</orgname>
+      </affiliation>
+    </author>
+
+    <pubdate>December 2013</pubdate>
+
+    <copyright>
+      <year>2013</year>
+
+      <holder>Akeeba Ltd</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>Permission is granted to copy, distribute and/or modify this
+      document under the terms of the GNU Free Documentation License, Version
+      1.3 or any later version published by the Free Software Foundation; with
+      no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+      copy of the license is included in the appendix entitled "The GNU Free
+      Documentation License".</para>
+    </legalnotice>
+
+    <abstract>
+      <para>This book covers the use of the <application>Akeeba
+      </application>Kickstart web-based archive extraction software. It
+      includes reference for its interface, as well as instructions for
+      automating its operation.</para>
+    </abstract>
+  </info>
+
+  <chapter xml:id="introduction">
+    <title>Introduction</title>
+
+    <section xml:id="overview">
+      <title>Overview</title>
+
+      <para><application>Kickstart</application> is a <acronym>PHP</acronym>
+      executable file ( <emphasis>script</emphasis> ) use to automate the
+      steps required before and after the restoration of site backed up with
+      <application>Akeeba Backup</application> in a great extent. It can be
+      used as a simple and efficient method of extracting the
+      <application>Akeeba Backup</application> archives directly on the target
+      server, or even used to extract other archive files including CMS and
+      script installation files (e.g. <trademark>Joomla!</trademark>,
+      WordPress, Drupal, phpBB), update packages (Joomla! and WordPress can
+      especially benefit from this use) or even archives containing large
+      amounts of files you need to get on your server, fast.</para>
+
+      <para>When used with backup archives,
+      <application>Kickstart</application> streamlines the archive extraction
+      - uploading - restoration - post-restoration workflow by allowing you to
+      omit unnecessary steps. As a matter of fact, you only need to upload
+      Kickstart and the backup archive on the server you want to restore your
+      site to. Kickstart will extract (i.e. "unzip") the archive
+      <emphasis>right on the server</emphasis> , rename your
+      <filename>.htaccess</filename> and php.ini files and give you a button
+      to start the restoration script included in the backup archive (for
+      example, <application>Akeeba Backup</application> Installer). When
+      you're done with the restoration script, you click on the new button
+      appearing on the Kickstart interface and it will rename back your
+      <filename>.htaccess</filename> and php.ini files, remove the
+      installation directory, delete the backup archive and finally remove
+      itself as well. Housekeeping is taken care of itself!</para>
+
+      <para>Kickstart is also localisable, meaning that it can display itself
+      in your own language. All you have to do is to upload your language's
+      translation INI file in the same directory as
+      <filename>kickstart.php</filename> .</para>
+    </section>
+
+    <section xml:id="why-we-need-kickstart">
+      <title>Why do we need Kickstart, anyway?</title>
+
+      <para>Even though Akeeba Backup is designed as an effortless way of
+      backing up your site, it is only good up to the point of having a backup
+      archive. Restoring it is a pretty much different story.</para>
+
+      <para>At first, you have to download the file to your PC. Then extract
+      it. Then upload all the files, via FTP, to you site (and, man, this is
+      slow or what?). Then rename <filename>.htaccess</filename> to
+      <filename>htaccess.txt</filename> and <filename>php.ini</filename> to
+      <filename>php.ini.bak</filename> in order to avoid any conflicts. Go
+      through the restoration process, which is the easy part. Then remove the
+      installation directory. Finally, rename
+      <filename>htaccess.txt</filename> to <filename>.htaccess</filename> and
+      <filename>php.ini.bak</filename> to <filename>php.ini</filename>.</para>
+
+      <para>Did you notice something? Most of this is a common predefined
+      procedure. The only human intervention truly required is for the
+      restoration process part. Moreover, FTP'ing all those 3000+ files of
+      even the smallest full site backup is an overkill. Because of all of
+      this, Kickstart was born.</para>
+
+      <para>Kickstart works in conjunction with the ZIP / JPA archives,
+      directly on the target server. Nothing else is required. You just upload
+      kickstart.php and your archive to the server, visit
+      <uri>http://www.yourdomain.com/kickstart.php</uri>, select the archive,
+      wait, go through the restoration process, click the cleanup button and
+      presto! Your site is up and running; the kickstart.php, the backup
+      archive and the installation folder all gone, automatically. Even the
+      <filename>.htaccess</filename> and <filename>php.ini</filename> renaming
+      took care of itself. Isn't this too good to be true?</para>
+
+      <para>Well, almost. You actually need to either turn off PHP Safe Mode,
+      or make sure the target folder is owned by the same user as the one your
+      web server runs on: this is a PHP limitation we can't overcome.
+      Alternatively, you can supply FTP connection information and Kickstart
+      will use the - much slower - FTP mode to write the extracted files to
+      your site.</para>
+    </section>
+
+    <section xml:id="what-kickstart-is-and-what-it-is-not">
+      <title>What Kickstart is and what it's not</title>
+
+      <para>Kickstart is an interactive archive extraction script and a
+      clean-up tool. Counter-intuitively, it is <emphasis>not</emphasis> a
+      site restoration utility per se. Kickstart performs the steps required
+      before and after site restoration, whereas the site restoration
+      procedure itself is carried out by the installer script which was
+      included in your backup archive at backup time. To make it crystal
+      clear, here is the flow of a Kickstart-powered site restoration
+      procedure:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Uploading files. This is done manually. You upload
+          <filename>kickstart.php</filename> and the backup archive (ZIP or
+          JPA format) to the intended site's root.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Archive extraction</emphasis> . This is
+          done by Kickstart. The backup archive is extracted. At this point
+          your site is not yet ready to work.</para>
+        </listitem>
+
+        <listitem>
+          <para>Restoration process. This is done by installer which was
+          included in the archive and now extracted on your server. You are
+          asked some questions, the database dump data is restored to the new
+          database and the new CMS configuration file is written on the disk.
+          At this point, your site may or not be ready to work, depending on
+          the reliance upon a <filename>.htaccess</filename> file.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Restoration of
+          <filename>.htaccess</filename> </emphasis>and
+          <filename>php.ini</filename> . This is done by Kickstart. The
+          automatically renamed copies of your original
+          <filename>.htaccess</filename> and <filename>php.ini</filename>
+          files are renamed back to their proper names to allow correct site
+          operation.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Cleanup of unnecessary files</emphasis>.
+          This is done by Kickstart. The backup archive, the installation
+          directory and <filename>kickstart.php</filename> are no longer
+          needed and therefore deleted.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>As you can see, Kickstart is a very generic tool, not strictly
+      limited to restoring Akeeba Backup backup archives. As a matter of fact,
+      we have used it to easily upgrade our sites to newer CMS versions
+      without the hassle of uploading tons of PHP files!</para>
+
+      <tip>
+        <para>The correct way to see Kickstart is as a generic, interactive,
+        web-based archive extraction script which can also clean up after
+        itself.</para>
+      </tip>
+    </section>
+
+    <section xml:id="about-the-name">
+      <title>About the name</title>
+
+      <para>The naming of this script is a small tribute to one of the first
+      computing platforms I came to know: the Amiga 500. The initial boot
+      loader, pretty much responsible for initializing the operating system's
+      boot process was called Kickstart. This script has an analogous function
+      in the restoration process of Akeeba Backup-generated backup archives:
+      it takes care of everything up to the point the actual restoration
+      process starts.</para>
+    </section>
+  </chapter>
+
+  <chapter xml:id="before-using">
+    <title>Before using Kickstart</title>
+
+    <section xml:id="getting-kickstart">
+      <title>Getting Kickstart</title>
+
+      <para>Kickstart is part of the Akeeba Backup release system. As such, it
+      can be downloaded from our site, <uri
+      xlink:href="http://www.akeebabackup.com">http://www.akeebabackup.com</uri>.
+      All packages are named
+      <filename>kickstart-<replaceable>VERSION</replaceable>.zip</filename>,
+      where VERSION is the version number. Each package contains kickstart.php
+      itself, as well as all the available translation files. You have to
+      extract this archive and upload kickstart.php and any translation INI
+      files you may need to your site.</para>
+
+      <para>The latest Kickstart version can be always retrieved by visiting
+      <link
+      xlink:href="http://www.akeebabackup.com/latest">http://www.akeebabackup.com/latest</link>.</para>
+    </section>
+
+    <section xml:id="requirements">
+      <title>Requirements</title>
+
+      <para>Kickstart is a PHP 5 application. It will not work with PHP 4. The
+      full list or required server configuration is:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><trademark>Joomla!</trademark> and PHP version compatibilities
+          are detailed in <link
+          xlink:href="https://www.akeebabackup.com/compatibility.html">our
+          Version Compatibility matrix</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para>PHP mod_zlib available. This is available by default.</para>
+        </listitem>
+
+        <listitem>
+          <para>PHP Safe Mode disabled, or correct directory ownerships, or
+          FTP connection parameters must be entered</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The last requirement must be further explained. PHP with Safe Mode
+      enabled will refuse to create folders inside another folder which is not
+      owned by the same user as the one the web server (Apache) runs under,
+      even if the folder is otherwise writable. Kickstart will fail in this
+      case. Alternatively, if you supply the FTP connection information,
+      Kickstart will try to use FTP to connect to your site and write the
+      extracted files.</para>
+
+      <important>
+        <para>If you use the FTP mode, Kickstart will require the specified
+        temporary directory to be directly writable by PHP (usually, 0777
+        permissions help) or it will attempt to create a temporary directory
+        of its own. If this procedure fails, Kickstart will notify you that
+        the temporary directory is not writable.</para>
+      </important>
+
+      <para>Moreover, if you already have a site installed on the target
+      server you have to ensure that all folders and files are writable. If
+      not, Kickstart will fail and leave your site in a possibly broken
+      state.</para>
+
+      <para>Finally, if your server doesn't support base64 decoding (e.g. the
+      base64_decode function is disabled) you need an Internet connection.
+      Normally, the required jQuery library is fetched from a base64 encoded
+      resource inside the kickstart.php file. If the decoding is not possible,
+      Kickstart will fall back to loading it from Google's AJAX API Library
+      CDN, which requires an Internet connection and access to Google's CDN
+      not be restricted by your firewall or Internet security suite.</para>
+    </section>
+  </chapter>
+
+  <chapter xml:id="using-kickstart">
+    <title>Using Kickstart</title>
+
+    <section xml:id="preparing-for-the-extraction">
+      <title>Preparing for the extraction</title>
+
+      <para>The first step is to download the latest release of Kickstart. It
+      can be always retrieved by visiting <link
+      xlink:href="http://www.akeebabackup.com/latest">http://www.akeebabackup.com/latest</link>.
+      It comes as a ZIP package. <emphasis>Do not</emphasis> try to install it
+      in Joomla!. Instead, you'll have to unzip it first. The extracted files
+      are <filename>kickstart.php</filename> and a series of .ini, .js and
+      .pem files. The <filename>kickstart.php</filename> file is required for
+      Kickstart's operation and self-contained, i.e. it doesn't need any other
+      files (or Joomla!) to be installed on your server. The INI files are
+      translation files. You only need them if you want Kickstart to appear
+      localized in your language. You can safely delete any INI files which
+      represent languages you do not understand. The JS files are not
+      required, unless you don't have an Internet connection (e.g. restoring
+      to a local server without an Internet connection) or have trouble
+      accessing the sites where copies of these files are stored in. The
+      <filename>cacert.pem</filename> file is required on some servers if you
+      are trying to connect to Amazon S3 to download backup archives and might
+      be necessary if importing from a URL. If unsure, upload all files (see
+      below).</para>
+
+      <para>The second step is uploading those files to your server. Upload
+      <filename>kickstart.php</filename> and any files you may need to the
+      server path you want the restored site to be installed. If you want the
+      site to be extracted to your domain's root (something like
+      <uri>http://www.example.com</uri>) you'll have to locate your web root.
+      On most servers it appears as a directory named
+      <filename>public_html</filename>, <filename>httpdocs</filename>,
+      <filename>htdocs</filename>, <filename>www</filename> or something
+      similar when you connect to your account by FTP. If unsure, ask your
+      host. They know which directory it is without having to guess.</para>
+
+      <para>The third step is getting your archive file to the server. This
+      can be currently performed only by having you manually upload the
+      archive by FTP to the same directory as the one
+      <filename>kickstart.php</filename> is in.</para>
+
+      <para>Two words of caution:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Always, no matter what, use the Binary transfer mode to upload
+          your backup archives by FTP. If you are using FileZilla you can do
+          so by clicking on the Transfer menu, then the Transfer Type submenu
+          and making sure that Binary is selected. If you do not do that, most
+          FTP software will fall back to ASCII file transfers which will
+          corrupt the backup archive and cause extraction issues.</para>
+        </listitem>
+
+        <listitem>
+          <para>If you had created a multi-part archive you have to transfer
+          all files. In the case of a JPA file they have the same name and
+          extensions of .jpa, .j01, .j02 etc. In the case of a ZIP file they
+          have the same name and extensions of .zip, .z01, .z02 etc. If any of
+          the parts is missing, an extraction error will occur.</para>
+
+          <para>Do note that the installer is included in the beginning of the
+          archive. Even in the event of a partial restoration you will most
+          likely be able to start the restoration procedure but your site
+          <emphasis>will not work properly</emphasis> as many crucial files
+          will be missing!</para>
+        </listitem>
+      </orderedlist>
+
+      <para>When you are done, you can launch Kickstart by visiting its URL.
+      It usually has the form of
+      <uri>http://www.example.com/kickstart.php</uri>.</para>
+    </section>
+
+    <section xml:id="kickstart-interface">
+      <title>Kickstart's interface</title>
+
+      <section xml:id="initial-dialogue">
+        <title>Initial dialogue</title>
+
+        <screenshot>
+          <info>
+            <title>The initial dialogue</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.01.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Once you launch Kickstart, you'll first get a standard notice
+        regarding the top things that you should be aware about:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Kickstart is not an installer. It is an archive extraction
+            tool. The actual installer was put inside the archive file at
+            backup time.</para>
+          </listitem>
+
+          <listitem>
+            <para>Kickstart is not the only way to extract the backup archive.
+            You can use Akeeba eXtract Wizard and upload the extracted files
+            using FTP instead.</para>
+          </listitem>
+
+          <listitem>
+            <para>Kickstart is bound by your server's configuration. As such,
+            it may not work at all.</para>
+          </listitem>
+
+          <listitem>
+            <para>You should download and upload your archive files using FTP
+            in Binary transfer mode. Any other method could lead to a corrupt
+            backup archive and restoration failure.</para>
+          </listitem>
+
+          <listitem>
+            <para>Post-restoration site load errors are usually caused by
+            .htaccess or php.ini directives. You should understand that blank
+            pages, 404 and 500 errors can usually be worked around by editing
+            the aforementioned files. It is not our job to mess with your
+            configuration files, because this could be dangerous for your
+            site.</para>
+          </listitem>
+
+          <listitem>
+            <para>Kickstart overwrites files without a warning. If you are not
+            sure that you are OK with that do not continue.</para>
+          </listitem>
+
+          <listitem>
+            <para>Trying to restore to the temporary URL of a cPanel host
+            (e.g. http://1.2.3.4/~username) will lead to restoration failure
+            and your site will appear to be not working. This is normal and
+            it's just how your server and CMS software work.</para>
+          </listitem>
+
+          <listitem>
+            <para>You are supposed to read the documentation before using this
+            software. Most issues can be avoided, or easily worked around, by
+            understanding how this software works.</para>
+          </listitem>
+
+          <listitem>
+            <para>This text does not imply that there is a problem detected.
+            It is standard text displayed every time you launch
+            Kickstart.</para>
+          </listitem>
+        </orderedlist>
+
+        <para>Once you have read all of the above and you feel comfortable
+        with this information, please press the ESC key to close this dialog
+        box.</para>
+      </section>
+
+      <section xml:id="the-setup-page">
+        <title>The setup page</title>
+
+        <screenshot>
+          <info>
+            <title>The setup page</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.02.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The setup page contains of four steps.</para>
+
+        <para>The first step is selecting a backup archive. Kickstart
+        automatically scans the directory it's in for JPA and ZIP archives,
+        populating the drop-down list with these results. If there are
+        multiple archives present, please click on the drop down list and
+        select the one you would like to use.</para>
+
+        <tip>
+          <para>If you are an AKEEBAPRO or AKEEBADELUXE subscriber you can
+          download and use the Akeeba Kickstart Professional version. This
+          version allows you to fetch archives stored in remote storage. For
+          more information, please consult the <link
+          linkend="profeatures">Professional Features</link> page of this
+          documentation guide.</para>
+        </tip>
+
+        <para>The second step is the selection of the extraction method. There
+        are two supported methods:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>Directly</term>
+
+            <listitem>
+              <para>With this method, Kickstart will try to write directly to
+              files. This is the ideal method if your server is using suPHP or
+              if you have no Joomla! site installed yet. Since Kickstart runs
+              in PHP, which in turn might run with your web server's
+              privileges, you have to ensure that there are adequate
+              permissions to write to the directory Kickstart is in and any
+              existing files and directories with the same name as files and
+              directories in the archive. If you are not sure, first try to
+              remove everything except <filename>kickstart.php</filename> and
+              the backup archive from your server. If you still get errors
+              regarding the inability to write to files, you'll have to use
+              the FTP mode.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Use FTP</term>
+
+            <listitem>
+              <para>In this mode, Kickstart tries to extract the files in a
+              temporary directory, then use FTP to "upload" them to their
+              final location. The ability to run Kickstart in this mode
+              depends on your server setup. For example, some servers have a
+              very strange firewall setup which doesn't allow Kickstart to
+              connect to your site's FTP. Also note that Kickstart support FTP
+              and FTPS (FTP over implicit SSL). It does not support the SFTP
+              protocol, widely known as Secure FTP or FTP over SSH, as it is
+              an entirely different protocol with very poor PHP support on
+              commercial hosts.</para>
+
+              <para>The only implication in using the FTP mode is that you
+              need a writable temporary directory. More on that later.</para>
+
+              <para>When you choose this option, a list of several options
+              will expand underneath it. You have to fill them in for
+              Kickstart to be able to work.</para>
+
+              <important>
+                <para>Kickstart 3.1 or later, when extracting any ZIP archive
+                or JPA archives created by Akeeba Backup 3.1 (or later), will
+                also try to restore the last file modification time to match
+                that of the source server. If you activate the FTP mode this
+                will not be possible, as FTP does not support "touching"
+                (changing the modification date and time) of files.</para>
+              </important>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Hybrid</term>
+
+            <listitem>
+              <para>This mode combines the previous two in an intelligent
+              manner. When selected, Kickstart will first attempt to write to
+              the files directly. If this is not possible, i.e. due to
+              permissions or ownership of the file or folder being exracted,
+              it will automatically make use of the FTP mode to overcome the
+              permissions / ownership problem. It effectively works around a
+              situation commonly called "permissions hell", where different
+              files and folders are owned by different users, making it
+              extremely difficult to overwrite them. This is a situation which
+              happens very commonly on shared hosting. Therefore <emphasis
+              role="bold">we strongly advise clients on shared hosting
+              environments to use the Hybrid option</emphasis>.</para>
+
+              <para>The same notes regarding a temporary directory etc as the
+              "Use FTP" mode apply for the Hybrid mode as well.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Moreover, there is also the <guilabel>Ignore most
+        errors</guilabel> checkbox. When it's checked, Kickstart will not
+        throw an error when a file is not writeable. This is useful when you
+        are restoring a backup taken on a Linux server to a Windows server. In
+        that case, some filenames may contain characters which are valid in
+        Linux (e.g. colons) but not on Windows. Checking that option will tell
+        Kickstart to ignore file creation errors.</para>
+
+        <warning>
+          <para>When that option is enabled, Kickstart will not warn you even
+          if a file could not be overwritten because, for example, its
+          permissions made it unwriteable. Use with extreme caution and always
+          check that all of your files have been extracted properly.</para>
+        </warning>
+
+        <screenshot>
+          <info>
+            <title>The FTP Options</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.07.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The FTP options which get to be displayed, should you choose the
+        FTP mode, are:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>FTP Host Name</term>
+
+            <listitem>
+              <para>If you are using the FTP mode, this defines the address of
+              the FTP server used for uploading the files. Do note that you
+              must enter only the domain or IP address, without the protocol.
+              This means that <uri>ftp.example.com</uri> is correct usage,
+              while <uri>ftp://ftp.example.com</uri> is
+              <emphasis>incorrect</emphasis>.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>FTP Port</term>
+
+            <listitem>
+              <para>The TCP/IP port of the FTP server to use. Normally you
+              want to use port 21 (default plain FTP port). Only use something
+              different if your host tells you so, or if you are using FTPS
+              (FTP over SSL).</para>
+
+              <warning>
+                <para>If your host tells you to use port 22, their connection
+                mode is not compatible with Kickstart. Port 22 is used by the
+                SFTP protocol, which is entirely different that the supported
+                FTP and FTPS protocols. In this case you have to ask your host
+                for plain FTP access to your site.</para>
+              </warning>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Use FTP over SSL (FTPS)</term>
+
+            <listitem>
+              <para>Check the box if you want to use the FTPS (FTP over SSL)
+              protocol. The default is unchecked which means that Kickstart
+              will use an unencrypted connection. Do note that Kickstart
+              <emphasis>does not support</emphasis> SFTP, as it is an entirely
+              different protocol than FTPS. The names look alike, but the
+              protocols have nothing to do with each other.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Use FTP Passive Mode</term>
+
+            <listitem>
+              <para>Check the box to use the FTP Passive mode (default), or
+              uncheck it to use the FTP Active mode. Most probably you want to
+              use the default value (checked), as it is the only way to work
+              around the firewall of your host. A very small minority of hosts
+              require the Active mode, but they will tell you so in their FTP
+              connection instructions.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>FTP User Name</term>
+
+            <listitem>
+              <para>The FTP username.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>FTP Password</term>
+
+            <listitem>
+              <para>The FTP password.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>FTP Directory</term>
+
+            <listitem>
+              <para>The <emphasis>absolute FTP path</emphasis> to your
+              restored site's root. <emphasis role="bold">THIS IS NOT THE SAME
+              AS THE FILE SYSTEM PATH TO YOUR SITE'S ROOT!!!</emphasis> The
+              easiest way to figure this out is to use FileZilla. Connect to
+              your target FTP server with FileZilla. Navigate to the web
+              server's root (usually it's a subdirectory named httpdocs,
+              htdocs, public_html, http_docs or www). Above the right-hand
+              folder pane you will see a text box with a path. Copy this path
+              and paste it to this setting.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Temporary Directory</term>
+
+            <listitem>
+              <para>As PHP can't directly upload files while they are being
+              extracted, Kickstart is extracting them to a temporary directory
+              using direct file writes first, then uploads them to their final
+              destination using FTP. Normally, Kickstart will try using the
+              directory it's stored in to extract the temporary files. Many
+              web hosts configure their servers in such a way that this is not
+              possible. Using this option you can customise the location of
+              the temporary directory to somewhere with adequate permissions.
+              You can use either an absolute or a relative (to Kickstart's
+              directory) path for this setting.</para>
+
+              <para>If unsure, you can follow an easy workaround. Create a
+              directory named <filename>kicktemp</filename> in your site's
+              root using FTP and give it 0777 permissions (or world-write
+              privileges, e.g. full control to the Everybody pseudo-user, if
+              you are using a Windows server). Then type in
+              <filename>kicktemp</filename> as this option.</para>
+
+              <tip>
+                <para>If you leave this field empty Kickstart will try
+                creating the <filename>kicktemp</filename> directory
+                automatically. On most servers this works just fine.</para>
+              </tip>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>The third step is the Fine-Tuning of the extraction engine. You
+        have to understand how it works first. Kickstart will start extracting
+        files until the <guilabel>Maximum execution time</guilabel> threshold
+        is reached. In fact, Kickstart allows for a 20% uncertainty of the
+        accuracy of the elapsed time measurements, so the real duration may be
+        somewhat less than that. If there are more files to extract, it will
+        continue extraction in the next step. This approach allows it to work
+        around the PHP time limit imposed by all hosts. However, if a step
+        takes too little time, it is possible that your host mistakenly
+        identifies this behaviour as a Denial of Service attack. As a result,
+        Kickstart will force each step to last at least as much as the
+        <guilabel>Minimum execution time</guilabel> value is. These two
+        settings are expressed in seconds and can be perceived as a combined
+        "from-to" step duration setting.</para>
+
+        <para>Finally, you will find the options for the Stealth Mode in the
+        Fine Tuning pane. The Stealth Mode allows you to display a static HTML
+        page (optionally with images and SWF animation) to all visitors to the
+        web site except yourself while you perform the restoration and only
+        works with Apache or any other server supports mod_redirect
+        functionality using .htaccess files (even some versions of IIS with
+        third party add-ons do). This will prevent accidental disclosure of
+        sensitive information while the restoration is in progress. This is
+        performed by directing all traffic not coming from your IP address to
+        the page you define in here. The first, obvious, setting is the
+        <guilabel>Stealth mode</guilabel> check box. When you tick it, the
+        stealth mode will be activated. The <guilabel>HTML file to show to web
+        visitors</guilabel> option allows you to define the name of the static
+        HTML page to show to your visitors. The file and its resources
+        (images, CSS, Javascript files) must reside inside your to-be-restored
+        site's root. You must only define the name of the file to use, not its
+        URL. This means that <filename>offline.html</filename> is a valid
+        setting, whereas <uri>http://www.example.com/offline.html</uri> is
+        INVALID and will result in a 404 error thrown to your visitors.</para>
+
+        <tip>
+          <para>If you are worried about SEO, fear not. The redirection
+          happens with a "temporary redirection" HTTP status code, which will
+          instruct search engines to revisit your site in a later time. As a
+          result, you are not penalized for duplicate content or otherwise
+          negatively affect your SEO while restoring your site.</para>
+        </tip>
+
+        <screenshot>
+          <info>
+            <title>The extraction page</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.03.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The fourth step is the fun part. Just click on the big, friendly
+        <guibutton>Start</guibutton> button and sit back while Kickstart
+        extracts your archive.</para>
+
+        <screenshot>
+          <info>
+            <title>The restoration and clean up page, right after the
+            extraction</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.04.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>When the extraction is complete, you will be presented with an
+        option to launch the installer. Clicking on the large green button
+        will launch the <uri>installation/index.php</uri> relative URL to a
+        new window. If you were extracting a backup archive taken with Akeeba
+        Backup, this will cause the Akeeba Backup Installer (ABI) which was
+        included in your archive and just extracted to be launched.
+        Technically, you will not be running Kickstart at that point, so you
+        have to refer to the Akeeba Backup documentation for more information
+        on how the restoration script works. <emphasis role="bold">Please do
+        not close Kickstart's window</emphasis>. You will need it
+        later.</para>
+
+        <para>After you have completed your site's restoration and you close
+        the installation script's window, you will get back to Kickstart. The
+        interface has changed slightly in the meantime:</para>
+
+        <screenshot>
+          <info>
+            <title>The restoration and clean up page, right after the
+            restoration</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.05.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Just click on the <guibutton>Clean Up</guibutton> button. The
+        following actions will be performed:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The <filename>installation</filename> directory is removed
+            as it is no longer required.</para>
+          </listitem>
+
+          <listitem>
+            <para>If you had a <filename>.htaccess</filename> and/or
+            <filename>php.ini</filename> files in your backed up site's root,
+            these files have been extracted under the temporary names of
+            <filename>htaccess.bak</filename> and
+            <filename>php.ini.bak</filename> respectively. At this point, the
+            temporary named files are renamed back to their original
+            names.</para>
+          </listitem>
+
+          <listitem>
+            <para>The backup archive (and all its parts, if it is a multi-part
+            archive) is removed.</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>kickstart.php</filename> itself and all of its
+            translation INI files, if present, are removed.</para>
+          </listitem>
+        </itemizedlist>
+
+        <screenshot>
+          <info>
+            <title>The final page</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.06.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>At this point you can simply close Kickstart's window.
+        Alternatively, you click on either button (or both!) to open the
+        respective area of your site to a new browser window/tab.</para>
+
+        <section xml:id="troubleshooting">
+          <title>Troubleshooting</title>
+
+          <para><emphasis role="bold">I am getting an AJAX
+          error...</emphasis></para>
+
+          <para><emphasis role="bold">Kickstart tells me that this is not a
+          valid JPA archive?</emphasis></para>
+
+          <para>First, ensure that you have downloaded and uploaded the backup
+          archive using FTP in Binary transfer mode. If not, do it now. This
+          is the mest common cause of issues. Then, make sure that you have
+          tried both file writing modes (direct file writing and FTP mode) and
+          neither works on your site. The next step would be lowering the
+          <guilabel>Maximum execution time</guilabel> setting to 2 or 3
+          seconds and setting the <guilabel>Minimum execution time</guilabel>
+          to 1 second. If you are still getting this error message, please
+          take a screenshot of the entire message (<emphasis>do not downscale
+          it</emphasis>, we'll need to be able to read it) and post it in a
+          post on our <link
+          xlink:href="http://www.akeebabackup.com/forum.html">support
+          forum</link>. Please include as much information as you can
+          regarding the error condition, how you took your backup, which
+          <emphasis>EXACT</emphasis> version of Akeeba Backup you were using
+          ("latest" means nothing, something like 3.0.rc1 does), which EXACT
+          version of Kickstart you were using and the PHP version of your
+          host. Remember that the less information you give us, the more time
+          it will take us to figure out what's going wrong and the less happy
+          you'll feel about our support. We need you to help us help
+          you.</para>
+
+          <para><emphasis role="bold">I am getting "Can't open xyz for
+          writing" or "Can't create directory xyz" error
+          messages</emphasis></para>
+
+          <para>The first thing you have to check, even though it sounds
+          silly, is that you have enough free disk space. Most probably you
+          have an account quota limit. Since you are extracting an archive,
+          you must have at least as much as 2-3 times free space as your
+          backup archive. This means that if you have a backup archive
+          weighing 100Mb, you need another 150-200Mb to extract it. In total,
+          you'd need 250-300Mb of free disk space before you begin uploading
+          files and extracting the archive with Kickstart.</para>
+
+          <important>
+            <para>Some hosts claim "unlimited" disk space. Sadly, this is not
+            always the case. Most hosts have "hidden" limits, such as the
+            amount of files you can host under one account. If you go over
+            that limit, you'll get extraction errors. Another thing is that
+            you "unlimited" host is physically bound to the size of their hard
+            drives. If their hard drive was close to completely filling up,
+            trying to extract your site will also lead to a restoration
+            failure. If nothing else helps with this kind of errors, do
+            contact your host and ask them if you are hitting a file count
+            limitation or their hard drive is full.</para>
+          </important>
+
+          <para>Moreover, some hosts have a limitation on the maximum file
+          size PHP can create. For example, Strato allows PHP to create files
+          of only up to 10Mb. Trying to extract bigger files from the archive
+          will lead to such an error. Do note that you might be able to upload
+          large files, such as your site's backup archive, through FTP.
+          However, if you try to extract a large file from the archive (e.g. a
+          large non-split database dump, a large video or music file, etc) it
+          will fail. Your ONLY way to perform the restoration is to extract
+          the archive on your local PC, e.g. using Akeeba eXtract, and
+          uploading all the extracted files by FTP. All you'll have to do next
+          is visiting the restoration URL which is in the form of
+          <uri>http://www.yoursite.com/installation/index.php</uri>. Please
+          refer to Akeeba Backup's documentation (the chapter on restoring
+          your site) for more information.</para>
+
+          <para>Finally, it may be a classic case of wrong or mixed file and
+          directory permissions (a "permissions hell" situation). This is very
+          easy to happen if you are restoring to a host with an existing
+          installation of Joomla! which doesn't use suPHP, i.e. the majority
+          of hosts. You might want to try using the FTP mode. If this still
+          doesn't work for you, try removing all existing files and
+          directories from your server before restoring the backup archive.
+          It's very easy to mix up ownerships and permissions on a shared
+          host, effectively entering into a "permissions hell" which is
+          virtually impossible to work around unless you have root privileges
+          on an SSH console or, more easily, removing all files from the
+          account. Do note that removing files might require using both an FTP
+          program and your host's control panel, or raising a ticket with your
+          host.</para>
+        </section>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Advanced features</title>
+
+    <section xml:id="profeatures">
+      <title>Professional features</title>
+
+      <para>As of version 3.5.0, there are two "flavours" of Akeeba Kickstart:
+      the free of charge Akeeba Kickstart Core, available to all, and the
+      for-a-fee Akeeba Kickstart Professional, available only to AKEEBAPRO and
+      AKEEBADELUXE subscribers. The Professional flavour includes features not
+      available in the Core version, designed to make a web professional's
+      life much easier.</para>
+
+      <section xml:id="import-url">
+        <title>Import from a URL and quickly install a fresh copy of
+        Joomla!</title>
+
+        <note>
+          <para>This feature is available in both Akeeba Kickstart Core (free
+          for all) and Professional (subscribers only)</para>
+        </note>
+
+        <para>This feature allows you to import archives stored in any other
+        web-accessible server. Please note that the file must be downloadable
+        through the web without authentication, i.e. without needing to log in
+        or provide a username, password or other means of authentication.
+        Backup archives in the default backup directory of Akeeba Backup are,
+        by default,<emphasis role="bold"> NOT</emphasis> web accessible for
+        security reasons.</para>
+
+        <para>This way you don't have to go through the extremely
+        time-consuming steps of downloading files to your local PC and
+        uploading them back to your new site, allowing for much faster site
+        transfers between servers and/or site cloning. All you have to do is
+        to use Akeeba Backup (Core or Professional) to backup your site, move
+        the backup archive to a web-accessible location (e.g. your site's
+        root), then use Akeeba Kickstart to restore the backup into any
+        server, very easily.</para>
+
+        <para>Moreover, this feature can be used to quickly install the latest
+        version of Joomla!. Thanks to a special button (more below) it can
+        automatically connect to the Joomla! official site, find out what is
+        the latest version of Joomla! and put its URL in the download URL box.
+        Since Joomla! installation packages use the same format and directory
+        structure as Akeeba Backup ZIP archives Kickstart can "restore" them,
+        allowing you to quickly install a fresh Joomla! site on any server,
+        without time consuming downloads and uploads.</para>
+
+        <important>
+          <para>You ABSOLUTELY DO NOT need to install Joomla! before restoring
+          a backup archive generated by Akeeba Backup. In fact, you are
+          strongly advised to NOT install Joomla! AT ALL before restoring a
+          backup archive generated by Akeeba Backup. Full site backups are
+          restored best on an EMPTY hosting account.</para>
+        </important>
+
+        <para>In order to use this feature, upload Akeeba Kickstart Core or
+        Professional into the root of the site where you want to restore your
+        backup / install Joomla! and run it. Right under Step 1 you will see a
+        small blue button reading <guibutton>Import from URL</guibutton>.
+        Click on it. The following page appears:</para>
+
+        <screenshot>
+          <info>
+            <title>Import from URL</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.12.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>If you are importing a backup archive from a web server enter
+        its URL in the <guilabel>URL to Import</guilabel> field, then click on
+        the <guibutton>Import from URL</guibutton> button.</para>
+
+        <important>
+          <para>If it is a multipart backup archive, i.e. a backup which
+          consists of several files, you will need to repeat this for every
+          archive part file.</para>
+        </important>
+
+        <para>If you want to install a brand new copy of
+        <trademark>Joomla!</trademark> on your site first click on the
+        <guilabel>Latest Joomla! Release</guilabel> button. Kickstart will
+        connect to joomla.org, find the download URL of the latest version of
+        Joomla! and fill in the <guilabel>URL to Import</guilabel> field
+        automatically. This will take somewhere between 3 and 10 seconds. Once
+        the <guilabel>URL to Import</guilabel> field is filled in just click
+        on the <guibutton>Import from URL</guibutton> button.</para>
+
+        <screenshot>
+          <info>
+            <title>Importing from URL</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.13.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The download of the file begins. Depending on the capabilities
+        of the server hosting your backup archive you will see a progress bar.
+        If the remote server doesn't report the size of the backup archive,
+        you will simply see the text below the empty bar indicating how much
+        of the backup archive has already been imported.</para>
+
+        <para>Once the import is complete you'll be presented with the final
+        page of the importer:</para>
+
+        <screenshot>
+          <info>
+            <title>Finished importing from URL</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.14.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Click on the <guibutton>Reload Kickstart</guibutton> button to
+        reload Kickstart and have it list your newly imported file.
+        Congratulations! You are now ready to restore the backup archive you
+        just imported / install Joomla!.</para>
+      </section>
+
+      <section xml:id="pro-import-s3">
+        <title>Import from Amazon S3</title>
+
+        <note>
+          <para>This feature is only available in Akeeba Kickstart
+          Professional</para>
+        </note>
+
+        <para>This feature allows you to import archives directly from Amazon
+        S3 into your site and let Kickstart extract them. This way you don't
+        have to go through the extremely time-consuming steps of downloading
+        files to your local PC and uploading them back to your new site,
+        allowing for much faster site transfers between servers and/or site
+        cloning. All you have to do is to use Akeeba Backup Professional to
+        backup your site to Amazon S3, then use Akeeba Kickstart Professional
+        to restore the backup into any server, very easily.</para>
+
+        <important>
+          <para>This feature will not work with buckets containing a dot in
+          their name. This is a limitation on Amazon S3's side, namely the way
+          their SSL certificates are set up.</para>
+        </important>
+
+        <para>In order to use this feature, upload Akeeba Kickstart
+        Professional into the root of the site where you want to restore your
+        backup and run it. Right under Step 1 you will see a small blue button
+        reading <guibutton>Import from Amazon S3</guibutton>. Click on it. The
+        following page appears:</para>
+
+        <screenshot>
+          <info>
+            <title>Import from S3</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.08.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Begin by entering your Amazon S3 Access Key and Secret Key in
+        the two topmost fields and click on <guibutton>Connect to Amazon
+        S3</guibutton>. If you change your mind, just click on
+        <guibutton>Cancel Import</guibutton> to be transferred back to
+        Kickstart's main page.</para>
+
+        <para>A few seconds after pressing the <guibutton>Connect to Amazon
+        S3</guibutton> button you will see the <guilabel>Bucket</guilabel>
+        drop-down fill in with the names of the Amazon S3 buckets under your
+        account. Select the bucket you want. If it is already selected, click
+        on the <guibutton>List Contents</guibutton> button. A few seconds
+        later, the third step's area will show you an explorer-style
+        interface, listing the folders and files in your Amazon S3 account.
+        Please note that only archive files (JPA, ZIP and JPS) are being
+        listed in the files area.</para>
+
+        <screenshot>
+          <info>
+            <title>Listing the S3 files and folders</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.09.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can navigate your directories by clicking on them. Once you
+        find your backup archive, just click on it. Akeeba Kickstart
+        Professional will begin importing it to your site. If it is a
+        multi-part archive, Akeeba Kickstart Professional will automatically
+        import all of the part files for you. You needn't worry about
+        transferring each one of them separately!</para>
+
+        <screenshot>
+          <info>
+            <title>Importing from S3</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.10.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>While the import is running it will show you the progress of the
+        import process. Once it's done, you'll be presented with the final
+        page of the importer:</para>
+
+        <screenshot>
+          <info>
+            <title>Finished importing from S3</title>
+          </info>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/kickstart.11.png" width="14cm"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Click on the <guibutton>Reload Kickstart</guibutton> button to
+        reload Kickstart and have it list your newly imported file.
+        Congratulations! You are now ready to restore the backup archive you
+        just imported!</para>
+      </section>
+    </section>
+
+    <section xml:id="automating">
+      <title>Automating Kickstart</title>
+
+      <note>
+        <para>This method is no longer supported and will be removed in an
+        upcoming version of Kickstart.</para>
+      </note>
+
+      <para>Kickstart's automation is part of our 1-click site restoration
+      initiative. The only prerequisite is that your backup archive must be
+      created using the "Akeeba Backup Installer" (a.k.a. ABI) embedded
+      restoration script. This is the default and only option, as of Akeeba
+      Backup 3.0. However, the default option in newer versions of Akeeba
+      Backup is ANGIE (Akeeba Next Generation Installation Engine) which is
+      NOT compatible with this method.</para>
+
+      <para>The automation procedure covers the entirety of the
+      extraction/restoration process. Once you start Kickstart, it will
+      extract the archive, call the ABI restoration script, it will
+      automatically proceed through all of its pages and then allow you to
+      click on the final Kickstart button which removes
+      <filename>kickstart.php</filename>, the archive file and the
+      installation directory.</para>
+
+      <para>Everything is controlled by the contents of a single file which
+      must be named <filename>abiautomation.ini</filename> and located in the
+      same directory as <filename>kickstart.php</filename>. So, you only need
+      to upload three files: <filename>kickstart.php</filename>, the archive
+      and <filename>abiautomation.ini</filename>. If you do that, accessing
+      kickstart.php from your browser will result in a fully restored site,
+      without any user intervention (unless an error happens; in this case the
+      process will halt for you to review and correct the error).</para>
+
+      <para>The INI file is comprised of different sections. The section named
+      <code>[kickstart]</code> is where all Kickstart-related parameters are
+      stored.</para>
+
+      <programlisting>[kickstart]
+kickstart.setup.sourcefile=<replaceable>backupfile.jpa</replaceable>
+kickstart.tuning.min_exec_time=1
+kickstart.tuning.max_exec_time=5
+kickstart.procengine=ftp
+kickstart.ftp.host=<replaceable>ftp.example.com</replaceable>
+kickstart.ftp.port=<replaceable>21</replaceable>
+kickstart.ftp.ssl=0
+kickstart.ftp.passive=1
+kickstart.ftp.user=<replaceable>myuser</replaceable>
+kickstart.ftp.pass=<replaceable>mypass</replaceable>
+kickstart.ftp.dir=<replaceable>/public_html</replaceable>
+kickstart.ftp.tempdir=/var/www/mysite/public_html/kicktemp</programlisting>
+
+      <para>All those variables correspond to the options you are presented
+      with when running Kickstart.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>kickstart.setup.sourcefile</term>
+
+          <listitem>
+            <para>REQUIRED. The name of the backup archive to extract. You can
+            enter a relative or absolute pathname.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.tuning.min_exec_time</term>
+
+          <listitem>
+            <para>The minimum time each extraction step may last, in seconds.
+            Defaults to 1 second. It is advisable not to modify this
+            parameter.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.tuning.max_exec_time</term>
+
+          <listitem>
+            <para>The maximum time each extraction step may last, in seconds.
+            Defaults to 5 seconds. If you are getting timeout errors or HTTP
+            500 errors, you might want to lower this.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.procengine</term>
+
+          <listitem>
+            <para>How to write the extracted files to the disk. It can either
+            be <option>direct</option> or <option>ftp</option>. In direct
+            mode, all files are written using PHP file writing. In FTP mode,
+            the files are first extracted to a temporary directory, then
+            "uploaded" using FTP to their final location. The FTP mode is much
+            slower, but it might be the only way for Kickstart to work on many
+            servers.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.ftp.host</term>
+
+          <listitem>
+            <para>If you are using the FTP mode, this defines the address of
+            the FTP server used for uploading the files. Do note that you must
+            enter only the domain or IP address, without the protocol. This
+            means that ftp.example.com is correct usage, while
+            ftp://ftp.example.com is <emphasis>incorrect</emphasis>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.ftp.port</term>
+
+          <listitem>
+            <para>The TCP/IP port of the FTP server to use. Normally you want
+            to use port 21 (default plain FTP port). Only use something
+            different if your host tells you so, or if you are using FTPS (FTP
+            over SSL).</para>
+
+            <warning>
+              <para>If your host tells you to use port 22, their connection
+              mode is not compatible with Kickstart. Port 22 is used by the
+              SFTP protocol, which is entirely different that the supported
+              FTP and FTPS protocols. In this case you have to ask your host
+              for plain FTP access to your site.</para>
+            </warning>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.ftp.ssl</term>
+
+          <listitem>
+            <para>Set it to 1 if you want to use the FTPS (FTP over SSL)
+            protocol. The default value is 0 which means that Kickstart will
+            use an unencrypted connection. Do note that Kickstart
+            <emphasis>does not support</emphasis> SFTP, as it is an entirely
+            different protocol than FTPS. The names look alike, but the
+            protocols have nothing to do with each other.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.ftp.passive</term>
+
+          <listitem>
+            <para>Set to 1 to use the FTP Passive mode (default), or use 0 to
+            use the FTP Active mode. Most probably you want to use the default
+            value of 1, as it is the only way to work around the firewall of
+            your host. A very small minority of hosts require the Active mode,
+            but they will tell you so in their FTP connection
+            instructions.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.ftp.user</term>
+
+          <listitem>
+            <para>The FTP username.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.ftp.pass</term>
+
+          <listitem>
+            <para>The FTP password.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.ftp.dir</term>
+
+          <listitem>
+            <para>The <emphasis>absolute FTP path</emphasis> to your restored
+            site's root. <emphasis role="bold">THIS IS NOT THE SAME AS THE
+            FILE SYSTEM PATH TO YOUR SITE'S ROOT!!!</emphasis> The easiest way
+            to figure this out is to use FileZilla. Connect to your target FTP
+            server with FileZilla. Navigate to the web server's root (usually
+            it's a subdirectory named httpdocs, htdocs, public_html, http_docs
+            or www). Above the right-hand folder pane you will see a text box
+            with a path. Copy this path and paste it to this setting.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>kickstart.ftp.tempdir</term>
+
+          <listitem>
+            <para>As PHP can't directly upload files while they are being
+            extracted, Kickstart is extracting them to a temporary directory
+            using direct file writes first, then uploads them to their final
+            destination using FTP. Normally, Kickstart will try using the
+            directory it's stored in to extract the temporary files. Many web
+            hosts configure their servers in such a way that this is not
+            possible. Using this option you can customise the location of the
+            temporary directory to somewhere with adequate permissions. You
+            can use either an absolute or a relative (to Kickstart's
+            directory) path for this setting.</para>
+
+            <para>If unsure, you can follow an easy workaround. Create a
+            directory named <filename>kicktemp</filename> in your site's root
+            using FTP and give it 0777 permissions (or world-write privileges,
+            e.g. full control to the Everybody pseudo-user, if you are using a
+            Windows server). Then type in <filename>kicktemp</filename> as
+            this option.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>Do note that defining Kickstart's parameters in
+      <filename>abiautomation.ini</filename> is the first step to automating
+      the restoration procedure. There are more sections for the
+      <filename>abiautomation.ini</filename> file described in Akeeba Backup's
+      documentation, under the "Automating the Akeeba Backup Installer"
+      section.</para>
+    </section>
+  </chapter>
+
+  <appendix version="5.0" xml:id="gnu-fdl">
+    <title>GNU Free Documentation License</title>
+
+    <para>Copyright (C) 2000, 2001, 2002 Free Software Foundation,
+    <abbrev>Inc.</abbrev> 51 Franklin <abbrev>St</abbrev> , Fifth Floor,
+    Boston, <abbrev>MA</abbrev> 02110-1301 <abbrev
+    role="initialism">USA</abbrev> . Everyone is permitted to copy and
+    distribute verbatim copies of this license document, but changing it is
+    not allowed.</para>
+
+    <bridgehead renderas="sect1">0. PREAMBLE</bridgehead>
+
+    <para>The purpose of this License is to make a manual, textbook, or other
+    functional and useful document "free" in the sense of freedom: to assure
+    everyone the effective freedom to copy and redistribute it, with or
+    without modifying it, either commercially or noncommercially. Secondarily,
+    this License preserves for the author and publisher a way to get credit
+    for their work, while not being considered responsible for modifications
+    made by others.</para>
+
+    <para>This License is a kind of "copyleft", which means that derivative
+    works of the document must themselves be free in the same sense. It
+    complements the GNU General Public License, which is a copyleft license
+    designed for free software.</para>
+
+    <para>We have designed this License in order to use it for manuals for
+    free software, because free software needs free documentation: a free
+    program should come with manuals providing the same freedoms that the
+    software does. But this License is not limited to software manuals; it can
+    be used for any textual work, regardless of subject matter or whether it
+    is published as a printed book. We recommend this License principally for
+    works whose purpose is instruction or reference.</para>
+
+    <bridgehead renderas="sect1">1. APPLICABILITY AND DEFINITIONS</bridgehead>
+
+    <para>This License applies to any manual or other work, in any medium,
+    that contains a notice placed by the copyright holder saying it can be
+    distributed under the terms of this License. Such a notice grants a
+    world-wide, royalty-free license, unlimited in duration, to use that work
+    under the conditions stated herein. The "Document", below, refers to any
+    such manual or work. Any member of the public is a licensee, and is
+    addressed as "you". You accept the license if you copy, modify or
+    distribute the work in a way requiring permission under copyright
+    law.</para>
+
+    <para>A "Modified Version" of the Document means any work containing the
+    Document or a portion of it, either copied verbatim, or with modifications
+    and/or translated into another language.</para>
+
+    <para>A "Secondary Section" is a named appendix or a front-matter section
+    of the Document that deals exclusively with the relationship of the
+    publishers or authors of the Document to the Document's overall subject
+    (or to related matters) and contains nothing that could fall directly
+    within that overall subject. (Thus, if the Document is in part a textbook
+    of mathematics, a Secondary Section may not explain any mathematics.) The
+    relationship could be a matter of historical connection with the subject
+    or with related matters, or of legal, commercial, philosophical, ethical
+    or political position regarding them.</para>
+
+    <para>The "Invariant Sections" are certain Secondary Sections whose titles
+    are designated, as being those of Invariant Sections, in the notice that
+    says that the Document is released under this License. If a section does
+    not fit the above definition of Secondary then it is not allowed to be
+    designated as Invariant. The Document may contain zero Invariant Sections.
+    If the Document does not identify any Invariant Sections then there are
+    none.</para>
+
+    <para>The "Cover Texts" are certain short passages of text that are
+    listed, as Front-Cover Texts or Back-Cover Texts, in the notice that says
+    that the Document is released under this License. A Front-Cover Text may
+    be at most 5 words, and a Back-Cover Text may be at most 25 words.</para>
+
+    <para>A "Transparent" copy of the Document means a machine-readable copy,
+    represented in a format whose specification is available to the general
+    public, that is suitable for revising the document straightforwardly with
+    generic text editors or (for images composed of pixels) generic paint
+    programs or (for drawings) some widely available drawing editor, and that
+    is suitable for input to text formatters or for automatic translation to a
+    variety of formats suitable for input to text formatters. A copy made in
+    an otherwise Transparent file format whose markup, or absence of markup,
+    has been arranged to thwart or discourage subsequent modification by
+    readers is not Transparent. An image format is not Transparent if used for
+    any substantial amount of text. A copy that is not "Transparent" is called
+    "Opaque".</para>
+
+    <para>Examples of suitable formats for Transparent copies include plain
+    ASCII without markup, Texinfo input format, LaTeX input format, SGML or
+    XML using a publicly available DTD, and standard-conforming simple HTML,
+    PostScript or PDF designed for human modification. Examples of transparent
+    image formats include PNG, XCF and JPG. Opaque formats include proprietary
+    formats that can be read and edited only by proprietary word processors,
+    SGML or XML for which the DTD and/or processing tools are not generally
+    available, and the machine-generated HTML, PostScript or PDF produced by
+    some word processors for output purposes only.</para>
+
+    <para>The "Title Page" means, for a printed book, the title page itself,
+    plus such following pages as are needed to hold, legibly, the material
+    this License requires to appear in the title page. For works in formats
+    which do not have any title page as such, "Title Page" means the text near
+    the most prominent appearance of the work's title, preceding the beginning
+    of the body of the text.</para>
+
+    <para>A section "Entitled XYZ" means a named subunit of the Document whose
+    title either is precisely XYZ or contains XYZ in parentheses following
+    text that translates XYZ in another language. (Here XYZ stands for a
+    specific section name mentioned below, such as "Acknowledgements",
+    "Dedications", "Endorsements", or "History".) To "Preserve the Title" of
+    such a section when you modify the Document means that it remains a
+    section "Entitled XYZ" according to this definition.</para>
+
+    <para>The Document may include Warranty Disclaimers next to the notice
+    which states that this License applies to the Document. These Warranty
+    Disclaimers are considered to be included by reference in this License,
+    but only as regards disclaiming warranties: any other implication that
+    these Warranty Disclaimers may have is void and has no effect on the
+    meaning of this License.</para>
+
+    <bridgehead renderas="sect1">2. VERBATIM COPYING</bridgehead>
+
+    <para>You may copy and distribute the Document in any medium, either
+    commercially or noncommercially, provided that this License, the copyright
+    notices, and the license notice saying this License applies to the
+    Document are reproduced in all copies, and that you add no other
+    conditions whatsoever to those of this License. You may not use technical
+    measures to obstruct or control the reading or further copying of the
+    copies you make or distribute. However, you may accept compensation in
+    exchange for copies. If you distribute a large enough number of copies you
+    must also follow the conditions in section 3.</para>
+
+    <para>You may also lend copies, under the same conditions stated above,
+    and you may publicly display copies.</para>
+
+    <bridgehead renderas="sect1">3. COPYING IN QUANTITY</bridgehead>
+
+    <para>If you publish printed copies (or copies in media that commonly have
+    printed covers) of the Document, numbering more than 100, and the
+    Document's license notice requires Cover Texts, you must enclose the
+    copies in covers that carry, clearly and legibly, all these Cover Texts:
+    Front-Cover Texts on the front cover, and Back-Cover Texts on the back
+    cover. Both covers must also clearly and legibly identify you as the
+    publisher of these copies. The front cover must present the full title
+    with all words of the title equally prominent and visible. You may add
+    other material on the covers in addition. Copying with changes limited to
+    the covers, as long as they preserve the title of the Document and satisfy
+    these conditions, can be treated as verbatim copying in other
+    respects.</para>
+
+    <para>If the required texts for either cover are too voluminous to fit
+    legibly, you should put the first ones listed (as many as fit reasonably)
+    on the actual cover, and continue the rest onto adjacent pages.</para>
+
+    <para>If you publish or distribute Opaque copies of the Document numbering
+    more than 100, you must either include a machine-readable Transparent copy
+    along with each Opaque copy, or state in or with each Opaque copy a
+    computer-network location from which the general network-using public has
+    access to download using public-standard network protocols a complete
+    Transparent copy of the Document, free of added material. If you use the
+    latter option, you must take reasonably prudent steps, when you begin
+    distribution of Opaque copies in quantity, to ensure that this Transparent
+    copy will remain thus accessible at the stated location until at least one
+    year after the last time you distribute an Opaque copy (directly or
+    through your agents or retailers) of that edition to the public.</para>
+
+    <para>It is requested, but not required, that you contact the authors of
+    the Document well before redistributing any large number of copies, to
+    give them a chance to provide you with an updated version of the
+    Document.</para>
+
+    <bridgehead renderas="sect1">4. MODIFICATIONS</bridgehead>
+
+    <para>You may copy and distribute a Modified Version of the Document under
+    the conditions of sections 2 and 3 above, provided that you release the
+    Modified Version under precisely this License, with the Modified Version
+    filling the role of the Document, thus licensing distribution and
+    modification of the Modified Version to whoever possesses a copy of it. In
+    addition, you must do these things in the Modified Version:</para>
+
+    <orderedlist numeration="upperalpha">
+      <listitem>
+        <simpara>Use in the Title Page (and on the covers, if any) a title
+        distinct from that of the Document, and from those of previous
+        versions (which should, if there were any, be listed in the History
+        section of the Document). You may use the same title as a previous
+        version if the original publisher of that version gives
+        permission.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>List on the Title Page, as authors, one or more persons or
+        entities responsible for authorship of the modifications in the
+        Modified Version, together with at least five of the principal authors
+        of the Document (all of its principal authors, if it has fewer than
+        five), unless they release you from this requirement.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>State on the Title page the name of the publisher of the
+        Modified Version, as the publisher.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Preserve all the copyright notices of the Document.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Add an appropriate copyright notice for your modifications
+        adjacent to the other copyright notices.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Include, immediately after the copyright notices, a license
+        notice giving the public permission to use the Modified Version under
+        the terms of this License, in the form shown in the Addendum
+        below.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Preserve in that license notice the full lists of Invariant
+        Sections and required Cover Texts given in the Document's license
+        notice.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Include an unaltered copy of this License.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Preserve the section Entitled "History", Preserve its Title,
+        and add to it an item stating at least the title, year, new authors,
+        and publisher of the Modified Version as given on the Title Page. If
+        there is no section Entitled "History" in the Document, create one
+        stating the title, year, authors, and publisher of the Document as
+        given on its Title Page, then add an item describing the Modified
+        Version as stated in the previous sentence.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Preserve the network location, if any, given in the Document
+        for public access to a Transparent copy of the Document, and likewise
+        the network locations given in the Document for previous versions it
+        was based on. These may be placed in the "History" section. You may
+        omit a network location for a work that was published at least four
+        years before the Document itself, or if the original publisher of the
+        version it refers to gives permission.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>For any section Entitled "Acknowledgements" or "Dedications",
+        Preserve the Title of the section, and preserve in the section all the
+        substance and tone of each of the contributor acknowledgements and/or
+        dedications given therein.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Preserve all the Invariant Sections of the Document,
+        unaltered in their text and in their titles. Section numbers or the
+        equivalent are not considered part of the section titles.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Delete any section Entitled "Endorsements". Such a section
+        may not be included in the Modified Version.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Do not retitle any existing section to be Entitled
+        "Endorsements" or to conflict in title with any Invariant
+        Section.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Preserve any Warranty Disclaimers.</simpara>
+      </listitem>
+    </orderedlist>
+
+    <para>If the Modified Version includes new front-matter sections or
+    appendices that qualify as Secondary Sections and contain no material
+    copied from the Document, you may at your option designate some or all of
+    these sections as invariant. To do this, add their titles to the list of
+    Invariant Sections in the Modified Version's license notice. These titles
+    must be distinct from any other section titles.</para>
+
+    <para>You may add a section Entitled "Endorsements", provided it contains
+    nothing but endorsements of your Modified Version by various parties--for
+    example, statements of peer review or that the text has been approved by
+    an organization as the authoritative definition of a standard.</para>
+
+    <para>You may add a passage of up to five words as a Front-Cover Text, and
+    a passage of up to 25 words as a Back-Cover Text, to the end of the list
+    of Cover Texts in the Modified Version. Only one passage of Front-Cover
+    Text and one of Back-Cover Text may be added by (or through arrangements
+    made by) any one entity. If the Document already includes a cover text for
+    the same cover, previously added by you or by arrangement made by the same
+    entity you are acting on behalf of, you may not add another; but you may
+    replace the old one, on explicit permission from the previous publisher
+    that added the old one.</para>
+
+    <para>The author(s) and publisher(s) of the Document do not by this
+    License give permission to use their names for publicity for or to assert
+    or imply endorsement of any Modified Version.</para>
+
+    <bridgehead renderas="sect1">5. COMBINING DOCUMENTS</bridgehead>
+
+    <para>You may combine the Document with other documents released under
+    this License, under the terms defined in section 4 above for modified
+    versions, provided that you include in the combination all of the
+    Invariant Sections of all of the original documents, unmodified, and list
+    them all as Invariant Sections of your combined work in its license
+    notice, and that you preserve all their Warranty Disclaimers.</para>
+
+    <para>The combined work need only contain one copy of this License, and
+    multiple identical Invariant Sections may be replaced with a single copy.
+    If there are multiple Invariant Sections with the same name but different
+    contents, make the title of each such section unique by adding at the end
+    of it, in parentheses, the name of the original author or publisher of
+    that section if known, or else a unique number. Make the same adjustment
+    to the section titles in the list of Invariant Sections in the license
+    notice of the combined work.</para>
+
+    <para>In the combination, you must combine any sections Entitled "History"
+    in the various original documents, forming one section Entitled "History";
+    likewise combine any sections Entitled "Acknowledgements", and any
+    sections Entitled "Dedications". You must delete all sections Entitled
+    "Endorsements".</para>
+
+    <bridgehead renderas="sect1">6. COLLECTIONS OF DOCUMENTS</bridgehead>
+
+    <para>You may make a collection consisting of the Document and other
+    documents released under this License, and replace the individual copies
+    of this License in the various documents with a single copy that is
+    included in the collection, provided that you follow the rules of this
+    License for verbatim copying of each of the documents in all other
+    respects.</para>
+
+    <para>You may extract a single document from such a collection, and
+    distribute it individually under this License, provided you insert a copy
+    of this License into the extracted document, and follow this License in
+    all other respects regarding verbatim copying of that document.</para>
+
+    <bridgehead renderas="sect1">7. AGGREGATION WITH INDEPENDENT
+    WORKS</bridgehead>
+
+    <para>A compilation of the Document or its derivatives with other separate
+    and independent documents or works, in or on a volume of a storage or
+    distribution medium, is called an "aggregate" if the copyright resulting
+    from the compilation is not used to limit the legal rights of the
+    compilation's users beyond what the individual works permit. When the
+    Document is included in an aggregate, this License does not apply to the
+    other works in the aggregate which are not themselves derivative works of
+    the Document.</para>
+
+    <para>If the Cover Text requirement of section 3 is applicable to these
+    copies of the Document, then if the Document is less than one half of the
+    entire aggregate, the Document's Cover Texts may be placed on covers that
+    bracket the Document within the aggregate, or the electronic equivalent of
+    covers if the Document is in electronic form. Otherwise they must appear
+    on printed covers that bracket the whole aggregate.</para>
+
+    <bridgehead renderas="sect1">8. TRANSLATION</bridgehead>
+
+    <para>Translation is considered a kind of modification, so you may
+    distribute translations of the Document under the terms of section 4.
+    Replacing Invariant Sections with translations requires special permission
+    from their copyright holders, but you may include translations of some or
+    all Invariant Sections in addition to the original versions of these
+    Invariant Sections. You may include a translation of this License, and all
+    the license notices in the Document, and any Warranty Disclaimers,
+    provided that you also include the original English version of this
+    License and the original versions of those notices and disclaimers. In
+    case of a disagreement between the translation and the original version of
+    this License or a notice or disclaimer, the original version will
+    prevail.</para>
+
+    <para>If a section in the Document is Entitled "Acknowledgements",
+    "Dedications", or "History", the requirement (section 4) to Preserve its
+    Title (section 1) will typically require changing the actual title.</para>
+
+    <bridgehead renderas="sect1">9. TERMINATION</bridgehead>
+
+    <para>You may not copy, modify, sublicense, or distribute the Document
+    except as expressly provided for under this License. Any other attempt to
+    copy, modify, sublicense or distribute the Document is void, and will
+    automatically terminate your rights under this License. However, parties
+    who have received copies, or rights, from you under this License will not
+    have their licenses terminated so long as such parties remain in full
+    compliance.</para>
+
+    <bridgehead renderas="sect1">10. FUTURE REVISIONS OF THIS
+    LICENSE</bridgehead>
+
+    <para>The Free Software Foundation may publish new, revised versions of
+    the GNU Free Documentation License from time to time. Such new versions
+    will be similar in spirit to the present version, but may differ in detail
+    to address new problems or concerns. See <link
+    xlink:href="http://www.gnu.org/copyleft/">
+    http://www.gnu.org/copyleft/</link> .</para>
+
+    <para>Each version of the License is given a distinguishing version
+    number. If the Document specifies that a particular numbered version of
+    this License "or any later version" applies to it, you have the option of
+    following the terms and conditions either of that specified version or of
+    any later version that has been published (not as a draft) by the Free
+    Software Foundation. If the Document does not specify a version number of
+    this License, you may choose any version ever published (not as a draft)
+    by the Free Software Foundation.</para>
+
+    <bridgehead renderas="sect1">ADDENDUM: How to use this License for your
+    documents</bridgehead>
+
+    <para>To use this License in a document you have written, include a copy
+    of the License in the document and put the following copyright and license
+    notices just after the title page:</para>
+
+    <blockquote>
+      <para>Copyright (C) YEAR YOUR NAME.</para>
+
+      <para>Permission is granted to copy, distribute and/or modify this
+      document under the terms of the GNU Free Documentation License, Version
+      1.2 or any later version published by the Free Software Foundation; with
+      no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+      copy of the license is included in the section entitled "GNU Free
+      Documentation License".</para>
+    </blockquote>
+
+    <para>If you have Invariant Sections, Front-Cover Texts and Back-Cover
+    Texts, replace the "with...Texts." line with this:</para>
+
+    <blockquote>
+      <para>with the Invariant Sections being LIST THEIR TITLES, with the
+      Front-Cover Texts being LIST, and with the Back-Cover Texts being
+      LIST.</para>
+    </blockquote>
+
+    <para>If you have Invariant Sections without Cover Texts, or some other
+    combination of the three, merge those two alternatives to suit the
+    situation.</para>
+
+    <para>If your document contains nontrivial examples of program code, we
+    recommend releasing these examples in parallel under your choice of free
+    software license, such as the GNU General Public License, to permit their
+    use in free software.</para>
+  </appendix>
+</book>
