@@ -14,7 +14,7 @@
  */
 class AKUnarchiverZIP extends AKAbstractUnarchiver
 {
-	private $archiveHeaderData = array();
+	protected $archiveHeaderData = array();
 
 	var $expectDataDescriptor = false;
 

@@ -14,9 +14,9 @@
  */
 class AKUnarchiverJPS extends AKUnarchiverJPA
 {
-	private $archiveHeaderData = array();
+	protected $archiveHeaderData = array();
 
-	private $password = '';
+	protected $password = '';
 
 	public function __construct()
 	{
