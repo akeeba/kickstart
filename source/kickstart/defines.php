@@ -34,7 +34,7 @@ define('KICKSTARTPRO', '##KICKSTARTPRO##');
 //define('KSDEBUG', 1);
 
 // Used during development
-if (!defined('KSDEBUG') && isset($_SERVER) && isset($_SERVER['HTTP_HOST']) && ($_SERVER['HTTP_HOST'] == 'restored.local.web'))
+if (!defined('KSDEBUG') && isset($_SERVER) && isset($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'local.web') !== false))
 {
 	define('KSDEBUG', 1);
 }
