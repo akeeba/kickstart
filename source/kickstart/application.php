@@ -1207,7 +1207,7 @@ function echoPage()
 
 	function onbrowseFTP ()
 	{
-        if($('#kickstart\\.procengine').val() == 'ftp')
+        if($('#kickstart\\.procengine').val() != 'sftp')
         {
             akeeba_ftpbrowser_host      = $('#kickstart\\.ftp\\.host').val();
             akeeba_ftpbrowser_port      = $('#kickstart\\.ftp\\.port').val();
@@ -1283,6 +1283,7 @@ function echoPage()
             'task'      : 'ftpbrowse',
             'json': JSON.stringify({
                 'host'		: akeeba_ftpbrowser_host,
+                'port'		: akeeba_ftpbrowser_port,
                 'username'	: akeeba_ftpbrowser_username,
                 'password'	: akeeba_ftpbrowser_password,
                 'passive'	: (akeeba_ftpbrowser_passive ? 1 : 0),

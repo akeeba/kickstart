@@ -2,6 +2,8 @@ Kickstart 4.0.0
 ================================================================================
 + You can list and extract archives in any directory, not just the one Kickstart is in
 + If you use the default backup output directories, Kickstart will automatically look for archives there if the directory where Kickstart is doesn't contain any archives
+# [MEDIUM] Clicking on Browse when you had selected the Hybrid mode would attempt to launch the SFTP directory browser instead of the FTP directory browser
+# [MEDIUM] The Port setting in (S)FTP options was ignored
 
 Kickstart 3.9.0
 ================================================================================
