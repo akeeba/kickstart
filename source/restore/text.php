@@ -122,6 +122,7 @@ class AKText extends AKAbstractObject
 		'WRONG_FTP_PATH2' => 'Wrong FTP initial directory - the directory doesn\'t correspond to your site\'s web root',
 		'ARCHIVE_DIRECTORY' => 'Archive directory:',
 		'RELOAD_ARCHIVES'	=> 'Reload',
+		'CONFIG_UI_SFTPBROWSER_TITLE'	=> 'SFTP Directory Browser',
 	);
 
 	/**
