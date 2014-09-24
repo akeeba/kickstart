@@ -116,6 +116,29 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 					// Archive's absolute filename
 					case 'filename':
 						$this->filename = $value;
+
+						// Sanity check
+						if (!empty($value))
+						{
+							$value = strtolower($value);
+
+							if (strlen($value) > 6)
+							{
+								if (
+									(substr($value, 0, 7) == 'http://')
+									|| (substr($value, 0, 8) == 'https://')
+									|| (substr($value, 0, 6) == 'ftp://')
+									|| (substr($value, 0, 7) == 'ssh2://')
+									|| (substr($value, 0, 6) == 'ssl://')
+								)
+								{
+									$this->setState('error', 'Invalid archive location');
+								}
+							}
+						}
+
+
+
 						break;
 
 					// Should I restore permissions?
