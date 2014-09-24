@@ -79,33 +79,66 @@ function masterSetup()
 	// Detect a JSON string in the request variable and store it.
 	$json = getQueryParam('json', null);
 
-	// Remove everything from the request array
-	if(!empty($_REQUEST))
+	// Remove everything from the request, post and get arrays
+	if (!empty($_REQUEST))
 	{
 		foreach($_REQUEST as $key => $value)
 		{
 			unset($_REQUEST[$key]);
 		}
 	}
-	// Decrypt a possibly encrypted JSON string
-	if(!empty($json))
+
+	if (!empty($_POST))
 	{
-		$password = AKFactory::get('kickstart.security.password', null);
-		if(!empty($password))
+		foreach($_POST as $key => $value)
+		{
+			unset($_POST[$key]);
+		}
+	}
+
+	if (!empty($_GET))
+	{
+		foreach($_GET as $key => $value)
+		{
+			unset($_GET[$key]);
+		}
+	}
+
+	// Decrypt a possibly encrypted JSON string
+	$password = AKFactory::get('kickstart.security.password', null);
+
+	if (!empty($json))
+	{
+		if (!empty($password))
 		{
 			$json = AKEncryptionAES::AESDecryptCtr($json, $password, 128);
+
+			if (empty($json))
+			{
+				die('###{"status":false,"message":"Invalid login"}###');
+			}
 		}
 
 		// Get the raw data
-		$raw = json_decode( $json, true );
-		// Pass all JSON data to the request array
-		if(!empty($raw))
+		$raw = json_decode($json, true);
+
+		if (!empty($password) && (empty($password) || !isset($raw['factory'])))
 		{
-			foreach($raw as $key => $value)
+			die('###{"status":false,"message":"Invalid login"}###');
+		}
+
+		// Pass all JSON data to the request array
+		if (!empty($raw))
+		{
+			foreach ($raw as $key => $value)
 			{
 				$_REQUEST[$key] = $value;
 			}
 		}
+	}
+	elseif (!empty($password))
+	{
+		die('###{"status":false,"message":"Invalid login"}###');
 	}
 
 	// ------------------------------------------------------------
