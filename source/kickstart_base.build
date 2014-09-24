@@ -1,5 +1,4 @@
 BUILD:restore
-kickstart/automation.php
 kickstart/utils.php
 kickstart/observer.php
 kickstart/extrafeature.php

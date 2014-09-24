@@ -10,7 +10,7 @@
  */
 
 /**
- * The Master Setup will read the configuration parameters from restoration.php, abiautomation.ini, or
+ * The Master Setup will read the configuration parameters from restoration.php or
  * the JSON-encoded "configuration" input variable and return the status.
  *
  * @return bool True if the master configuration was applied to the Factory object
@@ -32,7 +32,6 @@ function masterSetup()
 
 		if (!file_exists($setupFile))
 		{
-			// Uh oh... Somebody tried to pooh on our back yard. Lock the gates! Don't let the traitor inside!
 			AKFactory::set('kickstart.enabled', false);
 
 			return false;
@@ -40,7 +39,9 @@ function masterSetup()
 
 		// Load restoration.php. It creates a global variable named $restoration_setup
 		require_once $setupFile;
+
 		$ini_data = $restoration_setup;
+
 		if (empty($ini_data))
 		{
 			// No parameters fetched. Darn, how am I supposed to work like that?!
@@ -55,6 +56,7 @@ function masterSetup()
 	{
 		// Maybe we have $restoration_setup defined in the head of kickstart.php
 		global $restoration_setup;
+
 		if (!empty($restoration_setup) && !is_array($restoration_setup))
 		{
 			$ini_data = AKText::parse_ini_file($restoration_setup, false, true);
@@ -152,6 +154,7 @@ function masterSetup()
 	// ------------------------------------------------------------
 	// A "factory" variable will override all other settings.
 	$serialized = getQueryParam('factory', null);
+
 	if (!is_null($serialized))
 	{
 		// Get the serialized factory
@@ -162,31 +165,21 @@ function masterSetup()
 	}
 
 	// ------------------------------------------------------------
-	// 4. Try abiautomation.ini and the configuration variable for Kickstart
+	// 4. Try the configuration variable for Kickstart
 	// ------------------------------------------------------------
 	if (defined('KICKSTART'))
 	{
-		// We are in Kickstart mode. abiautomation.ini has precedence.
-		$setupFile = 'abiautomation.ini';
-		if (file_exists($setupFile))
+		$configuration = getQueryParam('configuration');
+
+		if (!is_null($configuration))
 		{
-			// abiautomation.ini was found
-			$ini_data = AKText::parse_ini_file('restoration.ini', false);
+			// Let's decode the configuration from JSON to array
+			$ini_data = json_decode($configuration, true);
 		}
 		else
 		{
-			// abiautomation.ini was not found. Let's try input parameters.
-			$configuration = getQueryParam('configuration');
-			if (!is_null($configuration))
-			{
-				// Let's decode the configuration from JSON to array
-				$ini_data = json_decode($configuration, true);
-			}
-			else
-			{
-				// Neither exists. Enable Kickstart's interface anyway.
-				$ini_data = array('kickstart.enabled' => true);
-			}
+			// Neither exists. Enable Kickstart's interface anyway.
+			$ini_data = array('kickstart.enabled' => true);
 		}
 
 		// Import any INI data we might have from other sources
@@ -196,6 +189,7 @@ function masterSetup()
 			{
 				AKFactory::set($key, $value);
 			}
+
 			AKFactory::set('kickstart.enabled', true);
 
 			return true;

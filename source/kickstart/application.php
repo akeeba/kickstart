@@ -746,7 +746,6 @@ function echoTranslationStrings()
 function echoPage()
 {
 	$edition = KICKSTARTPRO ? 'Professional' : 'Core';
-	$automation = AKAutomation::getInstance();
 	$bestArchivePath = AKKickstartUtils::getBestArchivePath();
 	$filelist = AKKickstartUtils::getArchivesAsOptions($bestArchivePath);
 	?>
@@ -774,7 +773,6 @@ function echoPage()
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 <?php endif; ?>
 <script type="text/javascript" language="javascript">
-	var akeeba_automation = <?php echo $automation->hasAutomation() ? 'true' : 'false' ?>;
 	var akeeba_debug = <?php echo defined('KSDEBUG') ? 'true' : 'false' ?>;
     var sftp_path = '<?php echo TranslateWinPath(defined('KSROOTDIR') ? KSROOTDIR : __DIR__); ?>/';
 	var isJoomla = true;
@@ -826,25 +824,19 @@ function echoPage()
 		// Reset the progress bar
 		setProgressBar(0);
 
-		// Do we have automation?
-		if(akeeba_automation) {
-			$('#automode').css('display','block');
-			$('#gobutton').click();
-		} else {
-			// Show warning
-			var msieVersion = getInternetExplorerVersion();
-			if((msieVersion != -1) && (msieVersion <= 8.99))
-			{
-				$('#ie7Warning').css('display','block');
-			}
-			if(!akeeba_debug) {
-				$('#preextraction').css('display','block');
-				$('#fade').css('display','block');
-			}
-
-            // Trigger change, so we avoid problems if the user refreshes the page
-            $('#kickstart\\.procengine').change();
+		// Show warning
+		var msieVersion = getInternetExplorerVersion();
+		if((msieVersion != -1) && (msieVersion <= 8.99))
+		{
+			$('#ie7Warning').css('display','block');
 		}
+		if(!akeeba_debug) {
+			$('#preextraction').css('display','block');
+			$('#fade').css('display','block');
+		}
+
+		// Trigger change, so we avoid problems if the user refreshes the page
+		$('#kickstart\\.procengine').change();
 	});
 
 	var translation = {
@@ -1543,30 +1535,6 @@ function echoPage()
 		var data = {
 			'task' : 'startExtracting',
 			'json': JSON.stringify({
-<?php if(!$automation->hasAutomation()): ?>
-				'kickstart.setup.sourcepath':		$('#kickstart\\.setup\\.sourcepath').val(),
-				'kickstart.setup.sourcefile':		$('#kickstart\\.setup\\.sourcefile').val(),
-				'kickstart.jps.password':			$('#kickstart\\.jps\\.password').val(),
-				'kickstart.tuning.min_exec_time':	$('#kickstart\\.tuning\\.min_exec_time').val(),
-				'kickstart.tuning.max_exec_time':	$('#kickstart\\.tuning\\.max_exec_time').val(),
-				'kickstart.stealth.enable': 		$('#kickstart\\.stealth\\.enable').is(':checked'),
-				'kickstart.stealth.url': 			$('#kickstart\\.stealth\\.url').val(),
-				'kickstart.tuning.run_time_bias':	75,
-				'kickstart.setup.restoreperms':		0,
-				'kickstart.setup.dryrun':			0,
-				'kickstart.setup.ignoreerrors':		$('#kickstart\\.setup\\.ignoreerrors').is(':checked'),
-				'kickstart.enabled':				1,
-				'kickstart.security.password':		'',
-				'kickstart.procengine':				$('#kickstart\\.procengine').val(),
-				'kickstart.ftp.host':				$('#kickstart\\.ftp\\.host').val(),
-				'kickstart.ftp.port':				$('#kickstart\\.ftp\\.port').val(),
-				'kickstart.ftp.ssl':				$('#kickstart\\.ftp\\.ssl').is(':checked'),
-				'kickstart.ftp.passive':			$('#kickstart\\.ftp\\.passive').is(':checked'),
-				'kickstart.ftp.user':				$('#kickstart\\.ftp\\.user').val(),
-				'kickstart.ftp.pass':				$('#kickstart\\.ftp\\.pass').val(),
-				'kickstart.ftp.dir':				$('#kickstart\\.ftp\\.dir').val(),
-				'kickstart.ftp.tempdir':			$('#kickstart\\.ftp\\.tempdir').val()
-<?php else: ?>
 				'kickstart.setup.sourcepath':		$('#kickstart\\.setup\\.sourcepath').val(),
 				'kickstart.setup.sourcefile':		<?php echo autoVar('kickstart.setup.sourcefile') ?>,
 				'kickstart.jps.password':			<?php echo autoVar('kickstart.jps.password') ?>,
@@ -1588,7 +1556,6 @@ function echoPage()
 				'kickstart.ftp.pass':				<?php echo autoVar('kickstart.ftp.pass') ?>,
 				'kickstart.ftp.dir':				<?php echo autoVar('kickstart.ftp.dir','/') ?>,
 				'kickstart.ftp.tempdir':			<?php echo autoVar('kickstart.ftp.tempdir', AKKickstartUtils::getPath().'kicktemp') ?>
-<?php endif; ?>
 			})
 		};
 		doAjax(data, function(ret){
@@ -1670,7 +1637,6 @@ function echoPage()
 			$('#extractionComplete').show('fast');
 
 			$('#runInstaller').css('display','inline-block');
-			if(akeeba_automation) $('#runInstaller').click();
 		}
 	}
 
@@ -2411,13 +2377,10 @@ switch($task)
 			}
 		}
 
-		// 6. Delete abiautomation.ini
-		$engine->unlink('abiautomation.ini');
-
-		// 7. Delete cacert.pem
+		// 6. Delete cacert.pem
 		$engine->unlink('cacert.pem');
 
-		// 8. Delete jquery.min.js and json2.min.js
+		// 7. Delete jquery.min.js and json2.min.js
 		$engine->unlink('jquery.min.js');
 		$engine->unlink('json2.min.js');
 
@@ -2425,7 +2388,6 @@ switch($task)
 
 	case 'display':
 		$ajax = false;
-		$automation = AKAutomation::getInstance();
 		echoPage();
 		break;
 
