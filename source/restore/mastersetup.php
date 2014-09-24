@@ -12,6 +12,7 @@
 /**
  * The Master Setup will read the configuration parameters from restoration.php, abiautomation.ini, or
  * the JSON-encoded "configuration" input variable and return the status.
+ *
  * @return bool True if the master configuration was applied to the Factory object
  */
 function masterSetup()
@@ -23,26 +24,28 @@ function masterSetup()
 	$ini_data = null;
 
 	// In restore.php mode, require restoration.php or fail
-	if(!defined('KICKSTART'))
+	if (!defined('KICKSTART'))
 	{
 		// This is the standalone mode, used by Akeeba Backup Professional. It looks for a restoration.php
 		// file to perform its magic. If the file is not there, we will abort.
 		$setupFile = 'restoration.php';
 
-		if( !file_exists($setupFile) )
+		if (!file_exists($setupFile))
 		{
 			// Uh oh... Somebody tried to pooh on our back yard. Lock the gates! Don't let the traitor inside!
 			AKFactory::set('kickstart.enabled', false);
+
 			return false;
 		}
 
 		// Load restoration.php. It creates a global variable named $restoration_setup
 		require_once $setupFile;
 		$ini_data = $restoration_setup;
-		if(empty($ini_data))
+		if (empty($ini_data))
 		{
 			// No parameters fetched. Darn, how am I supposed to work like that?!
 			AKFactory::set('kickstart.enabled', false);
+
 			return false;
 		}
 
@@ -52,17 +55,20 @@ function masterSetup()
 	{
 		// Maybe we have $restoration_setup defined in the head of kickstart.php
 		global $restoration_setup;
-		if(!empty($restoration_setup) && !is_array($restoration_setup)) {
+		if (!empty($restoration_setup) && !is_array($restoration_setup))
+		{
 			$ini_data = AKText::parse_ini_file($restoration_setup, false, true);
-		} elseif(is_array($restoration_setup)) {
+		}
+		elseif (is_array($restoration_setup))
+		{
 			$ini_data = $restoration_setup;
 		}
 	}
 
 	// Import any data from $restoration_setup
-	if(!empty($ini_data))
+	if (!empty($ini_data))
 	{
-		foreach($ini_data as $key => $value)
+		foreach ($ini_data as $key => $value)
 		{
 			AKFactory::set($key, $value);
 		}
@@ -82,7 +88,7 @@ function masterSetup()
 	// Remove everything from the request, post and get arrays
 	if (!empty($_REQUEST))
 	{
-		foreach($_REQUEST as $key => $value)
+		foreach ($_REQUEST as $key => $value)
 		{
 			unset($_REQUEST[$key]);
 		}
@@ -90,7 +96,7 @@ function masterSetup()
 
 	if (!empty($_POST))
 	{
-		foreach($_POST as $key => $value)
+		foreach ($_POST as $key => $value)
 		{
 			unset($_POST[$key]);
 		}
@@ -98,7 +104,7 @@ function masterSetup()
 
 	if (!empty($_GET))
 	{
-		foreach($_GET as $key => $value)
+		foreach ($_GET as $key => $value)
 		{
 			unset($_GET[$key]);
 		}
@@ -146,22 +152,23 @@ function masterSetup()
 	// ------------------------------------------------------------
 	// A "factory" variable will override all other settings.
 	$serialized = getQueryParam('factory', null);
-	if( !is_null($serialized) )
+	if (!is_null($serialized))
 	{
 		// Get the serialized factory
 		AKFactory::unserialize($serialized);
 		AKFactory::set('kickstart.enabled', true);
+
 		return true;
 	}
 
 	// ------------------------------------------------------------
 	// 4. Try abiautomation.ini and the configuration variable for Kickstart
 	// ------------------------------------------------------------
-	if(defined('KICKSTART'))
+	if (defined('KICKSTART'))
 	{
 		// We are in Kickstart mode. abiautomation.ini has precedence.
 		$setupFile = 'abiautomation.ini';
-		if( file_exists($setupFile) )
+		if (file_exists($setupFile))
 		{
 			// abiautomation.ini was found
 			$ini_data = AKText::parse_ini_file('restoration.ini', false);
@@ -170,7 +177,7 @@ function masterSetup()
 		{
 			// abiautomation.ini was not found. Let's try input parameters.
 			$configuration = getQueryParam('configuration');
-			if( !is_null($configuration) )
+			if (!is_null($configuration))
 			{
 				// Let's decode the configuration from JSON to array
 				$ini_data = json_decode($configuration, true);
@@ -178,18 +185,19 @@ function masterSetup()
 			else
 			{
 				// Neither exists. Enable Kickstart's interface anyway.
-				$ini_data = array('kickstart.enabled'=>true);
+				$ini_data = array('kickstart.enabled' => true);
 			}
 		}
 
 		// Import any INI data we might have from other sources
-		if(!empty($ini_data))
+		if (!empty($ini_data))
 		{
-			foreach($ini_data as $key => $value)
+			foreach ($ini_data as $key => $value)
 			{
 				AKFactory::set($key, $value);
 			}
 			AKFactory::set('kickstart.enabled', true);
+
 			return true;
 		}
 	}
