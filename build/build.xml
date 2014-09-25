@@ -98,6 +98,8 @@
 			</fileset>
 		</append>
 
+        <copy file="${dirs.release}/kickstart.php" tofile="${dirs.kickstart}/output/kickstart_core.php" />
+
 		<copy todir="${dirs.release}">
 			<fileset dir="${dirs.kickstart}/dist">
 				<include name="*.js" />
@@ -134,6 +136,8 @@
 				<include name="kickstart_pro.php" />
 			</fileset>
 		</append>
+
+        <copy file="${dirs.release}/kickstart.php" tofile="${dirs.kickstart}/output/kickstart_pro.php" />
 
 		<copy todir="${dirs.release}">
 			<fileset dir="${dirs.kickstart}">
