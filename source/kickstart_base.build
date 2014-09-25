@@ -2,4 +2,8 @@ BUILD:restore
 kickstart/utils.php
 kickstart/observer.php
 kickstart/extrafeature.php
+kickstart/functions.php
+kickstart/css.php
+kickstart/js.php
+kickstart/html.php
 kickstart/application.php
