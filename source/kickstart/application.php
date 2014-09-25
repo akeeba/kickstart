@@ -1535,27 +1535,27 @@ function echoPage()
 		var data = {
 			'task' : 'startExtracting',
 			'json': JSON.stringify({
-				'kickstart.setup.sourcepath':		$('#kickstart\\.setup\\.sourcepath').val(),
-				'kickstart.setup.sourcefile':		<?php echo autoVar('kickstart.setup.sourcefile') ?>,
-				'kickstart.jps.password':			<?php echo autoVar('kickstart.jps.password') ?>,
-				'kickstart.tuning.min_exec_time':	<?php echo autoVar('kickstart.tuning.min_exec_time', 1) ?>,
-				'kickstart.tuning.max_exec_time':	<?php echo autoVar('kickstart.tuning.max_exec_time', 5) ?>,
-				'kickstart.stealth.enable': 		false,
+				'kickstart.setup.sourcefile':		$('#kickstart\\.setup\\.sourcefile').val(),
+				'kickstart.jps.password':			$('#kickstart\\.jps\\.password').val(),
+				'kickstart.tuning.min_exec_time':	$('#kickstart\\.tuning\\.min_exec_time').val(),
+				'kickstart.tuning.max_exec_time':	$('#kickstart\\.tuning\\.max_exec_time').val(),
+				'kickstart.stealth.enable': 		$('#kickstart\\.stealth\\.enable').is(':checked'),
+				'kickstart.stealth.url': 			$('#kickstart\\.stealth\\.url').val(),
 				'kickstart.tuning.run_time_bias':	75,
 				'kickstart.setup.restoreperms':		0,
 				'kickstart.setup.dryrun':			0,
-				'kickstart.setup.ignoreerrors':		<?php echo autoVar('kickstart.setup.ignoreerrors', 0) ?>,
+				'kickstart.setup.ignoreerrors':		$('#kickstart\\.setup\\.ignoreerrors').is(':checked'),
 				'kickstart.enabled':				1,
 				'kickstart.security.password':		'',
-				'kickstart.procengine':				<?php echo autoVar('kickstart.procengine', 'direct') ?>,
-				'kickstart.ftp.host':				<?php echo autoVar('kickstart.ftp.host','localhost') ?>,
-				'kickstart.ftp.port':				<?php echo autoVar('kickstart.ftp.port',22) ?>,
-				'kickstart.ftp.ssl':				<?php echo autoVar('kickstart.ftp.ssl',0) ?>,
-				'kickstart.ftp.passive':			<?php echo autoVar('kickstart.ftp.passive',1) ?>,
-				'kickstart.ftp.user':				<?php echo autoVar('kickstart.ftp.user') ?>,
-				'kickstart.ftp.pass':				<?php echo autoVar('kickstart.ftp.pass') ?>,
-				'kickstart.ftp.dir':				<?php echo autoVar('kickstart.ftp.dir','/') ?>,
-				'kickstart.ftp.tempdir':			<?php echo autoVar('kickstart.ftp.tempdir', AKKickstartUtils::getPath().'kicktemp') ?>
+				'kickstart.procengine':				$('#kickstart\\.procengine').val(),
+				'kickstart.ftp.host':				$('#kickstart\\.ftp\\.host').val(),
+				'kickstart.ftp.port':				$('#kickstart\\.ftp\\.port').val(),
+				'kickstart.ftp.ssl':				$('#kickstart\\.ftp\\.ssl').is(':checked'),
+				'kickstart.ftp.passive':			$('#kickstart\\.ftp\\.passive').is(':checked'),
+				'kickstart.ftp.user':				$('#kickstart\\.ftp\\.user').val(),
+				'kickstart.ftp.pass':				$('#kickstart\\.ftp\\.pass').val(),
+				'kickstart.ftp.dir':				$('#kickstart\\.ftp\\.dir').val(),
+				'kickstart.ftp.tempdir':			$('#kickstart\\.ftp\\.tempdir').val()
 			})
 		};
 		doAjax(data, function(ret){
