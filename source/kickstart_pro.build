@@ -1,4 +1,5 @@
 kickstart/defines.php
+kickstart/renameme.php
 s3/s3.exception.php
 s3/s3.adapter.php
 s3/s3.engine.php
