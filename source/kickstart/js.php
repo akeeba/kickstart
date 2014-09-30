@@ -14,7 +14,7 @@ function echoHeadJavascript()
 ?>
 <script type="text/javascript" language="javascript">
 	var akeeba_debug = <?php echo defined('KSDEBUG') ? 'true' : 'false' ?>;
-	var sftp_path = '<?php echo TranslateWinPath(defined('KSROOTDIR') ? KSROOTDIR : __DIR__); ?>/';
+	var sftp_path = '<?php echo TranslateWinPath(defined('KSROOTDIR') ? KSROOTDIR : dirname(__FILE__)); ?>/';
 	var isJoomla = true;
 
 	/**
