@@ -200,7 +200,7 @@ switch($task)
 		$dh = opendir(AKKickstartUtils::getPath());
 		if($dh !== false)
 		{
-			$basename = basename(__FILE__, '.php');
+			$basename = basename('kickstart', '.php');
 			while( false !== $file = @readdir($dh) )
 			{
 				if( strstr($file, $basename.'.ini') )
