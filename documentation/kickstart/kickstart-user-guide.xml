@@ -212,15 +212,13 @@
     <section xml:id="requirements">
       <title>Requirements</title>
 
-      <para>Kickstart is a PHP 5 application. It will not work with PHP 4. The
-      full list or required server configuration is:</para>
+      <para>Kickstart is a PHP 5.3 application. It will not work with PHP 4.x,
+      5.0, 5.1 or 5.2. The full list or required server configuration
+      is:</para>
 
       <itemizedlist>
         <listitem>
-          <para><trademark>Joomla!</trademark> and PHP version compatibilities
-          are detailed in <link
-          xlink:href="https://www.akeebabackup.com/compatibility.html">our
-          Version Compatibility matrix</link>.</para>
+          <para>PHP 5.3.4 or later.</para>
         </listitem>
 
         <listitem>
@@ -272,23 +270,22 @@
 
       <para>The first step is to download the latest release of Kickstart. It
       can be always retrieved by visiting <link
-      xlink:href="http://www.akeebabackup.com/latest">http://www.akeebabackup.com/latest</link>.
+      xlink:href="https://www.akeebabackup.com/download.html">https://www.akeebabackup.com/download.html</link>.
       It comes as a ZIP package. <emphasis>Do not</emphasis> try to install it
       in Joomla!. Instead, you'll have to unzip it first. The extracted files
       are <filename>kickstart.php</filename> and a series of .ini, .js and
       .pem files. The <filename>kickstart.php</filename> file is required for
       Kickstart's operation and self-contained, i.e. it doesn't need any other
-      files (or Joomla!) to be installed on your server. The INI files are
-      translation files. You only need them if you want Kickstart to appear
-      localized in your language. You can safely delete any INI files which
-      represent languages you do not understand. The JS files are not
-      required, unless you don't have an Internet connection (e.g. restoring
-      to a local server without an Internet connection) or have trouble
-      accessing the sites where copies of these files are stored in. The
-      <filename>cacert.pem</filename> file is required on some servers if you
-      are trying to connect to Amazon S3 to download backup archives and might
-      be necessary if importing from a URL. If unsure, upload all files (see
-      below).</para>
+      files (or Joomla!, or WordPress, or anything else) to be installed on
+      your server. The INI files are translation files. You only need them if
+      you want Kickstart to appear localized in your language. You can safely
+      delete any INI files which represent languages you do not understand.
+      The JS files are not required, unless you don't have an Internet
+      connection (e.g. restoring to a local server without an Internet
+      connection) or have trouble accessing the sites where copies of these
+      files are stored in. The <filename>cacert.pem</filename> file is
+      required on some servers if importing from a URL. If unsure, upload all
+      files (see below).</para>
 
       <para>The second step is uploading those files to your server. Upload
       <filename>kickstart.php</filename> and any files you may need to the
@@ -445,14 +442,10 @@
         multiple archives present, please click on the drop down list and
         select the one you would like to use.</para>
 
-        <tip>
-          <para>If you are an AKEEBAPRO or AKEEBADELUXE subscriber you can
-          download and use the Akeeba Kickstart Professional version. This
-          version allows you to fetch archives stored in remote storage. For
-          more information, please consult the <link
-          linkend="profeatures">Professional Features</link> page of this
-          documentation guide.</para>
-        </tip>
+        <para>If you want to import a backup archive stored in external
+        storage such as Amazon S3, Dropbox etc please consult <link
+        linkend="import-external">Importing archives from Amazon S3, Dropbox
+        etc</link>.</para>
 
         <para>The second step is the selection of the extraction method. There
         are two supported methods:</para>
@@ -926,244 +919,268 @@
   <chapter>
     <title>Advanced features</title>
 
-    <section xml:id="profeatures">
-      <title>Professional features</title>
+    <section xml:id="import-url">
+      <title>Import from a URL and quickly install a fresh copy of Joomla! or
+      WordPress</title>
 
-      <para>As of version 3.5.0, there are two "flavours" of Akeeba Kickstart:
-      the free of charge Akeeba Kickstart Core, available to all, and the
-      for-a-fee Akeeba Kickstart Professional, available only to AKEEBAPRO and
-      AKEEBADELUXE subscribers. The Professional flavour includes features not
-      available in the Core version, designed to make a web professional's
-      life much easier.</para>
+      <tip>
+        <para>You can use this feature to <link
+        linkend="import-external">import from Amazon S3, Dropbox and other
+        remote storage providers</link>.</para>
+      </tip>
 
-      <section xml:id="import-url">
-        <title>Import from a URL and quickly install a fresh copy of
-        Joomla!</title>
+      <para>This feature allows you to import archives stored in any other
+      web-accessible server. Please note that the file must be downloadable
+      through the web without authentication, i.e. without needing to log in
+      or provide a username, password or other means of authentication. Backup
+      archives in the default backup directory of Akeeba Backup are, by
+      default,<emphasis role="bold"> NOT</emphasis> web accessible for
+      security reasons.</para>
 
-        <note>
-          <para>This feature is available in both Akeeba Kickstart Core (free
-          for all) and Professional (subscribers only)</para>
-        </note>
+      <para>This way you don't have to go through the extremely time-consuming
+      steps of downloading files to your local PC and uploading them back to
+      your new site, allowing for much faster site transfers between servers
+      and/or site cloning. All you have to do is to use Akeeba Backup (Core or
+      Professional) to backup your site, move the backup archive to a
+      web-accessible location (e.g. your site's root), then use Akeeba
+      Kickstart to restore the backup into any server, very easily.</para>
 
-        <para>This feature allows you to import archives stored in any other
-        web-accessible server. Please note that the file must be downloadable
-        through the web without authentication, i.e. without needing to log in
-        or provide a username, password or other means of authentication.
-        Backup archives in the default backup directory of Akeeba Backup are,
-        by default,<emphasis role="bold"> NOT</emphasis> web accessible for
-        security reasons.</para>
+      <para>Moreover, this feature can be used to quickly install the latest
+      version of Joomla! or WordPress. Thanks to a special button (more below)
+      it can automatically connect to the Joomla!/WordPress official site,
+      find out what is the latest version is and put its URL in the download
+      URL box. Since Joomla! and WordPress installation packages use the same
+      format and directory structure as Akeeba Backup ZIP archives Kickstart
+      can "restore" them, allowing you to quickly install a fresh Joomla! site
+      on any server, without time consuming downloads and uploads.</para>
 
-        <para>This way you don't have to go through the extremely
-        time-consuming steps of downloading files to your local PC and
-        uploading them back to your new site, allowing for much faster site
-        transfers between servers and/or site cloning. All you have to do is
-        to use Akeeba Backup (Core or Professional) to backup your site, move
-        the backup archive to a web-accessible location (e.g. your site's
-        root), then use Akeeba Kickstart to restore the backup into any
-        server, very easily.</para>
+      <important>
+        <para>You ABSOLUTELY DO NOT need to install Joomla!, WordPress etc
+        before restoring a backup archive generated by Akeeba Backup. In fact,
+        you are strongly advised to NOT install your script/CMS AT ALL before
+        restoring a backup archive generated by Akeeba Backup. Full site
+        backups are restored best on an EMPTY hosting account.</para>
+      </important>
 
-        <para>Moreover, this feature can be used to quickly install the latest
-        version of Joomla!. Thanks to a special button (more below) it can
-        automatically connect to the Joomla! official site, find out what is
-        the latest version of Joomla! and put its URL in the download URL box.
-        Since Joomla! installation packages use the same format and directory
-        structure as Akeeba Backup ZIP archives Kickstart can "restore" them,
-        allowing you to quickly install a fresh Joomla! site on any server,
-        without time consuming downloads and uploads.</para>
+      <para>In order to use this feature, upload Akeeba Kickstart into the
+      root of the site where you want to restore your backup / install Joomla!
+      / install WordPress and run it. Right under Step 1 you will see a small
+      blue button reading <guibutton>Import from URL</guibutton>. Click on it.
+      The following page appears:</para>
 
-        <important>
-          <para>You ABSOLUTELY DO NOT need to install Joomla! before restoring
-          a backup archive generated by Akeeba Backup. In fact, you are
-          strongly advised to NOT install Joomla! AT ALL before restoring a
-          backup archive generated by Akeeba Backup. Full site backups are
-          restored best on an EMPTY hosting account.</para>
-        </important>
+      <screenshot>
+        <info>
+          <title>Import from URL</title>
+        </info>
 
-        <para>In order to use this feature, upload Akeeba Kickstart Core or
-        Professional into the root of the site where you want to restore your
-        backup / install Joomla! and run it. Right under Step 1 you will see a
-        small blue button reading <guibutton>Import from URL</guibutton>.
-        Click on it. The following page appears:</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/kickstart.12.png" width="14cm"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-        <screenshot>
-          <info>
-            <title>Import from URL</title>
-          </info>
+      <para>If you are importing a backup archive from a web server enter its
+      URL in the <guilabel>URL to Import</guilabel> field, then click on the
+      <guibutton>Import from URL</guibutton> button.</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/kickstart.12.png" width="14cm"/>
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+      <important>
+        <para>If it is a multipart backup archive, i.e. a backup which
+        consists of several files, you will need to repeat this for every
+        archive part file.</para>
+      </important>
 
-        <para>If you are importing a backup archive from a web server enter
-        its URL in the <guilabel>URL to Import</guilabel> field, then click on
-        the <guibutton>Import from URL</guibutton> button.</para>
+      <para>If you want to install a brand new copy of
+      <trademark>Joomla!</trademark> on your site first click on the
+      <guilabel>Latest Joomla! Release</guilabel> button. Kickstart will
+      connect to joomla.org, find the download URL of the latest version of
+      Joomla! and fill in the <guilabel>URL to Import</guilabel> field
+      automatically. This will take somewhere between 3 and 10 seconds. Once
+      the <guilabel>URL to Import</guilabel> field is filled in just click on
+      the <guibutton>Import from URL</guibutton> button. Likewise you can use
+      the <guilabel>Latest WordPress Release</guilabel> to have Akeeba
+      Kickstart put the URL of the latest WordPress release's ZIP file in the
+      field. Please note that the URL of the English version of the WordPress
+      ZIP package will be put in the field. If you want a different language
+      you need to go to WordPress.org and copy the URL to the localised
+      WordPress package yourself.</para>
 
-        <important>
-          <para>If it is a multipart backup archive, i.e. a backup which
-          consists of several files, you will need to repeat this for every
-          archive part file.</para>
-        </important>
+      <screenshot>
+        <info>
+          <title>Importing from URL</title>
+        </info>
 
-        <para>If you want to install a brand new copy of
-        <trademark>Joomla!</trademark> on your site first click on the
-        <guilabel>Latest Joomla! Release</guilabel> button. Kickstart will
-        connect to joomla.org, find the download URL of the latest version of
-        Joomla! and fill in the <guilabel>URL to Import</guilabel> field
-        automatically. This will take somewhere between 3 and 10 seconds. Once
-        the <guilabel>URL to Import</guilabel> field is filled in just click
-        on the <guibutton>Import from URL</guibutton> button.</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/kickstart.13.png" width="14cm"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-        <screenshot>
-          <info>
-            <title>Importing from URL</title>
-          </info>
+      <para>The download of the file begins. Depending on the capabilities of
+      the server hosting your backup archive you will see a progress bar. If
+      the remote server doesn't report the size of the backup archive, you
+      will simply see the text below the empty bar indicating how much of the
+      backup archive has already been imported.</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/kickstart.13.png" width="14cm"/>
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+      <para>Once the import is complete you'll be presented with the final
+      page of the importer:</para>
 
-        <para>The download of the file begins. Depending on the capabilities
-        of the server hosting your backup archive you will see a progress bar.
-        If the remote server doesn't report the size of the backup archive,
-        you will simply see the text below the empty bar indicating how much
-        of the backup archive has already been imported.</para>
+      <screenshot>
+        <info>
+          <title>Finished importing from URL</title>
+        </info>
 
-        <para>Once the import is complete you'll be presented with the final
-        page of the importer:</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/kickstart.14.png" width="14cm"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-        <screenshot>
-          <info>
-            <title>Finished importing from URL</title>
-          </info>
+      <para>Click on the <guibutton>Reload Kickstart</guibutton> button to
+      reload Kickstart and have it list your newly imported file.
+      Congratulations! You are now ready to restore the backup archive you
+      just imported / install Joomla!.</para>
+    </section>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/kickstart.14.png" width="14cm"/>
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+    <section xml:id="import-external">
+      <title>Importing archives from Amazon S3, Dropbox, etc</title>
 
-        <para>Click on the <guibutton>Reload Kickstart</guibutton> button to
-        reload Kickstart and have it list your newly imported file.
-        Congratulations! You are now ready to restore the backup archive you
-        just imported / install Joomla!.</para>
-      </section>
+      <para>The Import from URL feature can be used to import backup archives
+      from external storage such as Amazon S3, Dropbox, Box.com and so on. The
+      generic steps required are very simple:</para>
 
-      <section xml:id="pro-import-s3">
-        <title>Import from Amazon S3</title>
+      <itemizedlist>
+        <listitem>
+          <para>Get a public URL to your backup archive</para>
+        </listitem>
 
-        <note>
-          <para>This feature is only available in Akeeba Kickstart
-          Professional</para>
-        </note>
+        <listitem>
+          <para>Use the Import from URL feature to import the backup
+          archive</para>
+        </listitem>
+      </itemizedlist>
 
-        <para>This feature allows you to import archives directly from Amazon
-        S3 into your site and let Kickstart extract them. This way you don't
-        have to go through the extremely time-consuming steps of downloading
-        files to your local PC and uploading them back to your new site,
-        allowing for much faster site transfers between servers and/or site
-        cloning. All you have to do is to use Akeeba Backup Professional to
-        backup your site to Amazon S3, then use Akeeba Kickstart Professional
-        to restore the backup into any server, very easily.</para>
+      <para>Below we'll see how to use this feature with some of the most
+      common storage services.</para>
 
-        <important>
-          <para>This feature will not work with buckets containing a dot in
-          their name. This is a limitation on Amazon S3's side, namely the way
-          their SSL certificates are set up.</para>
-        </important>
+      <bridgehead>Importing from Amazon S3</bridgehead>
 
-        <para>In order to use this feature, upload Akeeba Kickstart
-        Professional into the root of the site where you want to restore your
-        backup and run it. Right under Step 1 you will see a small blue button
-        reading <guibutton>Import from Amazon S3</guibutton>. Click on it. The
-        following page appears:</para>
+      <para xlink:href="https://cyberduck.io/?l=en">You will need a third
+      party tool which can create signed URLs for your S3 content. We strongly
+      recommend using <link xlink:href="???">CyberDuck</link>, an Open Source
+      application which runs on Windows and Mac OS X and supports Amazon S3,
+      RackSpace CloudFiles and other OpenStack Swift storage providers.</para>
 
-        <screenshot>
-          <info>
-            <title>Import from S3</title>
-          </info>
+      <orderedlist>
+        <listitem>
+          <para>Open CyberDuck and connect to your Amazon S3 bucket.</para>
+        </listitem>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/kickstart.08.png" width="14cm"/>
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+        <listitem>
+          <para>Navigate to the location of the backup archive.</para>
+        </listitem>
 
-        <para>Begin by entering your Amazon S3 Access Key and Secret Key in
-        the two topmost fields and click on <guibutton>Connect to Amazon
-        S3</guibutton>. If you change your mind, just click on
-        <guibutton>Cancel Import</guibutton> to be transferred back to
-        Kickstart's main page.</para>
+        <listitem>
+          <para>Right click on it and select <guimenu>Copy URL</guimenu>,
+          <guimenuitem>Signed URL (Expires tomorrow
+          XX:YY:ZZ)</guimenuitem>.</para>
+        </listitem>
 
-        <para>A few seconds after pressing the <guibutton>Connect to Amazon
-        S3</guibutton> button you will see the <guilabel>Bucket</guilabel>
-        drop-down fill in with the names of the Amazon S3 buckets under your
-        account. Select the bucket you want. If it is already selected, click
-        on the <guibutton>List Contents</guibutton> button. A few seconds
-        later, the third step's area will show you an explorer-style
-        interface, listing the folders and files in your Amazon S3 account.
-        Please note that only archive files (JPA, ZIP and JPS) are being
-        listed in the files area.</para>
+        <listitem>
+          <para>Run Kickstart and click on <guibutton>Import from
+          URL</guibutton>.</para>
+        </listitem>
 
-        <screenshot>
-          <info>
-            <title>Listing the S3 files and folders</title>
-          </info>
+        <listitem>
+          <para>Paste the signed URL in the <guilabel>URL to Import</guilabel>
+          field and click on the <guibutton>Import from URL</guibutton>
+          button.</para>
+        </listitem>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/kickstart.09.png" width="14cm"/>
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+        <listitem>
+          <para>If you have a multipart backup archive repeat the steps 3, 4
+          and 5 for all parts (.jpa/.jps, .j01, .j02, ... or .zip, .z01, .z02,
+          ...). This is important: if you're missing backup archive parts the
+          restoration will not complete.</para>
+        </listitem>
 
-        <para>You can navigate your directories by clicking on them. Once you
-        find your backup archive, just click on it. Akeeba Kickstart
-        Professional will begin importing it to your site. If it is a
-        multi-part archive, Akeeba Kickstart Professional will automatically
-        import all of the part files for you. You needn't worry about
-        transferring each one of them separately!</para>
+        <listitem>
+          <para>Go back to Kickstart's main page and begin the restoration of
+          the backup archive.</para>
+        </listitem>
+      </orderedlist>
 
-        <screenshot>
-          <info>
-            <title>Importing from S3</title>
-          </info>
+      <tip>
+        <para>It's much easier importing single part backup archives or backup
+        archives with few parts. Since Akeeba Backup for Joomla! 4.1.0, Akeeba
+        Solo 1.2.0 and Akeeba Backup for WordPress 1.2.0 you can use the new
+        <guilabel>Upload to Amazon S3</guilabel> integration to upload up to
+        2Gb backup parts to Amazon S3. Just make sure that the
+        <guilabel>Disable multipart uploads</guilabel> is NOT enabled in
+        Akeeba Backup / Akeeba Solo.å</para>
+      </tip>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/kickstart.10.png" width="14cm"/>
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+      <bridgehead>Importing from Dropbox</bridgehead>
 
-        <para>While the import is running it will show you the progress of the
-        import process. Once it's done, you'll be presented with the final
-        page of the importer:</para>
+      <para>You don't need any third party software to import from
+      Dropbox.</para>
 
-        <screenshot>
-          <info>
-            <title>Finished importing from S3</title>
-          </info>
+      <orderedlist>
+        <listitem>
+          <para>Log in to Dropbox' web site.</para>
+        </listitem>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/kickstart.11.png" width="14cm"/>
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+        <listitem>
+          <para>Navigate to the location of the backup archive.</para>
+        </listitem>
 
-        <para>Click on the <guibutton>Reload Kickstart</guibutton> button to
-        reload Kickstart and have it list your newly imported file.
-        Congratulations! You are now ready to restore the backup archive you
-        just imported!</para>
-      </section>
+        <listitem>
+          <para>Right click on the backup archive and select
+          <guimenu>Share</guimenu>. Copy the URL shown in the pop-up
+          dialog.</para>
+        </listitem>
+
+        <listitem>
+          <para>Run Kickstart and click on <guibutton>Import from
+          URL</guibutton>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Paste the URL you copied in the <guilabel>URL to
+          Import</guilabel> field and click on the <guibutton>Import from
+          URL</guibutton> button.</para>
+        </listitem>
+
+        <listitem>
+          <para>If you have a multipart backup archive repeat the steps 3, 4
+          and 5 for all parts (.jpa/.jps, .j01, .j02, ... or .zip, .z01, .z02,
+          ...). This is important: if you're missing backup archive parts the
+          restoration will not complete.</para>
+        </listitem>
+
+        <listitem>
+          <para>Go back to Kickstart's main page and begin the restoration of
+          the backup archive.</para>
+        </listitem>
+      </orderedlist>
+
+      <tip>
+        <para>It's much easier importing single part backup archives or backup
+        archives with few parts. Since Akeeba Backup for Joomla! 4.0.0, Akeeba
+        Solo 1.1.0 and Akeeba Backup for WordPress 1.1.0 you can use the
+        <guilabel>Upload to Dropbox</guilabel> integration to upload up to 2Gb
+        backup parts to Dropbox. Just make sure that the <guilabel>Enable
+        chunk upload </guilabel>option is enabled in Akeeba Backup / Akeeba
+        Solo.</para>
+      </tip>
+
+      <bridgehead>Other storage providers</bridgehead>
+
+      <para>You will have to follow a similar procedure. As long as you can
+      get a publicly accessible HTTP/HTTPS URL for your files you can import
+      them using Akeeba Kickstart's Import from URL feature.</para>
     </section>
   </chapter>
 
