@@ -29,7 +29,7 @@ if (strpos($basename, 'kickstart') === 0)
 	</p>
 	<h3>Why do you need to do that?</h3>
 	<p>
-		Due to its nature, Akeeba Kickstart will execute commands send to it by any web visitor. There is no way to
+		Due to its nature, Akeeba Kickstart will execute commands sent to it by any web visitor. There is no way to
 		verify the visitor's identity. Since Akeeba Kickstart Professional allows you to import ZIP archives from
 		arbitrary URLs an attacker can use it to load malware to your site while you are restoring your site. Your only
 		protection is to rename Kickstart's file to prevent the attacker from using Akeeba Kickstart Professional
