@@ -108,5 +108,6 @@ while($filename = readdir($dh)) {
 	if(!is_file($filename)) continue;
 	if(substr($filename, 0, 10) != 'kickstart.') continue;
 	if(substr($filename, -4) != '.php') continue;
+	if($filename == 'kickstart.php') continue;
 	include_once $filename;
 }

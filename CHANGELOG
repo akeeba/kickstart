@@ -1,3 +1,7 @@
+Kickstart 4.1.0
+================================================================================
+# [LOW] If you have both kickstart.php and a renamed copy (e.g. x.php) and try to access the renamed copy you get a Fatal Error
+
 Kickstart 4.0.0
 ================================================================================
 + You can list and extract archives in any directory, not just the one Kickstart is in
