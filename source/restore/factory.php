@@ -216,7 +216,7 @@ class AKFactory {
 				'restore_permissions'	=> self::get('kickstart.setup.restoreperms', 0),
 				'post_proc'				=> self::get('kickstart.procengine', 'direct'),
 				'add_path'				=> self::get('kickstart.setup.targetpath', $destdir),
-				'rename_files'			=> array('.htaccess' => 'htaccess.bak', 'php.ini' => 'php.ini.bak', 'web.config' => 'web.config.bak'),
+				'rename_files'			=> array('.htaccess' => 'htaccess.bak', 'php.ini' => 'php.ini.bak', 'web.config' => 'web.config.bak', '.user.ini' => '.user.ini.bak'),
 				'skip_files'			=> array(basename(__FILE__), 'kickstart.php', 'abiautomation.ini', 'htaccess.bak', 'php.ini.bak', 'cacert.pem'),
 				'ignoredirectories'		=> array('tmp', 'log', 'logs'),
 			);
@@ -230,10 +230,7 @@ class AKFactory {
 
 			if(!empty($configOverride))
 			{
-				foreach($configOverride as $key => $value)
-				{
-					$config[$key] = $value;
-				}
+				$config = array_merge($config, $configOverride);
 			}
 
 			$object->setup($config);

@@ -14,7 +14,7 @@ function echoHeadJavascript()
 ?>
 <script type="text/javascript" language="javascript">
 	var akeeba_debug = <?php echo defined('KSDEBUG') ? 'true' : 'false' ?>;
-	var sftp_path = '<?php echo TranslateWinPath(defined('KSROOTDIR') ? KSROOTDIR : __DIR__); ?>/';
+	var sftp_path = '<?php echo TranslateWinPath(defined('KSROOTDIR') ? KSROOTDIR : dirname(__FILE__)); ?>/';
 	var isJoomla = true;
 
 	/**
@@ -775,6 +775,7 @@ function echoHeadJavascript()
 		var data = {
 			'task' : 'startExtracting',
 			'json': JSON.stringify({
+				'kickstart.setup.sourcepath':		$('#kickstart\\.setup\\.sourcepath').val(),
 				'kickstart.setup.sourcefile':		$('#kickstart\\.setup\\.sourcefile').val(),
 				'kickstart.jps.password':			$('#kickstart\\.jps\\.password').val(),
 				'kickstart.tuning.min_exec_time':	$('#kickstart\\.tuning\\.min_exec_time').val(),

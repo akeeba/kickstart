@@ -133,9 +133,9 @@ if(!defined('KICKSTART'))
 				$postproc->unlink( $basepath.'restoration.php' );
 
 				// Import a custom finalisation file
-				if (file_exists(__DIR__ . '/restore_finalisation.php'))
+				if (file_exists(dirname(__FILE__) . '/restore_finalisation.php'))
 				{
-					include_once __DIR__ . '/restore_finalisation.php';
+					include_once dirname(__FILE__) . '/restore_finalisation.php';
 				}
 
 				// Run a custom finalisation script

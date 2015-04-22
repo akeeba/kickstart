@@ -62,7 +62,7 @@ function echoPage()
 			<h2>Deprecated Internet Explorer version</h2>
 			<p>
 				This script is not guaranteed to work properly on Internet Explorer 8
-				or previous version, or on Internet Explorer 9 and higher running
+				or earlier versions, or on Internet Explorer 9 and higher running
 				in compatibility mode.
 			</p>
 			<p>

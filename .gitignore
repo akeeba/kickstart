@@ -10,7 +10,7 @@
 
 /DESCRIPTION.html
 
-/documentation/*.xml~
+/documentation/kickstart/*.xml~
 
 /release/*.fo
 /release/*.pdf
