@@ -407,6 +407,7 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 			$this->fp = @fopen( $this->archiveList[$this->currentPartNumber], 'rb' );
 			if($this->fp === false) {
 				debugMsg('Could not open file - crash imminent');
+				$this->setError(AKText::sprintf('ERR_COULD_NOT_OPEN_ARCHIVE_PART', $this->archiveList[$this->currentPartNumber]));
 			}
 			fseek($this->fp, 0);
 			$this->currentPartOffset = 0;
@@ -532,10 +533,11 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 	 */
 	public function isIgnoredDirectory($shortFilename)
 	{
-		return false;
+		// return false;
+
 		if (substr($shortFilename, -1) == '/')
 		{
-			$check = substr($shortFilename, 0, -1);
+			$check = rtrim($shortFilename, '/');
 		}
 		else
 		{

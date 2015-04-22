@@ -1,6 +1,7 @@
 Kickstart 4.1.0
 ================================================================================
-# [LOW] If you have both kickstart.php and a renamed copy (e.g. x.php) and try to access the renamed copy you get a Fatal Error
++ Kickstart displays a more insightful error message if the archive file cannot be opened for reading.
+# [LOW] If you have both kickstart.php and a renamed copy (e.g. x.php) and try to access the renamed copy you get a Fatal Error.
 # [HIGH] Contrary to what was promised, you could not really extract archives in a directory other than the one Kickstart is in.
 
 Kickstart 4.0.0
