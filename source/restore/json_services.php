@@ -803,7 +803,7 @@ if(!class_exists('Akeeba_Services_JSON'))
 
     class Akeeba_Services_JSON_Error
     {
-        function Akeeba_Services_JSON_Error($message = 'unknown error', $code = null,
+        function __construct($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
 
