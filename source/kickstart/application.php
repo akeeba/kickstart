@@ -217,6 +217,12 @@ switch($task)
 		$engine->unlink('jquery.min.js');
 		$engine->unlink('json2.min.js');
 
+		// 8. If OPcache is installed we need to reset it
+		if (function_exists('opcache_reset'))
+		{
+			opcache_reset();
+		}
+
 		break;
 
 	case 'display':

@@ -1,3 +1,7 @@
+Kickstart 4.1.1
+================================================================================
+~ Reset OPcache after removing the installation directory
+
 Kickstart 4.1.0
 ================================================================================
 + Kickstart displays a more insightful error message if the archive file cannot be opened for reading.

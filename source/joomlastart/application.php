@@ -185,6 +185,12 @@ switch($task)
 		// 6. Delete cacert.pem
 		$engine->unlink('cacert.pem');
 
+		// 7. If OPcache is installed we need to reset it
+		if (function_exists('opcache_reset'))
+		{
+			opcache_reset();
+		}
+
 		break;
 
 	case 'display':
