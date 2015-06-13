@@ -105,6 +105,7 @@ unset($cacertpem);
 $dh = @opendir(KSROOTDIR);
 if($dh === false) return;
 while($filename = readdir($dh)) {
+	if (in_array($filename, array('.', '..'))) continue;
 	if(!is_file($filename)) continue;
 	if(substr($filename, 0, 10) != 'kickstart.') continue;
 	if(substr($filename, -4) != '.php') continue;
