@@ -215,7 +215,6 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 					$status = $this->readFileHeader();
 					if($status)
 					{
-						debugMsg(__CLASS__.'::_run() - Preparing to extract '.$this->fileHeader->realFile);
 						// Send start of file notification
 						$message = new stdClass;
 						$message->type = 'startfile';
@@ -232,6 +231,9 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 							$message->content->compressed = 0;
 						}
 						$message->content->uncompressed = $this->fileHeader->uncompressed;
+
+						debugMsg(__CLASS__.'::_run() - Preparing to extract '.$message->content->realfile);
+
 						$this->notify($message);
 					} else {
 						debugMsg(__CLASS__.'::_run() - Could not read file header');
