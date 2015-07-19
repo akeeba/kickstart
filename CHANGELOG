@@ -1,6 +1,8 @@
 Kickstart 4.1.2
 ================================================================================
+# [MEDIUM] Extracting symlinks in Dry Run mode would cause existing symlinks to be removed
 # [LOW] Kickstart won't start on servers with problematic open_basedir restrictions
+# [LOW] PHP notices when extracting symlinks
 
 Kickstart 4.1.1
 ================================================================================

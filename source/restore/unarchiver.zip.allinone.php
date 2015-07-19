@@ -518,13 +518,17 @@ class AKUnarchiverZIP extends AKAbstractUnarchiver
 			}
 		}
 
-		// Try to remove an existing file or directory by the same name
-		if(file_exists($this->fileHeader->realFile)) { @unlink($this->fileHeader->realFile); @rmdir($this->fileHeader->realFile); }
-		// Remove any trailing slash
-		if(substr($this->fileHeader->realFile, -1) == '/') $this->fileHeader->realFile = substr($this->fileHeader->realFile, 0, -1);
-		// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
+		$filename = isset($this->fileHeader->realFile) ? $this->fileHeader->realFile : $this->fileHeader->file;
+
 		if( !AKFactory::get('kickstart.setup.dryrun','0') )
-			@symlink($data, $this->fileHeader->realFile);
+		{
+			// Try to remove an existing file or directory by the same name
+			if(file_exists($filename)) { @unlink($filename); @rmdir($filename); }
+			// Remove any trailing slash
+			if(substr($filename, -1) == '/') $filename = substr($filename, 0, -1);
+			// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
+			@symlink($data, $filename);
+		}
 
 		$this->runState = AK_STATE_DATAREAD;
 

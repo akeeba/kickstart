@@ -611,14 +611,16 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		// Trim the data
 		$data = substr($data,0,$miniHeader['decsize']);
 
-		// Try to remove an existing file or directory by the same name
-		if(file_exists($this->fileHeader->file)) { @unlink($this->fileHeader->file); @rmdir($this->fileHeader->file); }
-		// Remove any trailing slash
-		if(substr($this->fileHeader->file, -1) == '/') $this->fileHeader->file = substr($this->fileHeader->file, 0, -1);
-		// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
-
 		if( !AKFactory::get('kickstart.setup.dryrun','0') )
 		{
+			// Try to remove an existing file or directory by the same name
+			if(file_exists($this->fileHeader->file)) {
+				@unlink($this->fileHeader->file);
+				@rmdir($this->fileHeader->file);
+			}
+			// Remove any trailing slash
+			if(substr($this->fileHeader->file, -1) == '/') $this->fileHeader->file = substr($this->fileHeader->file, 0, -1);
+			// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
 			@symlink($data, $this->fileHeader->file);
 		}
 
