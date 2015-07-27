@@ -302,7 +302,7 @@ function echoHeadJavascript()
 			error: function(Request, textStatus, errorThrown) {
 				var message = '<strong>AJAX Loading Error</strong><br/>HTTP Status: '+Request.status+' ('+Request.statusText+')<br/>';
 				message = message + 'Internal status: '+textStatus+'<br/>';
-				message = message + 'XHR ReadyState: ' + Response.readyState + '<br/>';
+				message = message + 'XHR ReadyState: ' + Request.readyState + '<br/>';
 				message = message + 'Raw server response:<br/>'+Request.responseText;
 				if(errorCallback == null)
 				{
