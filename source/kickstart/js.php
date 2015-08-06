@@ -60,6 +60,10 @@ function echoHeadJavascript()
 		$('#gotoSite').click(function(event){window.open('index.php','finalstepsite'); window.close();});
 		$('#gotoAdministrator').click(function(event){window.open('administrator/index.php','finalstepadmin'); window.close();});
 		$('#gotoStart').click( onGotoStartClick );
+        $('#showFineTune').click(function(){
+            $('#fine-tune-holder').show();
+            $(this).hide();
+        });
 
 		// Reset the progress bar
 		setProgressBar(0);

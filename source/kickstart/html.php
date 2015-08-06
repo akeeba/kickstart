@@ -204,7 +204,10 @@ function echoPage()
 			<div class="step3">
 				<div class="circle">3</div>
 				<h2>FINE_TUNE</h2>
-				<div class="area-container">
+                <div style="text-align: center;">
+                    <span id="showFineTune" class="button bluebutton loprofile" style="margin: 0">BTN_SHOW_FINE_TUNE</span>
+                </div>
+				<div id="fine-tune-holder" class="area-container" style="display: none">
 					<label for="kickstart.tuning.min_exec_time">MIN_EXEC_TIME</label>
 					<span class="field"><input type="text" id="kickstart.tuning.min_exec_time" value="1" /></span> <span>SECONDS_PER_STEP</span><br />
 					<label for="kickstart.tuning.max_exec_time">MAX_EXEC_TIME</label>
