@@ -1,5 +1,7 @@
 .idea/
 
+/000
+
 /build/bin
 /build/buildlang
 /build/build.properties
