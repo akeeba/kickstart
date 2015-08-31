@@ -186,7 +186,7 @@ function echoPage()
 
 						<label for="kickstart.ftp.tempdir">FTP_TEMPDIR</label>
 				<span class="field">
-					<input type="text" id="kickstart.ftp.tempdir" value="<?php echo htmlentities(AKKickstartUtils::getPath()) ?>" />
+					<input type="text" id="kickstart.ftp.tempdir" value="<?php echo htmlentities(AKKickstartUtils::getTemporaryPath()) ?>" />
 					<span class="button" id="checkFTPTempDir">BTN_CHECK</span>
 					<span class="button" id="resetFTPTempDir">BTN_RESET</span>
 				</span><br />

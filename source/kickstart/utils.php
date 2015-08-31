@@ -24,9 +24,15 @@ class AKKickstartUtils
 		$basePathSlash = (empty($basePath) ? '.' : rtrim($basePath, '/\\')) . '/';
 
 		$paths = array(
+			// Root, same as the directory we're in
 			$basePath,
+			// Standard temporary directory
+			$basePath . '/kicktemp',
+			// Akeeba Backup for Joomla!, default output directory
 			$basePathSlash . 'administrator/components/com_akeeba/backup',
+			// Akeeba Solo, default output directory
 			$basePathSlash . 'backups',
+			// Akeeba Backup for WordPress, default output directory
 			$basePathSlash . 'wp-content/plugins/akeebabackupwp/app/backups',
 		);
 
@@ -57,6 +63,37 @@ class AKKickstartUtils
 			$path .= '/';
 		}
 
+		return $path;
+	}
+
+	/**
+	 * Gets the most appropriate temporary path
+	 *
+	 * @return string
+	 */
+	public static function getTemporaryPath()
+	{
+		$path = self::getPath();
+
+		$candidateDirs = array(
+			$path,
+			$path . '/kicktemp',
+		);
+
+		if (function_exists('sys_get_temp_dir'))
+		{
+			$candidateDirs[] = sys_get_temp_dir();
+		}
+
+		foreach ($candidateDirs as $dir)
+		{
+			if (is_dir($dir) && is_writable($dir))
+			{
+				return $dir;
+			}
+		}
+
+		// Failsafe
 		return $path;
 	}
 
