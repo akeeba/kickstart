@@ -116,4 +116,10 @@ function debugMsg($msg)
 
 	fwrite($fp, $msg . "\n");
 	fclose($fp);
+
+	// Echo to stdout if KSDEBUGCLI is defined
+	if (defined('KSDEBUGCLI'))
+	{
+		echo $msg . "\n";
+	}
 }

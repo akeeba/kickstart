@@ -1,5 +1,7 @@
 <?php
 define('KICKSTART', 1);
+define('KSDEBUG', 1);
+define('KSDEBUGCLI', 1);
 
 require_once __DIR__ . '/../restore/preamble.php';
 require_once __DIR__ . '/../restore/json_services.php';
