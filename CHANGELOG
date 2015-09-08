@@ -6,6 +6,7 @@ Kickstart 4.1.2
 # [LOW] Kickstart won't start on servers with problematic open_basedir restrictions
 # [LOW] PHP notices when extracting symlinks
 # [LOW] No error message shown when the server throws an error (thanks, Carlos!)
+# [LOW] Wrong offset reported when an archive cannot be extracted
 
 Kickstart 4.1.1
 ================================================================================

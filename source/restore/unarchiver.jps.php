@@ -88,6 +88,8 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			$this->nextFile();
 		}
 
+		$this->currentPartOffset = ftell($this->fp);
+
 		// Get and decode Entity Description Block
 		$signature = fread($this->fp, 3);
 

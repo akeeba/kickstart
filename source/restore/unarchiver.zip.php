@@ -81,6 +81,8 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
 			$this->nextFile();
 		}
 
+		$this->currentPartOffset = ftell($this->fp);
+
 		if($this->expectDataDescriptor)
 		{
 			// The last file had bit 3 of the general purpose bit flag set. This means that we have a
