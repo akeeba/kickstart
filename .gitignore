@@ -14,12 +14,7 @@
 
 /documentation/kickstart/*.xml~
 
-/release
-/release/*.fo
-/release/*.pdf
-/release/*.php
-/release/*.zip
-
+/release/*
 /source/output/*.php
 
 /RELEASENOTES.html
