@@ -95,6 +95,14 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 			);
 		}
 	}
+	else
+	{
+		$directory = @ftp_pwd($con);
+
+		$parsed_dir  = trim($directory, '/');
+		$parts = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
+		$parent_directory = $this->directory;
+	}
 
 	// Get a raw directory listing (hoping it's a UNIX server!)
 	$list = @ftp_rawlist($con,'.');
@@ -199,6 +207,30 @@ function getSftpListing($directory, $host, $port, $username, $password)
 	// Get a raw directory listing (hoping it's a UNIX server!)
 	$list = array();
 	$dir  = ltrim($dir, '/');
+
+	if (empty($dir))
+	{
+		$dir = ssh2_sftp_realpath($sftphandle, ".");
+		$directory = $dir;
+
+		// Parse directory to parts
+		$parsed_dir  = trim($dir, '/');
+		$parts = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
+
+		// Find the path to the parent directory
+		if (!empty($parts)) {
+			$copy_of_parts = $parts;
+			array_pop($copy_of_parts);
+
+			if (!empty($copy_of_parts)) {
+				$parent_directory = '/' . implode('/', $copy_of_parts);
+			} else {
+				$parent_directory = '/';
+			}
+		} else {
+			$parent_directory = '';
+		}
+	}
 
 	$handle = opendir("ssh2.sftp://$sftphandle/$dir");
 

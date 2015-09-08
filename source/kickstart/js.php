@@ -564,7 +564,7 @@ function echoHeadJavascript()
 						$('#ftpBrowserFolderList').show();
 
 						$.each(data.list, function(i, item) {
-							akeeba_ftpbrowser_create_link(akeeba_ftpbrowser_directory+'/'+item, item, $('#ftpBrowserFolderList'), callback );
+							akeeba_ftpbrowser_create_link(data.directory+'/'+item, item, $('#ftpBrowserFolderList'), callback );
 						});
 					} else {
 						$('#ftpBrowserFolderList').css('display','none');
@@ -706,7 +706,7 @@ function echoHeadJavascript()
 						$('#ftpBrowserFolderList').css('display','block');
 
 						$.each(data.list, function(i, item) {
-							akeeba_sftpbrowser_create_link(akeeba_sftpbrowser_directory+'/'+item, item, $('#ftpBrowserFolderList'), callback );
+							akeeba_sftpbrowser_create_link(data.directory+'/'+item, item, $('#ftpBrowserFolderList'), callback );
 						});
 					} else {
 						$('#ftpBrowserFolderList').css('display','none');
