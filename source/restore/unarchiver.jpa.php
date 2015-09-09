@@ -104,7 +104,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 
 		$this->currentPartOffset = ftell($this->fp);
 
-		debugMsg('Reading file signature');
+		debugMsg("Reading file signature; part {$this->currentPartNumber}, offset {$this->currentPartOffset}");
 		// Get and decode Entity Description Block
 		$signature = fread($this->fp, 3);
 
@@ -227,6 +227,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		$this->fileHeader->file = $file;
 		$this->fileHeader->compressed = $header_data['compsize'];
 		$this->fileHeader->uncompressed = $header_data['uncompsize'];
+
 		switch($header_data['type'])
 		{
 			case 0:
