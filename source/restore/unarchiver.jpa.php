@@ -27,7 +27,8 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		$this->nextFile();
 
 		// Fail for unreadable files
-		if( $this->fp === false ) {
+		if( $this->fp === false )
+		{
 			debugMsg('Could not open the first part');
 			return false;
 		}
@@ -45,18 +46,23 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 
 		// Read and parse header length
 		$header_length_array = unpack( 'v', fread( $this->fp, 2 ) );
-		$header_length = $header_length_array[1];
+		$header_length       = $header_length_array[1];
 
 		// Read and parse the known portion of header data (14 bytes)
-		$bin_data = fread($this->fp, 14);
+		$bin_data    = fread($this->fp, 14);
 		$header_data = unpack('Cmajor/Cminor/Vcount/Vuncsize/Vcsize', $bin_data);
 
 		// Load any remaining header data (forward compatibility)
 		$rest_length = $header_length - 19;
+
 		if( $rest_length > 0 )
+        {
 			$junk = fread($this->fp, $rest_length);
+        }
 		else
-			$junk = '';
+		{
+            $junk = '';
+		}
 
 		// Temporary array with all the data we read
 		$temp = array(
@@ -69,6 +75,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			'compressedsize' => 	$header_data['csize'],
 			'unknowndata' => 		$junk
 		);
+
 		// Array-to-object conversion
 		foreach($temp as $key => $value)
 		{
@@ -97,7 +104,8 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 	protected function readFileHeader()
 	{
 		// If the current part is over, proceed to the next part please
-		if( $this->isEOF(true) ) {
+		if( $this->isEOF(true) )
+		{
 			debugMsg('Archive part EOF; moving to next file');
 			$this->nextFile();
 		}
@@ -118,6 +126,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			{
 				// This file is finished; make sure it's the last one
 				$this->nextFile();
+
 				if(!$this->isEOF(false))
 				{
 					debugMsg('Invalid file signature before end of archive encountered');
@@ -130,16 +139,24 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			else
 			{
 				$screwed = true;
-				if(AKFactory::get('kickstart.setup.ignoreerrors', false)) {
+
+				if(AKFactory::get('kickstart.setup.ignoreerrors', false))
+				{
 					debugMsg('Invalid file block signature; launching heuristic file block signature scanner');
 					$screwed = !$this->heuristicFileHeaderLocator();
-					if(!$screwed) {
+
+					if(!$screwed)
+					{
 						$signature = 'JPF';
-					} else {
+					}
+					else
+					{
 						debugMsg('Heuristics failed. Brace yourself for the imminent crash.');
 					}
 				}
-				if($screwed) {
+
+				if($screwed)
+				{
 					debugMsg('Invalid file block signature');
 					// This is not a file block! The archive is corrupt.
 					$this->setError(AKText::sprintf('INVALID_FILE_HEADER', $this->currentPartNumber, $this->currentPartOffset));
@@ -154,9 +171,12 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		// Read length of EDB and of the Entity Path Data
 		$length_array = unpack('vblocksize/vpathsize', fread($this->fp, 4));
 		// Read the path data
-		if($length_array['pathsize'] > 0) {
+		if($length_array['pathsize'] > 0)
+		{
 			$file = fread( $this->fp, $length_array['pathsize'] );
-		} else {
+		}
+		else
+		{
 			$file = '';
 		}
 
@@ -173,8 +193,10 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 
 		// Handle directory renaming
 		$isDirRenamed = false;
-		if(is_array($this->renameDirs) && (count($this->renameDirs) > 0)) {
-			if(array_key_exists(dirname($file), $this->renameDirs)) {
+		if(is_array($this->renameDirs) && (count($this->renameDirs) > 0))
+		{
+			if(array_key_exists(dirname($file), $this->renameDirs))
+			{
 				$file = rtrim($this->renameDirs[dirname($file)],'/').'/'.basename($file);
 				$isRenamed = true;
 				$isDirRenamed = true;
@@ -186,6 +208,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		$header_data = unpack('Ctype/Ccompression/Vcompsize/Vuncompsize/Vperms', $bin_data);
 		// Read any unknown data
 		$restBytes = $length_array['blocksize'] - (21 + $length_array['pathsize']);
+
 		if( $restBytes > 0 )
 		{
 			// Start reading the extra fields
@@ -195,6 +218,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 				$extra_header = unpack('vsignature/vlength', $extra_header_data);
 				$restBytes -= 4;
 				$extra_header['length'] -= 4;
+
 				switch($extra_header['signature'])
 				{
 					case 256:
@@ -218,7 +242,11 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 						break;
 				}
 			}
-			if($restBytes > 0) $junk = fread($this->fp, $restBytes);
+
+			if($restBytes > 0)
+			{
+			    $junk = fread($this->fp, $restBytes);
+			}
 		}
 
 		$compressionType = $header_data['compression'];
@@ -242,6 +270,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 				$this->fileHeader->type = 'link';
 				break;
 		}
+
 		switch( $compressionType )
 		{
 			case 0:
@@ -254,6 +283,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 				$this->fileHeader->compression = 'bzip2';
 				break;
 		}
+
 		$this->fileHeader->permissions = $header_data['perms'];
 
 		// Find hard-coded banned files
@@ -396,14 +426,19 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		if( !AKFactory::get('kickstart.setup.dryrun','0') )
 		{
 			$ignore = AKFactory::get('kickstart.setup.ignoreerrors', false) || $this->isIgnoredDirectory($this->fileHeader->file);
-			if ($this->dataReadLength == 0) {
+
+			if ($this->dataReadLength == 0)
+			{
 				$outfp = @fopen( $this->fileHeader->realFile, 'wb' );
-			} else {
+			}
+			else
+			{
 				$outfp = @fopen( $this->fileHeader->realFile, 'ab' );
 			}
 
 			// Can we write to the file?
-			if( ($outfp === false) && (!$ignore) ) {
+			if( ($outfp === false) && (!$ignore) )
+			{
 				// An error occured
 				debugMsg('Could not write to output file');
 				$this->setError( AKText::sprintf('COULDNT_WRITE_FILE', $this->fileHeader->realFile) );
@@ -415,7 +450,11 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		if( $this->fileHeader->compressed == 0 )
 		{
 			// No file data!
-			if( !AKFactory::get('kickstart.setup.dryrun','0') && is_resource($outfp) ) @fclose($outfp);
+			if( !AKFactory::get('kickstart.setup.dryrun','0') && is_resource($outfp) )
+            {
+			    @fclose($outfp);
+			}
+
 			$this->runState = AK_STATE_DATAREAD;
 			return true;
 		}
@@ -434,6 +473,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			$reallyReadBytes = akstringlen($data);
 			$leftBytes -= $reallyReadBytes;
 			$this->dataReadLength += $reallyReadBytes;
+
 			if($reallyReadBytes < $toReadBytes)
 			{
 				// We read less than requested! Why? Did we hit local EOF?
@@ -450,13 +490,24 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 					return false;
 				}
 			}
+
 			if( !AKFactory::get('kickstart.setup.dryrun','0') )
-				if(is_resource($outfp)) @fwrite( $outfp, $data );
+            {
+				if(is_resource($outfp))
+				{
+				    @fwrite( $outfp, $data );
+				}
+            }
 		}
 
 		// Close the file pointer
 		if( !AKFactory::get('kickstart.setup.dryrun','0') )
-			if(is_resource($outfp)) @fclose($outfp);
+        {
+			if(is_resource($outfp))
+			{
+			    @fclose($outfp);
+			}
+        }
 
 		// Was this a pre-timeout bail out?
 		if( $leftBytes > 0 )
@@ -485,7 +536,9 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 
 			// Can we write to the file?
 			$ignore = AKFactory::get('kickstart.setup.ignoreerrors', false) || $this->isIgnoredDirectory($this->fileHeader->file);
-			if( ($outfp === false) && (!$ignore) ) {
+
+			if( ($outfp === false) && (!$ignore) )
+			{
 				// An error occured
 				debugMsg('Could not write to output file');
 				$this->setError( AKText::sprintf('COULDNT_WRITE_FILE', $this->fileHeader->realFile) );
@@ -498,7 +551,12 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		{
 			// No file data!
 			if( !AKFactory::get('kickstart.setup.dryrun','0') )
-				if(is_resource($outfp)) @fclose($outfp);
+			{
+			    if(is_resource($outfp))
+			    {
+			        @fclose($outfp);
+			    }
+			}
 			$this->runState = AK_STATE_DATAREAD;
 			return true;
 		}
@@ -563,6 +621,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			$reallyReadBytes = akstringlen($mydata);
 			$data .= $mydata;
 			$leftBytes -= $reallyReadBytes;
+
 			if($reallyReadBytes < $toReadBytes)
 			{
 				// We read less than requested! Why? Did we hit local EOF?
@@ -586,12 +645,17 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		if( !AKFactory::get('kickstart.setup.dryrun','0') )
 		{
 			// Try to remove an existing file or directory by the same name
-			if(file_exists($filename)) {
+			if(file_exists($filename))
+			{
 				@unlink($filename);
 				@rmdir($filename);
 			}
+
 			// Remove any trailing slash
-			if(substr($filename, -1) == '/') $filename = substr($filename, 0, -1);
+			if(substr($filename, -1) == '/')
+            {
+			    $filename = substr($filename, 0, -1);
+			}
 			// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
 			@symlink($data, $filename);
 		}
@@ -617,15 +681,24 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 	 */
 	protected function createDirectory()
 	{
-		if( AKFactory::get('kickstart.setup.dryrun','0') ) return true;
+		if( AKFactory::get('kickstart.setup.dryrun','0') )
+		{
+		    return true;
+		}
 
 		// Do we need to create a directory?
-		if(empty($this->fileHeader->realFile)) $this->fileHeader->realFile = $this->fileHeader->file;
+		if(empty($this->fileHeader->realFile))
+		{
+		    $this->fileHeader->realFile = $this->fileHeader->file;
+		}
+
 		$lastSlash = strrpos($this->fileHeader->realFile, '/');
 		$dirName = substr( $this->fileHeader->realFile, 0, $lastSlash);
 		$perms = $this->flagRestorePermissions ? $this->fileHeader->permissions : 0755;
 		$ignore = AKFactory::get('kickstart.setup.ignoreerrors', false) || $this->isIgnoredDirectory($dirName);
-		if( ($this->postProcEngine->createDirRecursive($dirName, $perms) == false) && (!$ignore) ) {
+
+		if( ($this->postProcEngine->createDirRecursive($dirName, $perms) == false) && (!$ignore) )
+		{
 			$this->setError( AKText::sprintf('COULDNT_CREATE_DIR', $dirName) );
 			return false;
 		}
@@ -640,13 +713,17 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		$ret = false;
 		$fullEOF = false;
 
-		while(!$ret && !$fullEOF) {
+		while(!$ret && !$fullEOF)
+		{
 			$this->currentPartOffset = @ftell($this->fp);
-			if($this->isEOF(true)) {
+
+			if($this->isEOF(true))
+			{
 				$this->nextFile();
 			}
 
-			if($this->isEOF(false)) {
+			if($this->isEOF(false))
+			{
 				$fullEOF = true;
 				continue;
 			}
@@ -656,12 +733,16 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			$size_read = mb_strlen($chunk,'8bit');
 			//$pos = strpos($chunk, 'JPF');
 			$pos = mb_strpos($chunk, 'JPF', 0, '8bit');
-			if($pos !== false) {
+
+			if($pos !== false)
+			{
 				// We found it!
 				$this->currentPartOffset += $pos + 3;
 				@fseek($this->fp, $this->currentPartOffset, SEEK_SET);
 				$ret = true;
-			} else {
+			}
+			else
+			{
 				// Not yet found :(
 				$this->currentPartOffset = @ftell($this->fp);
 			}

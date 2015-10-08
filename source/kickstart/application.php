@@ -25,10 +25,12 @@ switch($task)
 {
 	case 'checkTempdir':
 		$retArray['status'] = false;
+
 		if(!empty($json))
 		{
 			$data = json_decode($json, true);
 			$dir = @$data['kickstart.ftp.tempdir'];
+
 			if(!empty($dir))
 			{
 				$retArray['status'] = is_writable($dir);
@@ -38,9 +40,11 @@ switch($task)
 
 	case 'checkFTP':
 		$retArray['status'] = false;
+
 		if(!empty($json))
 		{
 			$data = json_decode($json, true);
+
 			foreach($data as $key => $value)
 			{
 				AKFactory::set($key, $value);
@@ -82,22 +86,33 @@ switch($task)
 	case 'continueExtracting':
 		// Look for configuration values
 		$retArray['status'] = false;
+
 		if(!empty($json))
 		{
-			if($task == 'startExtracting') AKFactory::nuke();
+			if($task == 'startExtracting')
+            {
+                AKFactory::nuke();
+            }
 
 			$oldJSON = $json;
 			$json = json_decode($json, true);
-			if(is_null($json)) {
+
+			if(is_null($json))
+            {
 				$json = stripslashes($oldJSON);
 				$json = json_decode($json, true);
 			}
-			if(!empty($json)) foreach($json as $key => $value)
-			{
-				if( substr($key,0,9) == 'kickstart' ) {
-					AKFactory::set($key, $value);
-				}
-			}
+
+			if(!empty($json))
+            {
+                foreach($json as $key => $value)
+                {
+                    if( substr($key,0,9) == 'kickstart' )
+                    {
+                        AKFactory::set($key, $value);
+                    }
+                }
+            }
 
 			// A "factory" variable will override all other settings.
 			if( array_key_exists('factory', $json) )
@@ -110,7 +125,11 @@ switch($task)
 
 			// Make sure that the destination directory is always set (req'd by both FTP and Direct Writes modes)
 			$removePath = AKFactory::get('kickstart.setup.destdir','');
-			if(empty($removePath)) AKFactory::set('kickstart.setup.destdir', AKKickstartUtils::getPath());
+
+			if(empty($removePath))
+            {
+                AKFactory::set('kickstart.setup.destdir', AKKickstartUtils::getPath());
+            }
 
 			if($task=='startExtracting')
 			{
@@ -121,7 +140,7 @@ switch($task)
 				}
 			}
 
-			$engine = AKFactory::getUnarchiver(); // Get the engine
+			$engine   = AKFactory::getUnarchiver(); // Get the engine
 			$observer = new ExtractionObserver(); // Create a new observer
 			$engine->attach($observer); // Attach the observer
 			$engine->tick();
@@ -129,32 +148,32 @@ switch($task)
 
 			if( $ret['Error'] != '' )
 			{
-				$retArray['status'] = false;
-				$retArray['done'] = true;
+				$retArray['status']  = false;
+				$retArray['done']    = true;
 				$retArray['message'] = $ret['Error'];
 			}
 			elseif( !$ret['HasRun'] )
 			{
-				$retArray['files'] = $observer->filesProcessed;
-				$retArray['bytesIn'] = $observer->compressedTotal;
+				$retArray['files']    = $observer->filesProcessed;
+				$retArray['bytesIn']  = $observer->compressedTotal;
 				$retArray['bytesOut'] = $observer->uncompressedTotal;
-				$retArray['status'] = true;
-				$retArray['done'] = true;
+				$retArray['status']   = true;
+				$retArray['done']     = true;
 			}
 			else
 			{
-				$retArray['files'] = $observer->filesProcessed;
-				$retArray['bytesIn'] = $observer->compressedTotal;
+				$retArray['files']    = $observer->filesProcessed;
+				$retArray['bytesIn']  = $observer->compressedTotal;
 				$retArray['bytesOut'] = $observer->uncompressedTotal;
-				$retArray['status'] = true;
-				$retArray['done'] = false;
-				$retArray['factory'] = AKFactory::serialize();
+				$retArray['status']   = true;
+				$retArray['done']     = false;
+				$retArray['factory']  = AKFactory::serialize();
 			}
 
 			if(!is_null($observer->totalSize))
 			{
 				$retArray['totalsize'] = $observer->totalSize;
-				$retArray['filelist'] = $observer->fileList;
+				$retArray['filelist']  = $observer->fileList;
 			}
 
 			$retArray['Warnings'] = $ret['Warnings'];
@@ -166,6 +185,7 @@ switch($task)
 		if(!empty($json))
 		{
 			$json = json_decode($json, true);
+
 			if( array_key_exists('factory', $json) )
 			{
 				// Get the serialized factory
@@ -176,16 +196,20 @@ switch($task)
 		}
 
 		$unarchiver = AKFactory::getUnarchiver(); // Get the engine
-		$engine = AKFactory::getPostProc();
+		$engine     = AKFactory::getPostProc();
 
 		// 1. Remove installation
 		recursive_remove_directory('installation');
 
 		// 2. Run the renames, backwards
 		$renames = $unarchiver->renameFiles;
-		if(!empty($renames)) foreach( $renames as $original => $renamed ) {
-			$engine->rename( $renamed, $original );
-		}
+		if(!empty($renames))
+        {
+            foreach ($renames as $original => $renamed)
+            {
+                $engine->rename($renamed, $original);
+            }
+        }
 
 		// 3. Delete the archive
 		foreach( $unarchiver->archiveList as $archive )
@@ -201,6 +225,7 @@ switch($task)
 		if($dh !== false)
 		{
 			$basename = basename(__FILE__, '.php');
+
 			while( false !== $file = @readdir($dh) )
 			{
 				if( strstr($file, $basename.'.ini') )
@@ -232,9 +257,11 @@ switch($task)
 
 	case 'isJoomla':
 		$ajax = true;
+
 		if(!empty($json))
 		{
 			$json = json_decode($json, true);
+
 			if( array_key_exists('factory', $json) )
 			{
 				// Get the serialized factory
@@ -243,13 +270,16 @@ switch($task)
 				AKFactory::set('kickstart.enabled', true);
 			}
 		}
+
 		$path = AKFactory::get('kickstart.setup.destdir','');
 		$path = rtrim($path, '/\\');
 		$isJoomla = @is_dir($path . '/administrator');
+
 		if ($isJoomla)
 		{
 			$isJoomla = @is_dir($path . '/libraries/joomla');
 		}
+
 		$retArray = $isJoomla;
 
 		break;
@@ -293,12 +323,18 @@ switch($task)
 
 	default:
 		$ajax = true;
-		if(!empty($json)) {
+
+		if(!empty($json))
+        {
 			$params = json_decode($json, true);
-		} else {
+		}
+        else
+        {
 			$params = array();
 		}
+
 		$retArray = callExtraFeature($task, $params);
+
 		break;
 }
 
@@ -308,6 +344,7 @@ if($ajax)
 	$json = json_encode($retArray);
 	// Do I have to encrypt?
 	$password = AKFactory::get('kickstart.security.password', null);
+
 	if(!empty($password))
 	{
 		$json = AKEncryptionAES::AESEncryptCtr($json, $password, 128);
