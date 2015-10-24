@@ -260,7 +260,7 @@
 			mode="${ftp.mode}"
 			passive="true"
 			level="debug">
-			<fileset dir="${dirs.root}/kickstart">
+			<fileset dir="${dirs.root}">
 				<include name="CHANGELOG"/>
 			</fileset>			
 			<fileset dir="${dirs.release}">
@@ -278,7 +278,7 @@
 			mode="${ftp.mode}"
 			passive="true"
 			level="debug">
-			<fileset dir="${dirs.root}/kickstart">
+			<fileset dir="${dirs.root}">
 				<include name="CHANGELOG"/>
 			</fileset>			
 			<fileset dir="${dirs.release}">
