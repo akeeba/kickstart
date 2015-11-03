@@ -62,7 +62,7 @@ body {
 	<div class="container">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="#">
-				<img src="http://www.joomla.org/templates/joomla12/images/menu/logo.png">
+				<img src="https://cdn.joomla.org/images/site_header.png" height="24">
 				<span>JS_APPTITLE</span> <span>##VERSION##</span>
 			</a>
 		</div>
