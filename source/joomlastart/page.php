@@ -44,7 +44,8 @@ function echoPage()
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- Bootstrap -->
-	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
 	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -61,8 +62,8 @@ body {
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="#">
-				<img src="https://cdn.joomla.org/images/site_header.png" height="24">
+			<a class="navbar-brand" href="https://www.joomla.org" target="_blank">
+				<img alt="Joomla!" src="https://cdn.joomla.org/images/site_header.png" height="24" style="display: inline-block">
 				<span>JS_APPTITLE</span> <span>##VERSION##</span>
 			</a>
 		</div>
@@ -70,7 +71,7 @@ body {
 </div>
 
 <div class="container">
-	<div id="ie7Warning" class="panel panel-warning">
+	<div id="ie7Warning" class="panel panel-warning" style="display: none;">
 		<div class="panel-heading">
 			<span class="glyphicon glyphicon-warning-sign"></span>
 			<span>JS_ERR_IE7_TITLE</span>
@@ -81,7 +82,7 @@ body {
 		</div>
 	</div>
 
-	<div id="genericerror" class="panel panel-danger">
+	<div id="genericerror" class="panel panel-danger" style="display: none;">
 		<div class="panel-heading">JS_ERR_GENERICERROR_HEADER</div>
 		<div class="panel-body" id="genericerrorInner"></div>
 	</div>
@@ -308,7 +309,7 @@ body {
 <!-- JSON2 library -->
 <script type="text/javascript" src="//yandex.st/json2/2011-10-19/json2.min.js"></script>
 <!-- Bootstrap JS -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 <!-- Joomla! Start application -->
 <script type="text/javascript" language="javascript">
 	var translation = {
