@@ -385,7 +385,7 @@ class JoomlastartDownload
 		{
 			$pageContent = $this->downloadAndReturn(self::$downloadPageURL);
 
-			$pos_start = stripos($pageContent, 'id="latest"');
+			$pos_start = stripos($pageContent, 'class="download"');
 
 			if ($pos_start === false)
 			{
