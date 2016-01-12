@@ -3,14 +3,14 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
  */
 
 /**
- * AES implementation in PHP (c) Chris Veness 2005-2013.
+ * AES implementation in PHP (c) Chris Veness 2005-2016.
  * Right to use and adapt is granted for under a simple creative commons attribution
  * licence. No warranty of any form is offered.
  *

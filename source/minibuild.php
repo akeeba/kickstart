@@ -1,8 +1,9 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @license     GNU GPL v2 or - at your option - any later version
+ * @package     akeebabackup
+ * @subpackage  kickstart
  */
 
 class AkeebaMinibuild
