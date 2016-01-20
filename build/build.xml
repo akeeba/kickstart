@@ -3,12 +3,17 @@
 	<import file="${phing.dir}/../../buildfiles/phing/common.xml" />
 
 	<property name="dirs.kickstart" value="../source" />
+	<property name="dirs.translations" value="../translations" />
 
 	<!--
 	====================================================================================================
 	Tasks - General
 	====================================================================================================
 	-->
+
+	<target name="git" description="Makes only packages, not the documentation"
+			depends="new-release,setup-properties,kickstart,joomlastart">
+	</target>
 	
 	<target name="documentation" description="Creates the documentation packages"
 		depends="doc-k-pdf">
