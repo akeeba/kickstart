@@ -25,17 +25,20 @@ require_once __DIR__ . '/../restore/encryption.aes.php';
 require_once __DIR__ . '/../restore/mastersetup.php';
 require_once __DIR__ . '/../restore/application.php';
 
-$ksOptions = array(
+$sourcefile = $argv[1];
+$fileInfo = new SplFileInfo($sourcefile);
+
+$ksOptions  = array(
 	'kickstart.tuning.max_exec_time' => 5,
 	'kickstart.tuning.run_time_bias' => 75,
 	'kickstart.tuning.min_exec_time' => 0,
 	'kickstart.procengine' => 'direct',
-	'kickstart.setup.sourcefile' => $argv[1],
+	'kickstart.setup.sourcefile' => $sourcefile,
 	'kickstart.setup.destdir' => sys_get_temp_dir(),
 	'kickstart.setup.restoreperms' => '0',
-	'kickstart.setup.filetype' => 'jpa',
+	'kickstart.setup.filetype' => strtolower($fileInfo->getExtension()),
 	'kickstart.setup.dryrun' => '1',
-	'kickstart.jps.password' => ''
+	'kickstart.jps.password' => 'test'
 );
 
 // The observer class, used to report number of files and bytes processed
@@ -53,6 +56,11 @@ class RestorationObserver extends AKAbstractPartObserver
 
 		if( $message->type == 'startfile' )
 		{
+			echo "\tReal file:    {$message->content->realfile}\n";
+			echo "\tFile:         {$message->content->file}\n";
+			echo "\tCompressed:   {$message->content->compressed}\n";
+			echo "\tUncompressed: {$message->content->uncompressed}\n";
+
 			$this->filesProcessed++;
 			$this->compressedTotal += $message->content->compressed;
 			$this->uncompressedTotal += $message->content->uncompressed;
@@ -91,6 +99,8 @@ while (!$done)
 	if ($ret['Error'] != '')
 	{
 		echo "ERROR\n" . $ret['Error'] . "\n";
+
+		unlink(__DIR__ . '/debug.txt');
 
 		die;
 	}
