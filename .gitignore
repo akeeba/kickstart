@@ -8,11 +8,7 @@
 /build/epub
 /build/tools
 
-/DESCRIPTION.html
-
 /documentation/kickstart/*.xml~
 
 /release/*
 /source/output/*.php
-
-/RELEASENOTES.html
