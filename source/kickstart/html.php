@@ -296,7 +296,7 @@ function echoPage()
 	</div>
 
 	<div id="footer">
-		<div class="copyright">Copyright &copy; 2008&ndash;2013 <a	href="http://www.akeebabackup.com">Nicholas K.
+		<div class="copyright">Copyright &copy; 2008&ndash;<?php echo date('Y'); ?> <a	href="http://www.akeebabackup.com">Nicholas K.
 				Dionysopoulos / Akeeba Backup</a>. All legal rights reserved.<br />
 
 			This program is free software: you can redistribute it and/or modify it under the terms of
