@@ -303,7 +303,7 @@ function echoPage()
 			the <a href="http://www.gnu.org/gpl-3.htmlhttp://www.gnu.org/copyleft/gpl.html">GNU General
 				Public License</a> as published by the Free Software Foundation, either version 3 of the License,
 			or (at your option) any later version.<br />
-			Design credits: <a href="http://internet-inspired.com/">Internet Inspired</a>, slightly modified by AkeebaBackup.com
+			Design credits: <a href="http://internet-inspired.com/">Internet Inspired</a>, heavily modified by AkeebaBackup.com
 		</div>
 	</div>
 
