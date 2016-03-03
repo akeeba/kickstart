@@ -38,6 +38,9 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 	/** @var string Absolute path to prepend to extracted files */
 	protected $addPath = '';
 
+	/** @var string Absolute path to remove from extracted files */
+	protected $removePath = '';
+
 	/** @var array Which files to rename */
 	public $renameFiles = array();
 
@@ -157,6 +160,14 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 						$this->addPath = str_replace('\\','/',$this->addPath);
 						$this->addPath = rtrim($this->addPath,'/');
 						if(!empty($this->addPath)) $this->addPath .= '/';
+						break;
+
+					// Path to remove from the beginning
+					case 'remove_path':
+						$this->removePath = $value;
+						$this->removePath = str_replace('\\','/',$this->removePath);
+						$this->removePath = rtrim($this->removePath,'/');
+						if(!empty($this->removePath)) $this->removePath .= '/';
 						break;
 
 					// Which files to rename (hash array)
@@ -547,5 +558,28 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 		}
 
 		return in_array($check, $this->ignoreDirectories);
+	}
+
+	/**
+	 * Removes the configured $removePath from the path $path
+	 *
+	 * @param   string  $path  The path to reduce
+	 *
+	 * @return  string  The reduced path
+	 */
+	protected function removePath($path)
+	{
+		if (empty($this->removePath))
+		{
+			return $path;
+		}
+
+		if (strpos($path, $this->removePath) === 0)
+		{
+			$path = substr($path, strlen($this->removePath));
+			$path = ltrim($path, '/\\');
+		}
+
+		return $path;
 	}
 }

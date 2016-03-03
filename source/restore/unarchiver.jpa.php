@@ -324,6 +324,9 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			return true;
 		}
 
+		// Remove the removePath, if any
+		$this->fileHeader->file = $this->removePath($this->fileHeader->file);
+
 		// Last chance to prepend a path to the filename
 		if(!empty($this->addPath) && !$isDirRenamed)
 		{
