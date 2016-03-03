@@ -1,6 +1,7 @@
 Kickstart 4.2.0
 ================================================================================
 ~ Flatten the design
+# [LOW] The Import from URL feature couldn't find the Joomla! download URL after the changes made to joomla.org
 
 Kickstart 4.1.4
 ================================================================================
