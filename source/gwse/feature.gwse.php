@@ -102,6 +102,11 @@ CSS;
 
 	public function onExtraHeadJavascript()
 	{
+		if (!isset($_REQUEST['george']))
+		{
+			return;
+		}
+
 		echo <<< JS
 // Matrix effect from http://thecodeplayer.com/walkthrough/matrix-rain-animation-html5-canvas-javascript
 var c = null;
@@ -336,6 +341,11 @@ JS;
 	 */
 	public function onPage1()
 	{
+		if (!isset($_REQUEST['george']))
+		{
+			return;
+		}
+
 		echo <<< HTML
 <div class="ribbon-box">
 	<div class="ribbon">
