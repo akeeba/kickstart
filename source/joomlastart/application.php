@@ -154,9 +154,19 @@ switch($task)
 		recursive_remove_directory('installation');
 
 		// 2. Run the renames, backwards
-		$renames = $unarchiver->renameFiles;
-		if(!empty($renames)) foreach( $renames as $original => $renamed ) {
-			$engine->rename( $renamed, $original );
+		$renameBack = AKFactory::get('kickstart.setup.renameback', true);
+
+		if ($renameBack)
+		{
+			$renames = $unarchiver->renameFiles;
+
+			if (!empty($renames))
+			{
+				foreach ($renames as $original => $renamed)
+				{
+					$engine->rename($renamed, $original);
+				}
+			}
 		}
 
 		// 3. Delete the archive

@@ -776,18 +776,6 @@ function echoHeadJavascript()
 
 		akeeba_error_callback = errorHandler;
 
-		var renameFiles = {
-			'.htaccess': 'htaccess.bak',
-			'php.ini': 'php.ini.bak',
-			'web.config': 'web.config.bak',
-			'.user.ini': '.user.ini.bak'
-		};
-
-		if (!$('#kickstart\\.setup\\.renameFiles').is(':checked'))
-		{
-			renameFiles = {}
-		}
-
 		var data = {
 			'task' : 'startExtracting',
 			'json': JSON.stringify({
@@ -804,7 +792,7 @@ function echoHeadJavascript()
 				'kickstart.setup.ignoreerrors':		$('#kickstart\\.setup\\.ignoreerrors').is(':checked'),
 				'kickstart.enabled':				1,
 				'kickstart.security.password':		'',
-				'kickstart.setup.renamefiles':		renameFiles,
+				'kickstart.setup.renameback':		$('#kickstart\\.setup\\.renameback').is(':checked'),
 				'kickstart.procengine':				$('#kickstart\\.procengine').val(),
 				'kickstart.ftp.host':				$('#kickstart\\.ftp\\.host').val(),
 				'kickstart.ftp.port':				$('#kickstart\\.ftp\\.port').val(),
