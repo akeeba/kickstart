@@ -217,7 +217,7 @@ switch($task)
 			$engine->unlink( $archive );
 		}
 
-		// 4. Suicide
+		// 4. Remove self
 		$engine->unlink( basename(__FILE__) );
 
 		// 5. Delete translations
