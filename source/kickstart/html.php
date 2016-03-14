@@ -217,6 +217,9 @@ function echoPage()
 					<span class="field"><input type="checkbox" id="kickstart.stealth.enable" /></span><br />
 					<label for="kickstart.stealth.url">STEALTH_URL</label>
 					<span class="field"><input type="text" id="kickstart.stealth.url" value="" /></span><br />
+
+					<label for="kickstart.setup.renameFiles">RENAME_FILES</label>
+					<span class="field"><input type="checkbox" id="kickstart.setup.renameFiles" checked="checked" /></span><br />
 				</div>
 			</div>
 

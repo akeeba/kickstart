@@ -210,7 +210,7 @@ class AKFactory {
 				$sourceFile = rtrim($sourcePath, '/\\') . '/' . $sourceFile;
 			}
 
-			// Initialize the object
+			// Initialize the object –– Any change here MUST be reflected to echoHeadJavascript (default values)
 			$config = array(
 				'filename'				=> $sourceFile,
 				'restore_permissions'	=> self::get('kickstart.setup.restoreperms', 0),
