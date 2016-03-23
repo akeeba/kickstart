@@ -253,6 +253,11 @@ switch($task)
 		{
 			opcache_reset();
 		}
+		// Also do that for APC cache
+		elseif (function_exists('apc_clear_cache'))
+		{
+			@apc_clear_cache();
+		}
 
 		break;
 
