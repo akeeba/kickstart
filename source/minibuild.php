@@ -65,6 +65,11 @@ class AkeebaMinibuild
 
 				if (!$merge)
 				{
+					// Bust opcode caches
+					if (function_exists('opcache_invalidate')) opcache_invalidate($path);
+					if (function_exists('apc_compile_file')) apc_compile_file($path);
+					if (function_exists('wincache_refresh_if_changed')) wincache_refresh_if_changed(array($path));
+					if (function_exists('xcache_asm')) xcache_asm($path);
 					@include_once $path;
 				}
 				else

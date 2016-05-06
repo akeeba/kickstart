@@ -1,3 +1,7 @@
+Kickstart 4.2.1
+================================================================================
++ Bust opcode caches before including feature and configuration files. Fixes issues with Zend OPcache, APC, XCache etc.
+
 Kickstart 4.2.0
 ================================================================================
 + Option to not rename the .htaccess file before extraction. WARNING: MAY BREAK THE EXTRACTION!

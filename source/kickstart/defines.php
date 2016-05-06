@@ -110,5 +110,9 @@ while($filename = readdir($dh)) {
 	if(substr($filename, 0, 10) != 'kickstart.') continue;
 	if(substr($filename, -4) != '.php') continue;
 	if($filename == 'kickstart.php') continue;
+	if (function_exists('opcache_invalidate')) opcache_invalidate($filename);
+	if (function_exists('apc_compile_file')) apc_compile_file($filename);
+	if (function_exists('wincache_refresh_if_changed')) wincache_refresh_if_changed(array($filename));
+	if (function_exists('xcache_asm')) xcache_asm($filename);
 	include_once $filename;
 }
