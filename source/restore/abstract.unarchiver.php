@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -37,6 +37,9 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 
 	/** @var string Absolute path to prepend to extracted files */
 	protected $addPath = '';
+
+	/** @var string Absolute path to remove from extracted files */
+	protected $removePath = '';
 
 	/** @var array Which files to rename */
 	public $renameFiles = array();
@@ -159,6 +162,14 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 						if(!empty($this->addPath)) $this->addPath .= '/';
 						break;
 
+					// Path to remove from the beginning
+					case 'remove_path':
+						$this->removePath = $value;
+						$this->removePath = str_replace('\\','/',$this->removePath);
+						$this->removePath = rtrim($this->removePath,'/');
+						if(!empty($this->removePath)) $this->removePath .= '/';
+						break;
+
 					// Which files to rename (hash array)
 					case 'rename_files':
 						$this->renameFiles = $value;
@@ -215,7 +226,6 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 					$status = $this->readFileHeader();
 					if($status)
 					{
-						debugMsg(__CLASS__.'::_run() - Preparing to extract '.$this->fileHeader->realFile);
 						// Send start of file notification
 						$message = new stdClass;
 						$message->type = 'startfile';
@@ -232,6 +242,9 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 							$message->content->compressed = 0;
 						}
 						$message->content->uncompressed = $this->fileHeader->uncompressed;
+
+						debugMsg(__CLASS__.'::_run() - Preparing to extract '.$message->content->realfile);
+
 						$this->notify($message);
 					} else {
 						debugMsg(__CLASS__.'::_run() - Could not read file header');
@@ -545,5 +558,28 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 		}
 
 		return in_array($check, $this->ignoreDirectories);
+	}
+
+	/**
+	 * Removes the configured $removePath from the path $path
+	 *
+	 * @param   string  $path  The path to reduce
+	 *
+	 * @return  string  The reduced path
+	 */
+	protected function removePath($path)
+	{
+		if (empty($this->removePath))
+		{
+			return $path;
+		}
+
+		if (strpos($path, $this->removePath) === 0)
+		{
+			$path = substr($path, strlen($this->removePath));
+			$path = ltrim($path, '/\\');
+		}
+
+		return $path;
 	}
 }

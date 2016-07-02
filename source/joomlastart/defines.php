@@ -8,7 +8,7 @@
  * This tool is derived from Akeeba Kickstart, the on-line archive extraction
  * tool by Akeeba Ltd.
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     joomla
  * @subpackage  joomlastart
@@ -16,7 +16,7 @@
 
 /*
     Joomla! Start - The quickest path to installing Joomla! on your server
-    Copyright (C) 2008-2013  Nicholas K. Dionysopoulos / Akeeba Ltd
+    Copyright (C) 2008-2016  Nicholas K. Dionysopoulos / Akeeba Ltd
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

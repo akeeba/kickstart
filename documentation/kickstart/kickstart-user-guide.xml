@@ -7,7 +7,7 @@
       xmlns:html="http://www.w3.org/1999/xhtml"
       xmlns:db="http://docbook.org/ns/docbook">
   <info>
-    <title>Akeeba Kickstart 3.0 User's Guide</title>
+    <title>Akeeba Kickstart 4.x User's Guide</title>
 
     <author>
       <personname><firstname>Nicholas</firstname><othername>K.</othername><surname>Dionysopoulos</surname></personname>
@@ -17,10 +17,10 @@
       </affiliation>
     </author>
 
-    <pubdate>December 2013</pubdate>
+    <pubdate>March 2016</pubdate>
 
     <copyright>
-      <year>2013</year>
+      <year>2008-2016</year>
 
       <holder>Akeeba Ltd</holder>
     </copyright>
@@ -49,37 +49,27 @@
       <title>Overview</title>
 
       <para><application>Kickstart</application> is a <acronym>PHP</acronym>
-      executable file ( <emphasis>script</emphasis> ) use to automate the
-      steps required before and after the restoration of site backed up with
-      <application>Akeeba Backup</application> in a great extent. It can be
-      used as a simple and efficient method of extracting the
-      <application>Akeeba Backup</application> archives directly on the target
-      server, or even used to extract other archive files including CMS and
-      script installation files (e.g. <trademark>Joomla!</trademark>,
-      WordPress, Drupal, phpBB), update packages (Joomla! and WordPress can
-      especially benefit from this use) or even archives containing large
-      amounts of files you need to get on your server, fast.</para>
+      executable file ( <emphasis>script</emphasis> ) which extracts JPA, JPS
+      and ZIP archives.</para>
 
-      <para>When used with backup archives,
-      <application>Kickstart</application> streamlines the archive extraction
-      - uploading - restoration - post-restoration workflow by allowing you to
-      omit unnecessary steps. As a matter of fact, you only need to upload
-      Kickstart and the backup archive on the server you want to restore your
-      site to. Kickstart will extract (i.e. "unzip") the archive
-      <emphasis>right on the server</emphasis> , rename your
-      <filename>.htaccess</filename> and php.ini files and give you a button
-      to start the restoration script included in the backup archive (for
-      example, <application>Akeeba Backup</application> Installer). When
-      you're done with the restoration script, you click on the new button
-      appearing on the Kickstart interface and it will rename back your
-      <filename>.htaccess</filename> and php.ini files, remove the
-      installation directory, delete the backup archive and finally remove
-      itself as well. Housekeeping is taken care of itself!</para>
+      <para>Typically, it's used to extract the backup archives created with
+      Akeeba Backup and Akeeba Solo on a new server or when the administrative
+      interface of your site is no longer accessible. The actual restoration
+      does not take place through Kickstart, though. The restoration script is
+      included in the backup archive itself. Kickstart merely extracts the
+      archive and lets you run that restoration script. At the end of the
+      process Kickstart lets you clean up with one click which removes itself,
+      the backup archive and the restoration script.</para>
+
+      <para>Additionally, Kickstart can be used to install PHP CMS and popular
+      scripts such as Joomla!, WordPress, Drupal etc. It can also be used to
+      extract ZIP archives with numerous or big files that cannot be extracted
+      otherwise. Just make sure your ZIP files are using the Deflate
+      compression method.</para>
 
       <para>Kickstart is also localisable, meaning that it can display itself
       in your own language. All you have to do is to upload your language's
-      translation INI file in the same directory as
-      <filename>kickstart.php</filename> .</para>
+      translation INI file in the same directory as Kickstart.</para>
     </section>
 
     <section xml:id="why-we-need-kickstart">
@@ -89,57 +79,51 @@
       backing up your site, it is only good up to the point of having a backup
       archive. Restoring it is a pretty much different story.</para>
 
-      <para>At first, you have to download the file to your PC. Then extract
-      it. Then upload all the files, via FTP, to you site (and, man, this is
-      slow or what?). Then rename <filename>.htaccess</filename> to
-      <filename>htaccess.txt</filename> and <filename>php.ini</filename> to
-      <filename>php.ini.bak</filename> in order to avoid any conflicts. Go
-      through the restoration process, which is the easy part. Then remove the
-      installation directory. Finally, rename
-      <filename>htaccess.txt</filename> to <filename>.htaccess</filename> and
-      <filename>php.ini.bak</filename> to <filename>php.ini</filename>.</para>
+      <para>Without Kickstart you would have to download the file to your PC;
+      extract it; upload all the files, via FTP, to you site (with 5000+ files
+      per site this is slow); go through the restoration process; remove the
+      installation directory.</para>
 
-      <para>Did you notice something? Most of this is a common predefined
-      procedure. The only human intervention truly required is for the
-      restoration process part. Moreover, FTP'ing all those 3000+ files of
-      even the smallest full site backup is an overkill. Because of all of
-      this, Kickstart was born.</para>
+      <para>Most of this process is the same for every backup restoration. The
+      only place where human intervention is truly required is the restoration
+      process part. Moreover, transferring thousands of files over FTP is
+      intrinsically slower than transferring big archive files. These are the
+      problems Kickstart is designed to solve.</para>
 
-      <para>Kickstart works in conjunction with the ZIP / JPA archives,
-      directly on the target server. Nothing else is required. You just upload
+      <para>Kickstart extracts the backup JPS, JPS and ZIP archives directly
+      on the target server. The only thing you need to perform a restoration
+      is Kickstart and the archive file(s). You just need to upload
       kickstart.php and your archive to the server, visit
       <uri>http://www.yourdomain.com/kickstart.php</uri>, select the archive,
       wait, go through the restoration process, click the cleanup button and
-      presto! Your site is up and running; the kickstart.php, the backup
-      archive and the installation folder all gone, automatically. Even the
-      <filename>.htaccess</filename> and <filename>php.ini</filename> renaming
-      took care of itself. Isn't this too good to be true?</para>
+      your site is up and running. All unnecessary files –Kickstart itself,
+      the backup archive and the restoration script– are removed.</para>
 
-      <para>Well, almost. You actually need to either turn off PHP Safe Mode,
-      or make sure the target folder is owned by the same user as the one your
-      web server runs on: this is a PHP limitation we can't overcome.
-      Alternatively, you can supply FTP connection information and Kickstart
-      will use the - much slower - FTP mode to write the extracted files to
-      your site.</para>
+      <para>In case your files and directories ownership and permissions are
+      mixed up Kickstart can write files using FTP, SFTP or our Hybrid mode.
+      The Hybrid mode solves a problem known as "permissions hell" where
+      different files and folders are owned by different users, making it
+      impossible to write to all of them either directly or through FTP. In
+      this case Kickstart intelligently decides which method to use (direct
+      write or FTP) on a file-to-file basis.</para>
     </section>
 
     <section xml:id="what-kickstart-is-and-what-it-is-not">
       <title>What Kickstart is and what it's not</title>
 
       <para>Kickstart is an interactive archive extraction script and a
-      clean-up tool. Counter-intuitively, it is <emphasis>not</emphasis> a
-      site restoration utility per se. Kickstart performs the steps required
-      before and after site restoration, whereas the site restoration
-      procedure itself is carried out by the installer script which was
-      included in your backup archive at backup time. To make it crystal
-      clear, here is the flow of a Kickstart-powered site restoration
-      procedure:</para>
+      clean-up tool. It is <emphasis>not</emphasis> a site restoration utility
+      in itself. Kickstart performs the steps required before and after site
+      restoration, whereas the site restoration procedure itself is carried
+      out by the restoration script which was put inside your backup archive
+      at backup time. To make it crystal clear, here is the flow of a
+      Kickstart-powered site restoration procedure:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Uploading files. This is done manually. You upload
-          <filename>kickstart.php</filename> and the backup archive (ZIP or
-          JPA format) to the intended site's root.</para>
+          <para>Uploading files. This is done manually. You upload Kickstart
+          and the backup archive (ZIP or JPA format) to the target site's
+          root.</para>
         </listitem>
 
         <listitem>
@@ -149,36 +133,31 @@
         </listitem>
 
         <listitem>
-          <para>Restoration process. This is done by installer which was
-          included in the archive and now extracted on your server. You are
-          asked some questions, the database dump data is restored to the new
-          database and the new CMS configuration file is written on the disk.
-          At this point, your site may or not be ready to work, depending on
-          the reliance upon a <filename>.htaccess</filename> file.</para>
-        </listitem>
-
-        <listitem>
-          <para><emphasis role="bold">Restoration of
-          <filename>.htaccess</filename> </emphasis>and
-          <filename>php.ini</filename> . This is done by Kickstart. The
-          automatically renamed copies of your original
-          <filename>.htaccess</filename> and <filename>php.ini</filename>
-          files are renamed back to their proper names to allow correct site
-          operation.</para>
+          <para>Restoration process. This is done by the restoration script
+          which was put in the archive at backup time and is now extracted on
+          your server. You are asked some questions, the database data is
+          restored and the new site configuration file is written on the disk.
+          At this point, your site is pretty much ready to workin most cases.
+          The exception is in case you need to manually reconfigure your
+          .htaccess file and/or any software installed on your site (e.g.
+          Joomla! components, WordPress plugins, Drupal modules and so on)
+          which stores absolute paths or URLs in their own
+          configuration.</para>
         </listitem>
 
         <listitem>
           <para><emphasis role="bold">Cleanup of unnecessary files</emphasis>.
           This is done by Kickstart. The backup archive, the installation
-          directory and <filename>kickstart.php</filename> are no longer
-          needed and therefore deleted.</para>
+          directory and Kickstart itself are no longer needed and therefore
+          deleted.</para>
         </listitem>
       </itemizedlist>
 
       <para>As you can see, Kickstart is a very generic tool, not strictly
-      limited to restoring Akeeba Backup backup archives. As a matter of fact,
-      we have used it to easily upgrade our sites to newer CMS versions
-      without the hassle of uploading tons of PHP files!</para>
+      limited to restoring Akeeba Backup backup archives. In fact it can be
+      used to install popular CMS such as Joomla! and WordPress. It even lets
+      you download their installation ZIP archives directly from Kickstart
+      itself!</para>
 
       <tip>
         <para>The correct way to see Kickstart is as a generic, interactive,
@@ -194,19 +173,25 @@
     <section xml:id="getting-kickstart">
       <title>Getting Kickstart</title>
 
-      <para>Kickstart is part of the Akeeba Backup release system. As such, it
-      can be downloaded from our site, <uri
-      xlink:href="http://www.akeebabackup.com">http://www.akeebabackup.com</uri>.
-      All packages are named
-      <filename>kickstart-<replaceable>VERSION</replaceable>.zip</filename>,
-      where VERSION is the version number. Each package contains kickstart.php
-      itself, as well as all the available translation files. You have to
-      extract this archive and upload kickstart.php and any translation INI
-      files you may need to your site.</para>
+      <para>Kickstart can be downloaded from our site, <uri
+      xlink:href="http://www.akeebabackup.com">https://www.akeebabackup.com/download</uri>.
+      The ZIP package you download is named
+      <filename>kickstart-<replaceable>VERSION</replaceable>-core.zip</filename>
+      or
+      <filename>kickstart-<replaceable>VERSION</replaceable>-pro.zip</filename>,
+      where VERSION is the version number and core/pro define the kind of
+      package (Core or Professional) you have downloaded. Each package
+      contains kickstart.php itself, as well as all the available translation
+      files. You have to extract this archive and upload kickstart.php and any
+      translation INI files you may need to your site.</para>
 
-      <para>The latest Kickstart version can be always retrieved by visiting
-      <link
-      xlink:href="http://www.akeebabackup.com/latest">http://www.akeebabackup.com/latest</link>.</para>
+      <warning>
+        <para>Kickstart IS NOT a Joomla! extension, WordPress plugin or Drupal
+        module. You cannot "install" it on any of these CMS through their
+        software installation tools. The entire point of Kickstart is being
+        able to restore your site without having to install or access a full
+        CMS installation.</para>
+      </warning>
     </section>
 
     <section xml:id="requirements">
@@ -218,11 +203,12 @@
 
       <itemizedlist>
         <listitem>
-          <para>PHP 5.3.4 or later.</para>
+          <para>PHP 5.3.3 or later.</para>
         </listitem>
 
         <listitem>
-          <para>PHP mod_zlib available. This is available by default.</para>
+          <para>PHP zlib module installed and enabled. This should be enabled
+          by default.</para>
         </listitem>
 
         <listitem>
@@ -272,20 +258,36 @@
       can be always retrieved by visiting <link
       xlink:href="https://www.akeebabackup.com/download.html">https://www.akeebabackup.com/download.html</link>.
       It comes as a ZIP package. <emphasis>Do not</emphasis> try to install it
-      in Joomla!. Instead, you'll have to unzip it first. The extracted files
-      are <filename>kickstart.php</filename> and a series of .ini, .js and
-      .pem files. The <filename>kickstart.php</filename> file is required for
-      Kickstart's operation and self-contained, i.e. it doesn't need any other
-      files (or Joomla!, or WordPress, or anything else) to be installed on
-      your server. The INI files are translation files. You only need them if
-      you want Kickstart to appear localized in your language. You can safely
-      delete any INI files which represent languages you do not understand.
-      The JS files are not required, unless you don't have an Internet
+      in Joomla!, WordPress, Drupal etc. Instead you'll have to unzip it
+      first. The extracted files are <filename>kickstart.php</filename> and a
+      lot of .ini, .js and .pem files.</para>
+
+      <para>The <filename>kickstart.php</filename> file is required for
+      Kickstart's operation and is self-contained, i.e. it doesn't need any
+      other files (or Joomla!, or WordPress, or anything else) to be installed
+      on your server.</para>
+
+      <para>The INI files are translation files. You only need them if you
+      want Kickstart's interface to be translated in your language. You can
+      safely delete any INI files which represent languages you do not
+      speak.</para>
+
+      <tip>
+        <para>Kickstart chooses the language to display based on your
+        browser's language settings, based on the ordering you've set up in
+        your browser, choosing the first language on that list that is
+        available as a translation INI file. Please consult your browser's
+        documentation for information on how to change the language list and
+        preferred language order.</para>
+      </tip>
+
+      <para>The JS files are not required, unless you don't have an Internet
       connection (e.g. restoring to a local server without an Internet
       connection) or have trouble accessing the sites where copies of these
-      files are stored in. The <filename>cacert.pem</filename> file is
-      required on some servers if importing from a URL. If unsure, upload all
-      files (see below).</para>
+      files are stored in (e.g. behind a corporate or state firewall). The
+      <filename>cacert.pem</filename> file is required on some servers if
+      importing from an HTTPS URL. If unsure, upload all files (see
+      below).</para>
 
       <para>The second step is uploading those files to your server. Upload
       <filename>kickstart.php</filename> and any files you may need to the
@@ -297,6 +299,13 @@
       <filename>htdocs</filename>, <filename>www</filename> or something
       similar when you connect to your account by FTP. If unsure, ask your
       host. They know which directory it is without having to guess.</para>
+
+      <important>
+        <para>If you are using Kickstart Professional you MUST rename
+        kickstart.php to something that does not include the word "kickstart",
+        e.g. wfklgjhwelkurgh.php. Kickstart will refuse to operate otherwise.
+        This is a security precaution which cannot be circumvented.</para>
+      </important>
 
       <para>The third step is getting your archive file to the server. This
       can be currently performed only by having you manually upload the
@@ -678,40 +687,45 @@
           </varlistentry>
         </variablelist>
 
-        <para>The third step is the Fine-Tuning of the extraction engine. You
-        have to understand how it works first. Kickstart will start extracting
-        files until the <guilabel>Maximum execution time</guilabel> threshold
-        is reached. In fact, Kickstart allows for a 20% uncertainty of the
-        accuracy of the elapsed time measurements, so the real duration may be
-        somewhat less than that. If there are more files to extract, it will
-        continue extraction in the next step. This approach allows it to work
-        around the PHP time limit imposed by all hosts. However, if a step
-        takes too little time, it is possible that your host mistakenly
-        identifies this behaviour as a Denial of Service attack. As a result,
-        Kickstart will force each step to last at least as much as the
-        <guilabel>Minimum execution time</guilabel> value is. These two
-        settings are expressed in seconds and can be perceived as a combined
-        "from-to" step duration setting.</para>
+        <para>The third step is the Fine-Tuning of the extraction engine. By
+        default these advanced options are hidden. Please click the
+        <guibutton>Show advanced options (for experts)</guibutton> button to
+        display the options.</para>
 
-        <para>Finally, you will find the options for the Stealth Mode in the
-        Fine Tuning pane. The Stealth Mode allows you to display a static HTML
-        page (optionally with images and SWF animation) to all visitors to the
-        web site except yourself while you perform the restoration and only
-        works with Apache or any other server supports mod_redirect
-        functionality using .htaccess files (even some versions of IIS with
-        third party add-ons do). This will prevent accidental disclosure of
-        sensitive information while the restoration is in progress. This is
-        performed by directing all traffic not coming from your IP address to
-        the page you define in here. The first, obvious, setting is the
-        <guilabel>Stealth mode</guilabel> check box. When you tick it, the
-        stealth mode will be activated. The <guilabel>HTML file to show to web
-        visitors</guilabel> option allows you to define the name of the static
-        HTML page to show to your visitors. The file and its resources
-        (images, CSS, Javascript files) must reside inside your to-be-restored
-        site's root. You must only define the name of the file to use, not its
-        URL. This means that <filename>offline.html</filename> is a valid
-        setting, whereas <uri>http://www.example.com/offline.html</uri> is
-        INVALID and will result in a 404 error thrown to your visitors.</para>
+        <para>The first two options require you to understand how Kickstart
+        works. Kickstart will start extracting files until the
+        <guilabel>Maximum execution time</guilabel> threshold is reached. In
+        fact, Kickstart allows for a 20% uncertainty of the accuracy of the
+        elapsed time measurements, so the real duration may be somewhat less
+        than that. If there are more files to extract, it will continue
+        extraction in the next step. This approach allows it to work around
+        the PHP time limit imposed by all hosts. However, if a step takes too
+        little time, it is possible that your host mistakenly identifies this
+        behaviour as a Denial of Service attack. As a result, Kickstart will
+        force each step to last at least as much as the <guilabel>Minimum
+        execution time</guilabel> value is. These two settings are expressed
+        in seconds and can be perceived as a combined "from-to" step duration
+        setting.</para>
+
+        <para>Next, you will find the options for the Stealth Mode in the Fine
+        Tuning pane. The Stealth Mode allows you to display a static HTML page
+        (optionally with images and SWF animation) to all visitors to the web
+        site except yourself while you perform the restoration and only works
+        with Apache or any other server supports mod_redirect functionality
+        using .htaccess files (even some versions of IIS with third party
+        add-ons do). This will prevent accidental disclosure of sensitive
+        information while the restoration is in progress. This is performed by
+        directing all traffic not coming from your IP address to the page you
+        define in here. The first, obvious, setting is the <guilabel>Stealth
+        mode</guilabel> check box. When you tick it, the stealth mode will be
+        activated. The <guilabel>HTML file to show to web visitors</guilabel>
+        option allows you to define the name of the static HTML page to show
+        to your visitors. The file and its resources (images, CSS, Javascript
+        files) must reside inside your to-be-restored site's root. You must
+        only define the name of the file to use, not its URL. This means that
+        <filename>offline.html</filename> is a valid setting, whereas
+        <uri>http://www.example.com/offline.html</uri> is INVALID and will
+        result in a 404 error thrown to your visitors.</para>
 
         <tip>
           <para>If you are worried about SEO, fear not. The redirection
@@ -720,6 +734,46 @@
           result, you are not penalized for duplicate content or otherwise
           negatively affect your SEO while restoring your site.</para>
         </tip>
+
+        <para>Finally, we have the <guilabel>Rename server configuration
+        files</guilabel> checkbox. By default, Kickstart will rename .htaccess
+        to htaccess.bak, web.config to web.config.bak, php.ini to php.ini.bak
+        and .user.ini to user.ini.bak before extracting the archive. Moreover,
+        any files by that name in the archive will be renamed. When you click
+        on the Clean Up button the files are renamed back to their original
+        names. These are all files that take an immediate effect on the server
+        and can possibly cause the restoration to fail. For example, a
+        .htaccess file which prohibits execution of kickstart.php would cause
+        the extraction to fail immediately. Unchecking this box will NOT
+        rename these files back after extraction. To make it clear, let's take
+        the .htaccess file as an example:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>If this box is checked (default) the .htaccess file which
+            was contained in the archive IS renamed to htaccess.bak as soon as
+            it's extracted. After the restoration is complete, the
+            htaccess.bak files IS renamed back to .htaccess</para>
+          </listitem>
+
+          <listitem>
+            <para>If this box is NOT checked the .htaccess file which was
+            contained in the archive IS renamed to htaccess.bak as soon as
+            it's extracted. After the restoration is complete, the
+            htaccess.bak files IS NOT renamed back to .htaccess. Its name
+            remains htaccess.bak and you have to manually rename the file,
+            e.g. through FTP or your hosting control panel's file
+            manager.</para>
+          </listitem>
+        </itemizedlist>
+
+        <warning>
+          <para>Unchecking <guilabel>Rename server configuration
+          files</guilabel> will most likely result in the restored site NOT
+          working properly, or at all, until you manually rename and possibly
+          edit the htaccess.bak, web.config.bak, php.ini.bak and user.ini.bak
+          files.</para>
+        </warning>
 
         <screenshot>
           <info>
@@ -733,9 +787,9 @@
           </mediaobject>
         </screenshot>
 
-        <para>The fourth step is the fun part. Just click on the big, friendly
-        <guibutton>Start</guibutton> button and sit back while Kickstart
-        extracts your archive.</para>
+        <para>For the fourth step just click on the big, green
+        <guibutton>Start</guibutton> button and wait while Kickstart extracts
+        your archive.</para>
 
         <screenshot>
           <info>
@@ -754,13 +808,12 @@
         option to launch the installer. Clicking on the large green button
         will launch the <uri>installation/index.php</uri> relative URL to a
         new window. If you were extracting a backup archive taken with Akeeba
-        Backup, this will cause the Akeeba Backup Installer (ABI) which was
-        included in your archive and just extracted to be launched.
-        Technically, you will not be running Kickstart at that point, so you
-        have to refer to the Akeeba Backup documentation for more information
-        on how the restoration script works. <emphasis role="bold">Please do
-        not close Kickstart's window</emphasis>. You will need it
-        later.</para>
+        Backup, this will execute the restoration script which was included in
+        your backup archive and just got extracted. You will not be running
+        Kickstart at that point, so you have to refer to the Akeeba Backup
+        documentation for more information on how the restoration script
+        works. <emphasis role="bold">Please do not close Kickstart's
+        window</emphasis>. You will need it later.</para>
 
         <para>After you have completed your site's restoration and you close
         the installation script's window, you will get back to Kickstart. The
@@ -789,13 +842,9 @@
           </listitem>
 
           <listitem>
-            <para>If you had a <filename>.htaccess</filename> and/or
-            <filename>php.ini</filename> files in your backed up site's root,
-            these files have been extracted under the temporary names of
-            <filename>htaccess.bak</filename> and
-            <filename>php.ini.bak</filename> respectively. At this point, the
-            temporary named files are renamed back to their original
-            names.</para>
+            <para>Renamed files are renamed back. See <guilabel>Rename server
+            configuration files</guilabel> in the configuration documentation
+            above.</para>
           </listitem>
 
           <listitem>
@@ -804,8 +853,8 @@
           </listitem>
 
           <listitem>
-            <para><filename>kickstart.php</filename> itself and all of its
-            translation INI files, if present, are removed.</para>
+            <para>Kickstart itself and all of its translation INI files, if
+            present, are removed.</para>
           </listitem>
         </itemizedlist>
 
@@ -828,31 +877,29 @@
         <section xml:id="troubleshooting">
           <title>Troubleshooting</title>
 
-          <para><emphasis role="bold">I am getting an AJAX
-          error...</emphasis></para>
-
           <para><emphasis role="bold">Kickstart tells me that this is not a
-          valid JPA archive?</emphasis></para>
+          valid archive?</emphasis></para>
 
           <para>First, ensure that you have downloaded and uploaded the backup
           archive using FTP in Binary transfer mode. If not, do it now. This
-          is the mest common cause of issues. Then, make sure that you have
-          tried both file writing modes (direct file writing and FTP mode) and
-          neither works on your site. The next step would be lowering the
-          <guilabel>Maximum execution time</guilabel> setting to 2 or 3
-          seconds and setting the <guilabel>Minimum execution time</guilabel>
-          to 1 second. If you are still getting this error message, please
-          take a screenshot of the entire message (<emphasis>do not downscale
-          it</emphasis>, we'll need to be able to read it) and post it in a
-          post on our <link
-          xlink:href="http://www.akeebabackup.com/forum.html">support
-          forum</link>. Please include as much information as you can
-          regarding the error condition, how you took your backup, which
+          is the most common cause of issues. Then, make sure that you have
+          tried both the Direct and Hybrid file writing modes. The next step
+          would be lowering the <guilabel>Maximum execution time</guilabel>
+          setting to 2 or 3 seconds and setting the <guilabel>Minimum
+          execution time</guilabel> to 1 second.</para>
+
+          <para>If you are still getting this error message and you are a
+          subscriber you can file a support ticket. Please take a screenshot
+          of the entire message (<emphasis>do not downscale it</emphasis>,
+          we'll need to be able to read it) and attach it to your ticket.
+          Please include as much information as you can regarding the error
+          condition, how you took your backup, which
           <emphasis>EXACT</emphasis> version of Akeeba Backup you were using
-          ("latest" means nothing, something like 3.0.rc1 does), which EXACT
-          version of Kickstart you were using and the PHP version of your
-          host. Remember that the less information you give us, the more time
-          it will take us to figure out what's going wrong and the less happy
+          ("latest" means nothing, a number like 1.2.3 does), which EXACT
+          version of Kickstart you were using (displayed in very large type at
+          the top of the Kickstart page) and the PHP version of your host.
+          Remember that the less information you give us, the more time it
+          will take us to figure out what's going wrong and the less happy
           you'll feel about our support. We need you to help us help
           you.</para>
 

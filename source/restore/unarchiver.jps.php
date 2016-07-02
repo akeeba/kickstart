@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -87,6 +87,8 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		if( $this->isEOF(true) ) {
 			$this->nextFile();
 		}
+
+		$this->currentPartOffset = ftell($this->fp);
 
 		// Get and decode Entity Description Block
 		$signature = fread($this->fp, 3);
@@ -248,6 +250,9 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			$this->runState = AK_STATE_DONE;
 			return true;
 		}
+
+		// Remove the removePath, if any
+		$this->fileHeader->file = $this->removePath($this->fileHeader->file);
 
 		// Last chance to prepend a path to the filename
 		if(!empty($this->addPath) && !$isDirRenamed)
@@ -611,14 +616,16 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		// Trim the data
 		$data = substr($data,0,$miniHeader['decsize']);
 
-		// Try to remove an existing file or directory by the same name
-		if(file_exists($this->fileHeader->file)) { @unlink($this->fileHeader->file); @rmdir($this->fileHeader->file); }
-		// Remove any trailing slash
-		if(substr($this->fileHeader->file, -1) == '/') $this->fileHeader->file = substr($this->fileHeader->file, 0, -1);
-		// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
-
 		if( !AKFactory::get('kickstart.setup.dryrun','0') )
 		{
+			// Try to remove an existing file or directory by the same name
+			if(file_exists($this->fileHeader->file)) {
+				@unlink($this->fileHeader->file);
+				@rmdir($this->fileHeader->file);
+			}
+			// Remove any trailing slash
+			if(substr($this->fileHeader->file, -1) == '/') $this->fileHeader->file = substr($this->fileHeader->file, 0, -1);
+			// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
 			@symlink($data, $this->fileHeader->file);
 		}
 

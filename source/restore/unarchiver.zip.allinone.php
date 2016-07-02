@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -77,6 +77,8 @@ class AKUnarchiverZIP extends AKAbstractUnarchiver
 			debugMsg('Opening next archive part');
 			$this->nextFile();
 		}
+
+		$this->currentPartOffset = ftell($this->fp);
 
 		if($this->expectDataDescriptor)
 		{
@@ -246,6 +248,9 @@ class AKUnarchiverZIP extends AKAbstractUnarchiver
 			$this->runState = AK_STATE_DONE;
 			return true;
 		}
+
+		// Remove the removePath, if any
+		$this->fileHeader->file = $this->removePath($this->fileHeader->file);
 
 		// Last chance to prepend a path to the filename
 		if(!empty($this->addPath) && !$isDirRenamed)
@@ -518,13 +523,17 @@ class AKUnarchiverZIP extends AKAbstractUnarchiver
 			}
 		}
 
-		// Try to remove an existing file or directory by the same name
-		if(file_exists($this->fileHeader->realFile)) { @unlink($this->fileHeader->realFile); @rmdir($this->fileHeader->realFile); }
-		// Remove any trailing slash
-		if(substr($this->fileHeader->realFile, -1) == '/') $this->fileHeader->realFile = substr($this->fileHeader->realFile, 0, -1);
-		// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
+		$filename = isset($this->fileHeader->realFile) ? $this->fileHeader->realFile : $this->fileHeader->file;
+
 		if( !AKFactory::get('kickstart.setup.dryrun','0') )
-			@symlink($data, $this->fileHeader->realFile);
+		{
+			// Try to remove an existing file or directory by the same name
+			if(file_exists($filename)) { @unlink($filename); @rmdir($filename); }
+			// Remove any trailing slash
+			if(substr($filename, -1) == '/') $filename = substr($filename, 0, -1);
+			// Create the symlink - only possible within PHP context. There's no support built in the FTP protocol, so no postproc use is possible here :(
+			@symlink($data, $filename);
+		}
 
 		$this->runState = AK_STATE_DATAREAD;
 

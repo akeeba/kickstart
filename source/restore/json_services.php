@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -158,7 +158,7 @@ if(!class_exists('Akeeba_Services_JSON'))
 	    *                                   bubble up with an error, so all return values
 	    *                                   from encode() should be checked with isError()
 	    */
-	    function Akeeba_Services_JSON($use = 0)
+	    function __construct($use = 0)
 	    {
 	        $this->use = $use;
 	    }
@@ -803,7 +803,7 @@ if(!class_exists('Akeeba_Services_JSON'))
 
     class Akeeba_Services_JSON_Error
     {
-        function Akeeba_Services_JSON_Error($message = 'unknown error', $code = null,
+        function __construct($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
 

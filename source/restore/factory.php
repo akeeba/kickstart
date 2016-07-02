@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -45,8 +45,8 @@ class AKFactory {
 	/**
 	 * Internal function which instanciates a class named $class_name.
 	 * The autoloader
-	 * @param object $class_name
-	 * @return
+	 * @param string $class_name
+	 * @return object
 	 */
 	protected static function &getClassInstance($class_name) {
 		$self = self::getInstance();
@@ -210,22 +210,41 @@ class AKFactory {
 				$sourceFile = rtrim($sourcePath, '/\\') . '/' . $sourceFile;
 			}
 
-			// Initialize the object
+			// Initialize the object –– Any change here MUST be reflected to echoHeadJavascript (default values)
 			$config = array(
 				'filename'				=> $sourceFile,
 				'restore_permissions'	=> self::get('kickstart.setup.restoreperms', 0),
 				'post_proc'				=> self::get('kickstart.procengine', 'direct'),
 				'add_path'				=> self::get('kickstart.setup.targetpath', $destdir),
-				'rename_files'			=> array('.htaccess' => 'htaccess.bak', 'php.ini' => 'php.ini.bak', 'web.config' => 'web.config.bak', '.user.ini' => '.user.ini.bak'),
-				'skip_files'			=> array(basename(__FILE__), 'kickstart.php', 'abiautomation.ini', 'htaccess.bak', 'php.ini.bak', 'cacert.pem'),
-				'ignoredirectories'		=> array('tmp', 'log', 'logs'),
+				'remove_path'			=> self::get('kickstart.setup.removepath', ''),
+				'rename_files'			=> self::get('kickstart.setup.renamefiles', array(
+					'.htaccess' => 'htaccess.bak', 'php.ini' => 'php.ini.bak', 'web.config' => 'web.config.bak', '.user.ini' => '.user.ini.bak'
+				)),
+				'skip_files'			=> self::get('kickstart.setup.skipfiles', array(
+					basename(__FILE__), 'kickstart.php', 'abiautomation.ini', 'htaccess.bak', 'php.ini.bak', 'cacert.pem'
+				)),
+				'ignoredirectories'		=> self::get('kickstart.setup.ignoredirectories', array(
+					'tmp', 'log', 'logs'
+				)),
 			);
 
-			if(!defined('KICKSTART'))
+			if (!defined('KICKSTART'))
 			{
-				// In restore.php mode we have to exclude some more files
-				$config['skip_files'][] = 'administrator/components/com_akeeba/restore.php';
-				$config['skip_files'][] = 'administrator/components/com_akeeba/restoration.php';
+				// In restore.php mode we have to exclude the restoration.php files
+				$moreSkippedFiles = array(
+					// Akeeba Backup for Joomla!
+					'administrator/components/com_akeeba/restoration.php',
+					// Joomla! Update
+					'administrator/components/com_joomlaupdate/restoration.php',
+					// Akeeba Backup for WordPress
+					'wp-content/plugins/akeebabackupwp/app/restoration.php',
+					'wp-content/plugins/akeebabackupcorewp/app/restoration.php',
+					'wp-content/plugins/akeebabackup/app/restoration.php',
+					'wp-content/plugins/akeebabackupwpcore/app/restoration.php',
+					// Akeeba Solo
+					'app/restoration.php',
+				);
+				$config['skip_files'] = array_merge($config['skip_files'], $moreSkippedFiles);
 			}
 
 			if(!empty($configOverride))

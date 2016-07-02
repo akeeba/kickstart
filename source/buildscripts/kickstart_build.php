@@ -1,4 +1,11 @@
 <?php
+/**
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @license     GNU GPL v2 or - at your option - any later version
+ * @package     akeebabackup
+ * @subpackage  kickstart
+ */
+
 define('MINIBUILD', __DIR__);
 include_once __DIR__ . '/../minibuild.php';
 

@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -133,9 +133,15 @@ if(!defined('KICKSTART'))
 				$postproc->unlink( $basepath.'restoration.php' );
 
 				// Import a custom finalisation file
-				if (file_exists(dirname(__FILE__) . '/restore_finalisation.php'))
+				$filename = dirname(__FILE__) . '/restore_finalisation.php';
+				if (file_exists($filename))
 				{
-					include_once dirname(__FILE__) . '/restore_finalisation.php';
+					// opcode cache busting before including the filename
+					if (function_exists('opcache_invalidate')) opcache_invalidate($filename);
+					if (function_exists('apc_compile_file')) apc_compile_file($filename);
+					if (function_exists('wincache_refresh_if_changed')) wincache_refresh_if_changed(array($filename));
+					if (function_exists('xcache_asm')) xcache_asm($filename);
+					include_once $filename;
 				}
 
 				// Run a custom finalisation script

@@ -1,22 +1,14 @@
 .idea/
 
+/000
+
 /build/bin
 /build/buildlang
-/build/build.properties
 /build/phingext
 /build/epub
 /build/tools
-/build/templates/release.json
-
-/DESCRIPTION.html
 
 /documentation/kickstart/*.xml~
 
-/release/*.fo
-/release/*.pdf
-/release/*.php
-/release/*.zip
-
+/release/*
 /source/output/*.php
-
-/RELEASENOTES.html

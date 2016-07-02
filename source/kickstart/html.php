@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -186,7 +186,7 @@ function echoPage()
 
 						<label for="kickstart.ftp.tempdir">FTP_TEMPDIR</label>
 				<span class="field">
-					<input type="text" id="kickstart.ftp.tempdir" value="<?php echo htmlentities(AKKickstartUtils::getPath()) ?>" />
+					<input type="text" id="kickstart.ftp.tempdir" value="<?php echo htmlentities(AKKickstartUtils::getTemporaryPath()) ?>" />
 					<span class="button" id="checkFTPTempDir">BTN_CHECK</span>
 					<span class="button" id="resetFTPTempDir">BTN_RESET</span>
 				</span><br />
@@ -204,7 +204,10 @@ function echoPage()
 			<div class="step3">
 				<div class="circle">3</div>
 				<h2>FINE_TUNE</h2>
-				<div class="area-container">
+                <div style="text-align: center;">
+                    <span id="showFineTune" class="button bluebutton loprofile" style="margin: 0">BTN_SHOW_FINE_TUNE</span>
+                </div>
+				<div id="fine-tune-holder" class="area-container" style="display: none">
 					<label for="kickstart.tuning.min_exec_time">MIN_EXEC_TIME</label>
 					<span class="field"><input type="text" id="kickstart.tuning.min_exec_time" value="1" /></span> <span>SECONDS_PER_STEP</span><br />
 					<label for="kickstart.tuning.max_exec_time">MAX_EXEC_TIME</label>
@@ -214,6 +217,9 @@ function echoPage()
 					<span class="field"><input type="checkbox" id="kickstart.stealth.enable" /></span><br />
 					<label for="kickstart.stealth.url">STEALTH_URL</label>
 					<span class="field"><input type="text" id="kickstart.stealth.url" value="" /></span><br />
+
+					<label for="kickstart.setup.renameback">RENAME_FILES</label>
+					<span class="field"><input type="checkbox" id="kickstart.setup.renameback" checked="checked" /></span><br />
 				</div>
 			</div>
 
@@ -293,14 +299,14 @@ function echoPage()
 	</div>
 
 	<div id="footer">
-		<div class="copyright">Copyright &copy; 2008&ndash;2013 <a	href="http://www.akeebabackup.com">Nicholas K.
+		<div class="copyright">Copyright &copy; 2008&ndash;<?php echo date('Y'); ?> <a	href="http://www.akeebabackup.com">Nicholas K.
 				Dionysopoulos / Akeeba Backup</a>. All legal rights reserved.<br />
 
 			This program is free software: you can redistribute it and/or modify it under the terms of
 			the <a href="http://www.gnu.org/gpl-3.htmlhttp://www.gnu.org/copyleft/gpl.html">GNU General
 				Public License</a> as published by the Free Software Foundation, either version 3 of the License,
 			or (at your option) any later version.<br />
-			Design credits: <a href="http://internet-inspired.com/">Internet Inspired</a>, slightly modified by AkeebaBackup.com
+			Design credits: <a href="http://internet-inspired.com/">Internet Inspired</a>, heavily modified by AkeebaBackup.com
 		</div>
 	</div>
 

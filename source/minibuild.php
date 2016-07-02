@@ -1,8 +1,9 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @license     GNU GPL v2 or - at your option - any later version
+ * @package     akeebabackup
+ * @subpackage  kickstart
  */
 
 class AkeebaMinibuild
@@ -64,6 +65,11 @@ class AkeebaMinibuild
 
 				if (!$merge)
 				{
+					// Bust opcode caches
+					if (function_exists('opcache_invalidate')) opcache_invalidate($path);
+					if (function_exists('apc_compile_file')) apc_compile_file($path);
+					if (function_exists('wincache_refresh_if_changed')) wincache_refresh_if_changed(array($path));
+					if (function_exists('xcache_asm')) xcache_asm($path);
 					@include_once $path;
 				}
 				else

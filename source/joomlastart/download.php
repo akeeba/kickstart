@@ -8,7 +8,7 @@
  * This tool is derived from Akeeba Kickstart, the on-line archive extraction
  * tool by Akeeba Ltd.
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     joomla
  * @subpackage  joomlastart
@@ -385,7 +385,7 @@ class JoomlastartDownload
 		{
 			$pageContent = $this->downloadAndReturn(self::$downloadPageURL);
 
-			$pos_start = stripos($pageContent, 'id="latest"');
+			$pos_start = stripos($pageContent, 'class="download"');
 
 			if ($pos_start === false)
 			{

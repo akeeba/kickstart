@@ -8,7 +8,7 @@
  * This tool is derived from Akeeba Kickstart, the on-line archive extraction
  * tool by Akeeba Ltd.
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     joomla
  * @subpackage  joomlastart
@@ -154,9 +154,19 @@ switch($task)
 		recursive_remove_directory('installation');
 
 		// 2. Run the renames, backwards
-		$renames = $unarchiver->renameFiles;
-		if(!empty($renames)) foreach( $renames as $original => $renamed ) {
-			$engine->rename( $renamed, $original );
+		$renameBack = AKFactory::get('kickstart.setup.renameback', true);
+
+		if ($renameBack)
+		{
+			$renames = $unarchiver->renameFiles;
+
+			if (!empty($renames))
+			{
+				foreach ($renames as $original => $renamed)
+				{
+					$engine->rename($renamed, $original);
+				}
+			}
 		}
 
 		// 3. Delete the archive
@@ -184,6 +194,17 @@ switch($task)
 
 		// 6. Delete cacert.pem
 		$engine->unlink('cacert.pem');
+
+		// 7. If OPcache is installed we need to reset it
+		if (function_exists('opcache_reset'))
+		{
+			opcache_reset();
+		}
+		// Also do that for APC cache
+		elseif (function_exists('apc_clear_cache'))
+		{
+			@apc_clear_cache();
+		}
 
 		break;
 

@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -561,31 +561,25 @@ function AKURLerrorHandler(msg)
 			return '';
 		}
 
-		$uniqueHTMLid = '<a id="latest"';
+		$pos_start = stripos($pageHTML, 'class="download"');
 
-		$posStart = strpos($pageHTML, $uniqueHTMLid);
-
-		if ($posStart === false)
+		if ($pos_start === false)
 		{
 			return '';
 		}
 
-		$posStart += strlen($uniqueHTMLid);
-		$posEnd = strpos($pageHTML, '>', $posStart);
+		$pos_end = stripos($pageHTML, '>', $pos_start);
 
-		if ($posEnd === false)
+		if ($pos_end === false)
 		{
 			return '';
 		}
 
-		$innerAttributes = substr($pageHTML, $posStart, $posEnd - $posStart);
+		$innerContent = substr($pageHTML, $pos_start, $pos_end - $pos_end - 1);
+		$pos_start = stripos($innerContent, 'href="');
+		$pos_end = stripos($innerContent, '"', $pos_start + 6);
 
-		$posStart = strpos($innerAttributes, '"');
-		$posEnd = strpos($innerAttributes, '"', $posStart + 1);
-
-		$url = substr($innerAttributes, $posStart + 1, $posEnd - $posStart - 1);
-
-		return $url;
+		return substr($innerContent, $pos_start + 6, $pos_end - $pos_start - 6);
 	}
 }
 

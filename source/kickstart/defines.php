@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -11,7 +11,7 @@
 
 /*
     Akeeba Kickstart - The server-side archive extraction wizard
-    Copyright (C) 2008-2013  Nicholas K. Dionysopoulos / AkeebaBackup.com
+    Copyright (C) 2008-2016  Nicholas K. Dionysopoulos / AkeebaBackup.com
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -105,9 +105,14 @@ unset($cacertpem);
 $dh = @opendir(KSROOTDIR);
 if($dh === false) return;
 while($filename = readdir($dh)) {
+	if (in_array($filename, array('.', '..'))) continue;
 	if(!is_file($filename)) continue;
 	if(substr($filename, 0, 10) != 'kickstart.') continue;
 	if(substr($filename, -4) != '.php') continue;
 	if($filename == 'kickstart.php') continue;
+	if (function_exists('opcache_invalidate')) opcache_invalidate($filename);
+	if (function_exists('apc_compile_file')) apc_compile_file($filename);
+	if (function_exists('wincache_refresh_if_changed')) wincache_refresh_if_changed(array($filename));
+	if (function_exists('xcache_asm')) xcache_asm($filename);
 	include_once $filename;
 }

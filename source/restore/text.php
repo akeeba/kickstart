@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -89,6 +89,7 @@ class AKText extends AKAbstractObject
 		'BTN_TESTSFTPCON' => 'Test SFTP connection',
 		'BTN_GOTOSTART' => 'Start over',
 		'FINE_TUNE' => 'Fine tune',
+        'BTN_SHOW_FINE_TUNE' => 'Show advanced options (for experts)',
 		'MIN_EXEC_TIME' => 'Minimum execution time:',
 		'MAX_EXEC_TIME' => 'Maximum execution time:',
 		'SECONDS_PER_STEP' => 'seconds per step',
@@ -124,6 +125,7 @@ class AKText extends AKAbstractObject
 		'RELOAD_ARCHIVES'	=> 'Reload',
 		'CONFIG_UI_SFTPBROWSER_TITLE'	=> 'SFTP Directory Browser',
 		'ERR_COULD_NOT_OPEN_ARCHIVE_PART' => 'Could not open archive part file %s for reading. Check that the file exists, is readable by the web server and is not in a directory made out of reach by chroot, open_basedir restrictions or any other restriction put in place by your host.',
+		'RENAME_FILES' => 'Rename server configuration files'
 	);
 
 	/**

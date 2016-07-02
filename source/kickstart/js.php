@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2010-2014 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -60,6 +60,10 @@ function echoHeadJavascript()
 		$('#gotoSite').click(function(event){window.open('index.php','finalstepsite'); window.close();});
 		$('#gotoAdministrator').click(function(event){window.open('administrator/index.php','finalstepadmin'); window.close();});
 		$('#gotoStart').click( onGotoStartClick );
+        $('#showFineTune').click(function(){
+            $('#fine-tune-holder').show();
+            $(this).hide();
+        });
 
 		// Reset the progress bar
 		setProgressBar(0);
@@ -302,7 +306,7 @@ function echoHeadJavascript()
 			error: function(Request, textStatus, errorThrown) {
 				var message = '<strong>AJAX Loading Error</strong><br/>HTTP Status: '+Request.status+' ('+Request.statusText+')<br/>';
 				message = message + 'Internal status: '+textStatus+'<br/>';
-				message = message + 'XHR ReadyState: ' + Response.readyState + '<br/>';
+				message = message + 'XHR ReadyState: ' + Request.readyState + '<br/>';
 				message = message + 'Raw server response:<br/>'+Request.responseText;
 				if(errorCallback == null)
 				{
@@ -560,7 +564,7 @@ function echoHeadJavascript()
 						$('#ftpBrowserFolderList').show();
 
 						$.each(data.list, function(i, item) {
-							akeeba_ftpbrowser_create_link(akeeba_ftpbrowser_directory+'/'+item, item, $('#ftpBrowserFolderList'), callback );
+							akeeba_ftpbrowser_create_link(data.directory+'/'+item, item, $('#ftpBrowserFolderList'), callback );
 						});
 					} else {
 						$('#ftpBrowserFolderList').css('display','none');
@@ -702,7 +706,7 @@ function echoHeadJavascript()
 						$('#ftpBrowserFolderList').css('display','block');
 
 						$.each(data.list, function(i, item) {
-							akeeba_sftpbrowser_create_link(akeeba_sftpbrowser_directory+'/'+item, item, $('#ftpBrowserFolderList'), callback );
+							akeeba_sftpbrowser_create_link(data.directory+'/'+item, item, $('#ftpBrowserFolderList'), callback );
 						});
 					} else {
 						$('#ftpBrowserFolderList').css('display','none');
@@ -788,6 +792,7 @@ function echoHeadJavascript()
 				'kickstart.setup.ignoreerrors':		$('#kickstart\\.setup\\.ignoreerrors').is(':checked'),
 				'kickstart.enabled':				1,
 				'kickstart.security.password':		'',
+				'kickstart.setup.renameback':		$('#kickstart\\.setup\\.renameback').is(':checked'),
 				'kickstart.procengine':				$('#kickstart\\.procengine').val(),
 				'kickstart.ftp.host':				$('#kickstart\\.ftp\\.host').val(),
 				'kickstart.ftp.port':				$('#kickstart\\.ftp\\.port').val(),
