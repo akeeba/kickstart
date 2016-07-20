@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
@@ -8,7 +9,6 @@
  * @package     akeebabackup
  * @subpackage  kickstart
  */
-
 class ExtractionObserver extends AKAbstractPartObserver
 {
 	public $compressedTotal = 0;
@@ -20,21 +20,27 @@ class ExtractionObserver extends AKAbstractPartObserver
 
 	public function update($object, $message)
 	{
-		if(!is_object($message)) return;
+		if (!is_object($message))
+		{
+			return;
+		}
 
-		if( !array_key_exists('type', get_object_vars($message)) ) return;
+		if (!array_key_exists('type', get_object_vars($message)))
+		{
+			return;
+		}
 
-		if( $message->type == 'startfile' )
+		if ($message->type == 'startfile')
 		{
 			$this->lastFile = $message->content->file;
 			$this->filesProcessed++;
 			$this->compressedTotal += $message->content->compressed;
 			$this->uncompressedTotal += $message->content->uncompressed;
 		}
-		elseif( $message->type == 'totalsize' )
+		elseif ($message->type == 'totalsize')
 		{
 			$this->totalSize = $message->content->totalsize;
-			$this->fileList = $message->content->filelist;
+			$this->fileList  = $message->content->filelist;
 		}
 	}
 

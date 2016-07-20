@@ -9,7 +9,8 @@
  * @subpackage  kickstart
  */
 
-function echoCSS() {
+function echoCSS()
+{
 	echo <<<CSS
 
 html {

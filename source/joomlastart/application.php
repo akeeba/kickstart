@@ -17,27 +17,28 @@
 function getTranslationStrings()
 {
 	$translation = AKText::getInstance();
+
 	return $translation->asJavascript();
 }
 
 $retArray = array(
-	'status'	=> true,
-	'message'	=> null
+	'status'  => true,
+	'message' => null
 );
 
 $task = getQueryParam('task', 'display');
 $json = getQueryParam('json');
 $ajax = true;
 
-switch($task)
+switch ($task)
 {
 	case 'checkTempdir':
 		$retArray['status'] = false;
-		if(!empty($json))
+		if (!empty($json))
 		{
 			$data = json_decode($json, true);
-			$dir = @$data['kickstart.ftp.tempdir'];
-			if(!empty($dir))
+			$dir  = @$data['kickstart.ftp.tempdir'];
+			if (!empty($dir))
 			{
 				$retArray['status'] = is_writable($dir);
 			}
@@ -46,16 +47,16 @@ switch($task)
 
 	case 'checkFTP':
 		$retArray['status'] = false;
-		if(!empty($json))
+		if (!empty($json))
 		{
 			$data = json_decode($json, true);
-			foreach($data as $key => $value)
+			foreach ($data as $key => $value)
 			{
 				AKFactory::set($key, $value);
 			}
-			$ftp = new AKPostprocFTP();
+			$ftp                 = new AKPostprocFTP();
 			$retArray['message'] = $ftp->getError();
-			$retArray['status'] = empty($retArray['message']);
+			$retArray['status']  = empty($retArray['message']);
 		}
 		break;
 
@@ -63,25 +64,33 @@ switch($task)
 	case 'continueExtracting':
 		// Look for configuration values
 		$retArray['status'] = false;
-		if(!empty($json))
+		if (!empty($json))
 		{
-			if($task == 'startExtracting') AKFactory::nuke();
+			if ($task == 'startExtracting')
+			{
+				AKFactory::nuke();
+			}
 
 			$oldJSON = $json;
-			$json = json_decode($json, true);
-			if(is_null($json)) {
+			$json    = json_decode($json, true);
+			if (is_null($json))
+			{
 				$json = stripslashes($oldJSON);
 				$json = json_decode($json, true);
 			}
-			if(!empty($json)) foreach($json as $key => $value)
+			if (!empty($json))
 			{
-				if( substr($key,0,9) == 'kickstart' ) {
-					AKFactory::set($key, $value);
+				foreach ($json as $key => $value)
+				{
+					if (substr($key, 0, 9) == 'kickstart')
+					{
+						AKFactory::set($key, $value);
+					}
 				}
 			}
 
 			// A "factory" variable will override all other settings.
-			if( array_key_exists('factory', $json) )
+			if (array_key_exists('factory', $json))
 			{
 				// Get the serialized factory
 				$serialized = $json['factory'];
@@ -90,43 +99,46 @@ switch($task)
 			}
 
 			// Make sure that the destination directory is always set (req'd by both FTP and Direct Writes modes)
-			$removePath = AKFactory::get('kickstart.setup.destdir','');
-			if(empty($removePath)) AKFactory::set('kickstart.setup.destdir', AKKickstartUtils::getPath());
+			$removePath = AKFactory::get('kickstart.setup.destdir', '');
+			if (empty($removePath))
+			{
+				AKFactory::set('kickstart.setup.destdir', AKKickstartUtils::getPath());
+			}
 
-			$engine = AKFactory::getUnarchiver(); // Get the engine
+			$engine   = AKFactory::getUnarchiver(); // Get the engine
 			$observer = new ExtractionObserver(); // Create a new observer
 			$engine->attach($observer); // Attach the observer
 			$engine->tick();
 			$ret = $engine->getStatusArray();
 
-			if( $ret['Error'] != '' )
+			if ($ret['Error'] != '')
 			{
-				$retArray['status'] = false;
-				$retArray['done'] = true;
+				$retArray['status']  = false;
+				$retArray['done']    = true;
 				$retArray['message'] = $ret['Error'];
 			}
-			elseif( !$ret['HasRun'] )
+			elseif (!$ret['HasRun'])
 			{
-				$retArray['files'] = $observer->filesProcessed;
-				$retArray['bytesIn'] = $observer->compressedTotal;
+				$retArray['files']    = $observer->filesProcessed;
+				$retArray['bytesIn']  = $observer->compressedTotal;
 				$retArray['bytesOut'] = $observer->uncompressedTotal;
-				$retArray['status'] = true;
-				$retArray['done'] = true;
+				$retArray['status']   = true;
+				$retArray['done']     = true;
 			}
 			else
 			{
-				$retArray['files'] = $observer->filesProcessed;
-				$retArray['bytesIn'] = $observer->compressedTotal;
+				$retArray['files']    = $observer->filesProcessed;
+				$retArray['bytesIn']  = $observer->compressedTotal;
 				$retArray['bytesOut'] = $observer->uncompressedTotal;
-				$retArray['status'] = true;
-				$retArray['done'] = false;
-				$retArray['factory'] = AKFactory::serialize();
+				$retArray['status']   = true;
+				$retArray['done']     = false;
+				$retArray['factory']  = AKFactory::serialize();
 			}
 
-			if(!is_null($observer->totalSize))
+			if (!is_null($observer->totalSize))
 			{
 				$retArray['totalsize'] = $observer->totalSize;
-				$retArray['filelist'] = $observer->fileList;
+				$retArray['filelist']  = $observer->fileList;
 			}
 
 			$retArray['Warnings'] = $ret['Warnings'];
@@ -135,10 +147,10 @@ switch($task)
 		break;
 
 	case 'cleanUp':
-		if(!empty($json))
+		if (!empty($json))
 		{
 			$json = json_decode($json, true);
-			if( array_key_exists('factory', $json) )
+			if (array_key_exists('factory', $json))
 			{
 				// Get the serialized factory
 				$serialized = $json['factory'];
@@ -148,7 +160,7 @@ switch($task)
 		}
 
 		$unarchiver = AKFactory::getUnarchiver(); // Get the engine
-		$engine = AKFactory::getPostProc();
+		$engine     = AKFactory::getPostProc();
 
 		// 1. Remove installation
 		recursive_remove_directory('installation');
@@ -170,22 +182,22 @@ switch($task)
 		}
 
 		// 3. Delete the archive
-		foreach( $unarchiver->archiveList as $archive )
+		foreach ($unarchiver->archiveList as $archive)
 		{
-			$engine->unlink( $archive );
+			$engine->unlink($archive);
 		}
 
 		// 4. Remove ourselves
-		$engine->unlink( basename(__FILE__) );
+		$engine->unlink(basename(__FILE__));
 
 		// 5. Delete translations
 		$dh = opendir(AKKickstartUtils::getPath());
-		if($dh !== false)
+		if ($dh !== false)
 		{
 			$basename = basename(__FILE__, '.php');
-			while( false !== $file = @readdir($dh) )
+			while (false !== $file = @readdir($dh))
 			{
-				if( strstr($file, $basename.'.ini') )
+				if (strstr($file, $basename . '.ini'))
 				{
 					$engine->unlink($file);
 				}
@@ -216,14 +228,17 @@ switch($task)
 	case 'urlimport':
 		$ajax = true;
 
-		if(!empty($json)) {
+		if (!empty($json))
+		{
 			$params = json_decode($json, true);
-		} else {
+		}
+		else
+		{
 			$params = array();
 		}
 
 		$downloadHelper = new JoomlastartDownload();
-		$retArray = $downloadHelper->importFromURL($params);
+		$retArray       = $downloadHelper->importFromURL($params);
 
 		break;
 
@@ -235,13 +250,13 @@ switch($task)
 		break;
 }
 
-if($ajax)
+if ($ajax)
 {
 	// JSON encode the message
 	$json = json_encode($retArray);
 	// Do I have to encrypt?
 	$password = AKFactory::get('kickstart.security.password', null);
-	if(!empty($password))
+	if (!empty($password))
 	{
 		$json = AKEncryptionAES::AESEncryptCtr($json, $password, 128);
 	}

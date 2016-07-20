@@ -12,12 +12,12 @@
 /**
  * Akeeba Kickstart S3 extension
  *
- * @copyright 2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
- * @license GNU GPL v3 or - at your option - any later version
- * @package akeebabackup
+ * @copyright  2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @license    GNU GPL v3 or - at your option - any later version
+ * @package    akeebabackup
  * @subpackage kickstart
  */
-
-class S3Exception extends Exception {
+class S3Exception extends Exception
+{
 
 }

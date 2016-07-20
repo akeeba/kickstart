@@ -10,7 +10,7 @@
  */
 
 // Make sure the file has been renamed
-$myself = strtolower(__FILE__);
+$myself   = strtolower(__FILE__);
 $basename = basename(__FILE__, '.php');
 if (strpos($basename, 'kickstart') === 0)
 {

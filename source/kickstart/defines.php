@@ -27,7 +27,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('KICKSTART',1);
+define('KICKSTART', 1);
 define('VERSION', '##VERSION##');
 define('KICKSTARTPRO', '##KICKSTARTPRO##');
 // Uncomment the following line to enable Kickstart's debug mode
@@ -41,18 +41,22 @@ if (!defined('KSDEBUG') && isset($_SERVER) && isset($_SERVER['HTTP_HOST']) && (s
 
 define('KSWINDOWS', substr(PHP_OS, 0, 3) == 'WIN');
 
-if(!defined('KSROOTDIR'))
+if (!defined('KSROOTDIR'))
 {
 	define('KSROOTDIR', dirname(__FILE__));
 }
 
-if(defined('KSDEBUG')) {
-	ini_set('error_log', KSROOTDIR.'/kickstart_error_log' );
-	if(file_exists(KSROOTDIR.'/kickstart_error_log')) {
-		@unlink(KSROOTDIR.'/kickstart_error_log');
+if (defined('KSDEBUG'))
+{
+	ini_set('error_log', KSROOTDIR . '/kickstart_error_log');
+	if (file_exists(KSROOTDIR . '/kickstart_error_log'))
+	{
+		@unlink(KSROOTDIR . '/kickstart_error_log');
 	}
 	error_reporting(E_ALL | E_STRICT);
-} else {
+}
+else
+{
 	@error_reporting(E_NONE);
 }
 
@@ -78,12 +82,17 @@ if (!isset($_SERVER['REQUEST_URI']))
 	else
 	{
 		//Someone didn't follow the instructions!
-		if(isset($_SERVER['SCRIPT_NAME']))
-		$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+		if (isset($_SERVER['SCRIPT_NAME']))
+		{
+			$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+		}
 		else
-		$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['PHP_SELF'];
-		if($_SERVER['QUERY_STRING']){
-			$_SERVER['HTTP_REQUEST_URI'] .=  '?' . $_SERVER['QUERY_STRING'];
+		{
+			$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['PHP_SELF'];
+		}
+		if ($_SERVER['QUERY_STRING'])
+		{
+			$_SERVER['HTTP_REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
 		}
 		//WARNING: This is a workaround!
 		//For guaranteed compatibility, HTTP_REQUEST_URI *MUST* be defined!
@@ -94,8 +103,10 @@ if (!isset($_SERVER['REQUEST_URI']))
 
 // Define the cacert.pem location, if it exists
 $cacertpem = KSROOTDIR . '/cacert.pem';
-if(is_file($cacertpem)) {
-	if(is_readable($cacertpem)) {
+if (is_file($cacertpem))
+{
+	if (is_readable($cacertpem))
+	{
 		define('AKEEBA_CACERT_PEM', $cacertpem);
 	}
 }
@@ -103,16 +114,47 @@ unset($cacertpem);
 
 // Loads other PHP files containing extra Kickstart features
 $dh = @opendir(KSROOTDIR);
-if($dh === false) return;
-while($filename = readdir($dh)) {
-	if (in_array($filename, array('.', '..'))) continue;
-	if(!is_file($filename)) continue;
-	if(substr($filename, 0, 10) != 'kickstart.') continue;
-	if(substr($filename, -4) != '.php') continue;
-	if($filename == 'kickstart.php') continue;
-	if (function_exists('opcache_invalidate')) opcache_invalidate($filename);
-	if (function_exists('apc_compile_file')) apc_compile_file($filename);
-	if (function_exists('wincache_refresh_if_changed')) wincache_refresh_if_changed(array($filename));
-	if (function_exists('xcache_asm')) xcache_asm($filename);
+if ($dh === false)
+{
+	return;
+}
+while ($filename = readdir($dh))
+{
+	if (in_array($filename, array('.', '..')))
+	{
+		continue;
+	}
+	if (!is_file($filename))
+	{
+		continue;
+	}
+	if (substr($filename, 0, 10) != 'kickstart.')
+	{
+		continue;
+	}
+	if (substr($filename, -4) != '.php')
+	{
+		continue;
+	}
+	if ($filename == 'kickstart.php')
+	{
+		continue;
+	}
+	if (function_exists('opcache_invalidate'))
+	{
+		opcache_invalidate($filename);
+	}
+	if (function_exists('apc_compile_file'))
+	{
+		apc_compile_file($filename);
+	}
+	if (function_exists('wincache_refresh_if_changed'))
+	{
+		wincache_refresh_if_changed(array($filename));
+	}
+	if (function_exists('xcache_asm'))
+	{
+		xcache_asm($filename);
+	}
 	include_once $filename;
 }

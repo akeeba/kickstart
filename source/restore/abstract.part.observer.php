@@ -11,6 +11,7 @@
 
 /**
  * Descendants of this class can be used in the unarchiver's observer methods (attach, detach and notify)
+ *
  * @author Nicholas
  *
  */

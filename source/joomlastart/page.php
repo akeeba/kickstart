@@ -22,14 +22,14 @@ function echoPage()
 	$translationStrings = getTranslationStrings();
 
 	$downloadHelper = new JoomlastartDownload();
-	$downloadRet = $downloadHelper->getJoomlaDownloadURL();
+	$downloadRet    = $downloadHelper->getJoomlaDownloadURL();
 
 	$vars = array(
-		'download-error'	=> $downloadRet['error'],
-		'download-url'		=> $downloadRet['url'],
-		'ftp-checked'		=> $downloadRet['needftp'] ? 'selected="selected"' : '',
-		'copyright-year' 	=> date('Y'),
-		'self_filename'		=> defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__),
+		'download-error' => $downloadRet['error'],
+		'download-url'   => $downloadRet['url'],
+		'ftp-checked'    => $downloadRet['needftp'] ? 'selected="selected"' : '',
+		'copyright-year' => date('Y'),
+		'self_filename'  => defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__),
 	);
 
 	echo <<< HTML

@@ -20,7 +20,7 @@ class AKKickstartUtils
 	 */
 	public static function getBestArchivePath()
 	{
-		$basePath = self::getPath();
+		$basePath      = self::getPath();
 		$basePathSlash = (empty($basePath) ? '.' : rtrim($basePath, '/\\')) . '/';
 
 		$paths = array(
@@ -63,37 +63,6 @@ class AKKickstartUtils
 			$path .= '/';
 		}
 
-		return $path;
-	}
-
-	/**
-	 * Gets the most appropriate temporary path
-	 *
-	 * @return string
-	 */
-	public static function getTemporaryPath()
-	{
-		$path = self::getPath();
-
-		$candidateDirs = array(
-			$path,
-			$path . '/kicktemp',
-		);
-
-		if (function_exists('sys_get_temp_dir'))
-		{
-			$candidateDirs[] = sys_get_temp_dir();
-		}
-
-		foreach ($candidateDirs as $dir)
-		{
-			if (is_dir($dir) && is_writable($dir))
-			{
-				return $dir;
-			}
-		}
-
-		// Failsafe
 		return $path;
 	}
 
@@ -180,6 +149,37 @@ class AKKickstartUtils
 		}
 
 		return $ret;
+	}
+
+	/**
+	 * Gets the most appropriate temporary path
+	 *
+	 * @return string
+	 */
+	public static function getTemporaryPath()
+	{
+		$path = self::getPath();
+
+		$candidateDirs = array(
+			$path,
+			$path . '/kicktemp',
+		);
+
+		if (function_exists('sys_get_temp_dir'))
+		{
+			$candidateDirs[] = sys_get_temp_dir();
+		}
+
+		foreach ($candidateDirs as $dir)
+		{
+			if (is_dir($dir) && is_writable($dir))
+			{
+				return $dir;
+			}
+		}
+
+		// Failsafe
+		return $path;
 	}
 
 	/**

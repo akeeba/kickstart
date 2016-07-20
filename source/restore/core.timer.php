@@ -22,6 +22,7 @@ class AKCoreTimer extends AKAbstractObject
 
 	/**
 	 * Public constructor, creates the timer object and calculates the execution time limits
+	 *
 	 * @return AECoreTimer
 	 */
 	public function __construct()
@@ -32,14 +33,15 @@ class AKCoreTimer extends AKAbstractObject
 		$this->start_time = $this->microtime_float();
 
 		// Get configured max time per step and bias
-		$config_max_exec_time	= AKFactory::get('kickstart.tuning.max_exec_time', 14);
-		$bias					= AKFactory::get('kickstart.tuning.run_time_bias', 75)/100;
+		$config_max_exec_time = AKFactory::get('kickstart.tuning.max_exec_time', 14);
+		$bias                 = AKFactory::get('kickstart.tuning.run_time_bias', 75) / 100;
 
 		// Get PHP's maximum execution time (our upper limit)
-		if(@function_exists('ini_get'))
+		if (@function_exists('ini_get'))
 		{
 			$php_max_exec_time = @ini_get("maximum_execution_time");
-			if ( (!is_numeric($php_max_exec_time)) || ($php_max_exec_time == 0) ) {
+			if ((!is_numeric($php_max_exec_time)) || ($php_max_exec_time == 0))
+			{
 				// If we have no time limit, set a hard limit of about 10 seconds
 				// (safe for Apache and IIS timeouts, verbose enough for users)
 				$php_max_exec_time = 14;
@@ -55,11 +57,11 @@ class AKCoreTimer extends AKAbstractObject
 		$php_max_exec_time--;
 
 		// Apply bias
-		$php_max_exec_time = $php_max_exec_time * $bias;
+		$php_max_exec_time    = $php_max_exec_time * $bias;
 		$config_max_exec_time = $config_max_exec_time * $bias;
 
 		// Use the most appropriate time limit value
-		if( $config_max_exec_time > $php_max_exec_time )
+		if ($config_max_exec_time > $php_max_exec_time)
 		{
 			$this->max_exec_time = $php_max_exec_time;
 		}
@@ -67,6 +69,16 @@ class AKCoreTimer extends AKAbstractObject
 		{
 			$this->max_exec_time = $config_max_exec_time;
 		}
+	}
+
+	/**
+	 * Returns the current timestampt in decimal seconds
+	 */
+	private function microtime_float()
+	{
+		list($usec, $sec) = explode(" ", microtime());
+
+		return ((float) $usec + (float) $sec);
 	}
 
 	/**
@@ -80,6 +92,7 @@ class AKCoreTimer extends AKAbstractObject
 
 	/**
 	 * Gets the number of seconds left, before we hit the "must break" threshold
+	 *
 	 * @return float
 	 */
 	public function getTimeLeft()
@@ -90,6 +103,7 @@ class AKCoreTimer extends AKAbstractObject
 	/**
 	 * Gets the time elapsed since object creation/unserialization, effectively how
 	 * long Akeeba Engine has been processing data
+	 *
 	 * @return float
 	 */
 	public function getRunningTime()
@@ -98,21 +112,12 @@ class AKCoreTimer extends AKAbstractObject
 	}
 
 	/**
-	 * Returns the current timestampt in decimal seconds
-	 */
-	private function microtime_float()
-	{
-		list($usec, $sec) = explode(" ", microtime());
-		return ((float)$usec + (float)$sec);
-	}
-
-	/**
 	 * Enforce the minimum execution time
 	 */
 	public function enforce_min_exec_time()
 	{
 		// Try to get a sane value for PHP's maximum_execution_time INI parameter
-		if(@function_exists('ini_get'))
+		if (@function_exists('ini_get'))
 		{
 			$php_max_exec = @ini_get("maximum_execution_time");
 		}
@@ -120,7 +125,8 @@ class AKCoreTimer extends AKAbstractObject
 		{
 			$php_max_exec = 10;
 		}
-		if ( ($php_max_exec == "") || ($php_max_exec == 0) ) {
+		if (($php_max_exec == "") || ($php_max_exec == 0))
+		{
 			$php_max_exec = 10;
 		}
 		// Decrease $php_max_exec time by 500 msec we need (approx.) to tear down
@@ -129,41 +135,47 @@ class AKCoreTimer extends AKAbstractObject
 		$php_max_exec = max($php_max_exec * 1000 - 1000, 0);
 
 		// Get the "minimum execution time per step" Akeeba Backup configuration variable
-		$minexectime = AKFactory::get('kickstart.tuning.min_exec_time',0);
-		if(!is_numeric($minexectime)) $minexectime = 0;
+		$minexectime = AKFactory::get('kickstart.tuning.min_exec_time', 0);
+		if (!is_numeric($minexectime))
+		{
+			$minexectime = 0;
+		}
 
 		// Make sure we are not over PHP's time limit!
-		if($minexectime > $php_max_exec) $minexectime = $php_max_exec;
+		if ($minexectime > $php_max_exec)
+		{
+			$minexectime = $php_max_exec;
+		}
 
 		// Get current running time
 		$elapsed_time = $this->getRunningTime() * 1000;
 
-			// Only run a sleep delay if we haven't reached the minexectime execution time
-		if( ($minexectime > $elapsed_time) && ($elapsed_time > 0) )
+		// Only run a sleep delay if we haven't reached the minexectime execution time
+		if (($minexectime > $elapsed_time) && ($elapsed_time > 0))
 		{
 			$sleep_msec = $minexectime - $elapsed_time;
-			if(function_exists('usleep'))
+			if (function_exists('usleep'))
 			{
 				usleep(1000 * $sleep_msec);
 			}
-			elseif(function_exists('time_nanosleep'))
+			elseif (function_exists('time_nanosleep'))
 			{
-				$sleep_sec = floor($sleep_msec / 1000);
+				$sleep_sec  = floor($sleep_msec / 1000);
 				$sleep_nsec = 1000000 * ($sleep_msec - ($sleep_sec * 1000));
 				time_nanosleep($sleep_sec, $sleep_nsec);
 			}
-			elseif(function_exists('time_sleep_until'))
+			elseif (function_exists('time_sleep_until'))
 			{
 				$until_timestamp = time() + $sleep_msec / 1000;
 				time_sleep_until($until_timestamp);
 			}
-			elseif(function_exists('sleep'))
+			elseif (function_exists('sleep'))
 			{
-				$sleep_sec = ceil($sleep_msec/1000);
-				sleep( $sleep_sec );
+				$sleep_sec = ceil($sleep_msec / 1000);
+				sleep($sleep_sec);
 			}
 		}
-		elseif( $elapsed_time > 0 )
+		elseif ($elapsed_time > 0)
 		{
 			// No sleep required, even if user configured us to be able to do so.
 		}
