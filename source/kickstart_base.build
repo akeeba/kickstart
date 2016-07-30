@@ -6,4 +6,7 @@ kickstart/functions.php
 kickstart/css.php
 kickstart/js.php
 kickstart/html.php
+kickstart/application_common.php
+kickstart/application_cli.php
+kickstart/application_web.php
 kickstart/application.php
