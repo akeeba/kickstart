@@ -1,11 +1,12 @@
 <h3>Release highlights</h3>
 <p>
-    <strong>Updated design</strong>. You asked for flatter design, you get a flatter design.
+    <strong>Kickstart CLI Mode</strong>. You can now call kickstart.php from the command line to extract backup
+    archives anywhere. Please note that restoring the site still requires visiting the installation URL manually.
 </p>
 <p>
-    <strong>Option to not rename the .htaccess file before extraction</strong>. Use with caution, it might break the
-    extraction. Useful for specific cases where you want to keep your .htaccess file because it's required to enable
-    the correct PHP version on your site.
+    <strong>Bust opcode caches before including feature and configuration files.</strong>. Fixes issues with Zend
+    OPcache, APC, XCache etc. Do note that if you replace kickstart.php with a new version you still need to
+    manually reset the opcode cache to let Kickstart run correctly (that's how opcode caches are supposed to work).
 </p>
 
 <h3>PHP 5.3.04+ is required</h3>

@@ -1,5 +1,6 @@
-Kickstart 4.2.1
+Kickstart 5.0
 ================================================================================
++ Kickstart CLI mode. Extract any Akeeba Backup / Akeeba Solo archive from the command line.
 + Bust opcode caches before including feature and configuration files. Fixes issues with Zend OPcache, APC, XCache etc.
 
 Kickstart 4.2.0
