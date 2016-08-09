@@ -450,7 +450,12 @@
         automatically scans the directory it's in for JPA and ZIP archives,
         populating the drop-down list with these results. If there are
         multiple archives present, please click on the drop down list and
-        select the one you would like to use.</para>
+        select the one you would like to use. Extracting JPS (encrypted)
+        backup archives requires either the mcrypt or OpenSSL PHP extension to
+        be installed and activated on your server. Please keep in mind that
+        even if your site is using HTTPS this doesn't mean that you have the
+        OpenSSL <emphasis>PHP extension</emphasis> installed. You usually have
+        to ask your host to enable it for you.</para>
 
         <para>If you want to import a backup archive stored in external
         storage such as Amazon S3, Dropbox etc please consult <link
@@ -1295,7 +1300,12 @@
           Informs Kickstart about the JPS encryption password. Required when
           extracting JPS files, ignored otherwise.
           <replaceable>yourPassword</replaceable> is the JPS encryption
-          password. Remember that it's case-sensitive.</para>
+          password. Remember that it's case-sensitive. Extracting JPS backup
+          archives requires either the mcrypt or OpenSSL PHP extension to be
+          installed and activated on your server. Please keep in mind that
+          even if your site is using HTTPS this doesn't mean that you have the
+          OpenSSL <emphasis>PHP extension</emphasis> installed. You usually
+          have to ask your host to enable it for you.</para>
         </listitem>
 
         <listitem>
