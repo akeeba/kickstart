@@ -15,6 +15,10 @@ restore/core.timer.php
 restore/utils.lister.php
 joomlastart/text.php
 restore/factory.php
+restore/encryption.interface.php
+restore/encryption.adapter.php
+restore/encryption.mcrypt.php
+restore/encryption.openssl.php
 restore/encryption.aes.php
 restore/mastersetup.php
 restore/application.php

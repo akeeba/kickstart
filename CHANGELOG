@@ -1,3 +1,7 @@
+Kickstart 5.1
+================================================================================
+! mcrypt is deprecated in PHP 7.1. Using OpenSSL instead when available.
+
 Kickstart 5.0
 ================================================================================
 + Kickstart CLI mode. Extract any Akeeba Backup / Akeeba Solo archive from the command line.
