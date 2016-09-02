@@ -53,7 +53,7 @@ if(defined('KSDEBUG')) {
 	}
 	error_reporting(E_ALL | E_STRICT);
 } else {
-	@error_reporting(E_NONE);
+	error_reporting(0);
 }
 
 // ==========================================================================================
