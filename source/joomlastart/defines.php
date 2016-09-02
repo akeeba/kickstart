@@ -50,7 +50,7 @@ if(defined('KSDEBUG')) {
 	error_reporting(E_ALL | E_STRICT);
 	@ini_set('display_errors', 1);
 } else {
-	@error_reporting(E_NONE);
+	error_reporting(0);
 }
 
 // ==========================================================================================

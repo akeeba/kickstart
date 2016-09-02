@@ -412,7 +412,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 	{
 		// Turn off error reporting
 		if(!defined('KSDEBUG')) {
-			$oldErrorReporting = @error_reporting(E_NONE);
+			$oldErrorReporting = error_reporting(0);
 		}
 
 		// Get UNIX style paths
