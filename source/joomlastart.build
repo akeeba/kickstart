@@ -1,6 +1,5 @@
 joomlastart/defines.php
 restore/preamble.php
-restore/json_services.php
 restore/abstract.object.php
 restore/abstract.part.php
 restore/abstract.unarchiver.php
