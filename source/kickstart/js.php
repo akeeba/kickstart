@@ -683,7 +683,15 @@ function echoHeadJavascript()
 				{
 					akeeba_ftpbrowser_directory = relativePath;
 					akeeba_ftpbrowser_hook(callback);
-					e.preventDefault();
+
+					if (e.preventDefault)
+					{
+						e.preventDefault();
+					}
+					else
+					{
+						e.returnValue = false;
+					}
 				})
 				.appendTo(li);
 
@@ -843,7 +851,15 @@ function echoHeadJavascript()
 				{
 					akeeba_sftpbrowser_directory = relativePath;
 					akeeba_sftpbrowser_hook(callback);
-					e.preventDefault();
+
+					if (e.preventDefault)
+					{
+						e.preventDefault();
+					}
+					else
+					{
+						e.returnValue = false;
+					}
 				})
 				.appendTo(li);
 
