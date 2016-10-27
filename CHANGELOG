@@ -1,6 +1,7 @@
 Kickstart 5.1
 ================================================================================
 ! mcrypt is deprecated in PHP 7.1. Using OpenSSL instead when available.
+# [HIGH] Servers with a lax interpretation of RFC 7233 could result in the downloaded file having double the size or the download failing outright when importing a backup archive from URL
 # [LOW] Importing from a URL with a query string would include the query string as part of the extension name
 
 Kickstart 5.0
