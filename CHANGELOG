@@ -1,6 +1,7 @@
 Kickstart 5.1
 ================================================================================
 ! mcrypt is deprecated in PHP 7.1. Using OpenSSL instead when available.
+# [LOW] Importing from a URL with a query string would include the query string as part of the extension name
 
 Kickstart 5.0
 ================================================================================

@@ -305,7 +305,8 @@ class AKFeatureURLImport
 			while (($timer->getTimeLeft() > 0) && !$break)
 			{
 				// Figure out where on Earth to put that file
-				$local_file = KSROOTDIR . '/' . basename($filename);
+				$fileparts = explode('?', $filename, 2);
+				$local_file = KSROOTDIR . '/' . basename($fileparts[0]);
 
 				debugMsg("- Importing from $filename");
 
