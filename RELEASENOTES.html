@@ -1,12 +1,10 @@
 <h3>Release highlights</h3>
 <p>
-    <strong>Kickstart CLI Mode</strong>. You can now call kickstart.php from the command line to extract backup
-    archives anywhere. Please note that restoring the site still requires visiting the installation URL manually.
+    <strong>Improved PHP 7.1 support</strong>. Now using OpenSSL instead of mcrypt whenever possible to handle encrypted
+    (JPS) archives and other cryptographic needs.
 </p>
 <p>
-    <strong>Bust opcode caches before including feature and configuration files.</strong>. Fixes issues with Zend
-    OPcache, APC, XCache etc. Do note that if you replace kickstart.php with a new version you still need to
-    manually reset the opcode cache to let Kickstart run correctly (that's how opcode caches are supposed to work).
+    <strong>Bug fixes</strong>. Known issues with the Import from URL have been addressed in this release.
 </p>
 
 <h3>PHP 5.3.04+ is required</h3>
