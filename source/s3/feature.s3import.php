@@ -21,7 +21,7 @@ class AKFeatureS3Import
 	 */
 	public function onExtraHeadCSS()
 	{
-		?>
+		echo <<< CSS
 
 		ul.breadcrumbs,
 		ul.breadcrumbs li {
@@ -82,10 +82,9 @@ class AKFeatureS3Import
 
 		.listpane legend {
 		font-size: 1.3rem;
-		font-weight: bold;
 		font-weight: normal;
 		line-height: 1.3;
-		text-shadow: 0px 1px white;
+		text-shadow: 0 1px white;
 		padding: 0.5em 1em;
 		border-left: thin solid #ddd;
 		border-right: thin solid #ddd;
@@ -108,7 +107,8 @@ class AKFeatureS3Import
 		background-color: #E3EAED;
 		}
 
-		<?php
+CSS;
+
 	}
 
 	/**
@@ -116,7 +116,7 @@ class AKFeatureS3Import
 	 */
 	public function onExtraHeadJavascript()
 	{
-		?>
+		echo <<< JS
 
 		var akeeba_s3_filename = null;
 
@@ -135,7 +135,7 @@ class AKFeatureS3Import
 		$('#ak-s3-error').hide('fast');
 		$('#page1-content').show('fast');
 		});
-		$('#s3\\.bucket').change(function(e){
+		$('#s3\\\\.bucket').change(function(e){
 		onAKS3BucketChange();
 		});
 		$('#ak-s3-reload').click(function(e){
@@ -165,7 +165,7 @@ class AKFeatureS3Import
 		function onAKS3Connect()
 		{
 		// Clear the bucket list
-		$('#s3\\.bucket').html('');
+		$('#s3\\\\.bucket').html('');
 		$('#ak-s3-bucketselect').css('display','none');
 		$('ul.breadcrumbs').hide('fast');
 		$('#ak-s3-folderlist').hide('fast');
@@ -175,8 +175,8 @@ class AKFeatureS3Import
 		var data = {
 		'task' : 's3connect',
 		'json' : JSON.stringify({
-		'access': $('#s3\\.access').val(),
-		'secret': $('#s3\\.secret').val(),
+		'access': $('#s3\\\\.access').val(),
+		'secret': $('#s3\\\\.secret').val(),
 		})
 		};
 		doAjax(data, function(ret){
@@ -195,7 +195,7 @@ class AKFeatureS3Import
 
 		$.each(data.buckets, function(counter, value){
 		var option = $(document.createElement('option')).attr('value', value).html(value);
-		option.appendTo( $('#s3\\.bucket') );
+		option.appendTo( $('#s3\\\\.bucket') );
 		});
 
 		$('#ak-s3-bucketselect').css('display','inline-block');
@@ -217,9 +217,9 @@ class AKFeatureS3Import
 		var data = {
 		'task' : 's3list',
 		'json' : JSON.stringify({
-		'access': $('#s3\\.access').val(),
-		'secret': $('#s3\\.secret').val(),
-		'bucket': $('#s3\\.bucket').val(),
+		'access': $('#s3\\\\.access').val(),
+		'secret': $('#s3\\\\.secret').val(),
+		'bucket': $('#s3\\\\.bucket').val(),
 		'newdir': toWhere,
 		})
 		};
@@ -292,9 +292,9 @@ class AKFeatureS3Import
 		var data = {
 		'task' : 's3import',
 		'json' : JSON.stringify({
-		'access'    : $('#s3\\.access').val(),
-		'secret'    : $('#s3\\.secret').val(),
-		'bucket'    : $('#s3\\.bucket').val(),
+		'access'    : $('#s3\\\\.access').val(),
+		'secret'    : $('#s3\\\\.secret').val(),
+		'bucket'    : $('#s3\\\\.bucket').val(),
 		'file'        : akeeba_s3_filename,
 		'part'        : "-1",
 		'frag'        : "-1",
@@ -350,9 +350,9 @@ class AKFeatureS3Import
 		post = {
 		'task'    : 's3import',
 		'json'    : JSON.stringify({
-		'access'    : $('#s3\\.access').val(),
-		'secret'    : $('#s3\\.secret').val(),
-		'bucket'    : $('#s3\\.bucket').val(),
+		'access'    : $('#s3\\\\.access').val(),
+		'secret'    : $('#s3\\\\.secret').val(),
+		'bucket'    : $('#s3\\\\.bucket').val(),
 		'file'        : akeeba_s3_filename,
 		'part'        : part,
 		'frag'        : frag,
@@ -385,7 +385,9 @@ class AKFeatureS3Import
 
 		$('#ak-s3-errorMessage').html(msg);
 		}
-		<?php
+		
+JS;
+
 	}
 
 	/**
@@ -393,7 +395,7 @@ class AKFeatureS3Import
 	 */
 	public function onPage1()
 	{
-		?>
+		echo <<< HTML
 		<div id="ak-s3-gui" style="display: none">
 			<div class="step1">
 				<div class="circle">1</div>
@@ -478,7 +480,8 @@ class AKFeatureS3Import
 			<p id="ak-s3-errorMessage" class="errorMessage"></p>
 			<div id="ak-s3-gotoStart" class="button">BTN_GOTOSTART</div>
 		</div>
-		<?php
+
+HTML;
 	}
 
 	/**
@@ -503,12 +506,11 @@ class AKFeatureS3Import
 		{
 			debugMsg('Connecting to S3');
 			debugMsg('  accessKey: ' . $params['access']);
-			debugMsg('  secretKey: ' . $params['access']);
-			$s3                  = new S3Engine(array(
-				'accessKey' => $params['access'],
-				'secretKey' => $params['secret'],
-				'useSSL'    => true
-			));
+			debugMsg('  secretKey: ' . $params['secret']);
+
+			$s3Config = new AKS3Configuration($params['access'], $params['secret'], 'v4', 'us-east-1');
+			$s3 = new AKS3Connector($s3Config);
+
 			$retArray['buckets'] = $s3->listBuckets();
 		}
 		catch (Exception $e)
@@ -534,37 +536,39 @@ class AKFeatureS3Import
 
 		try
 		{
-			$s3 = new S3Engine(array(
-				'accessKey' => $params['access'],
-				'secretKey' => $params['secret'],
-				'bucket'    => $params['bucket'],
-				'useSSL'    => true
-			));
+			$s3Config = new AKS3Configuration($params['access'], $params['secret'], 'v4', 'us-east-1');
+			$region = $this->getBucketRegion($params, $s3Config);
+			$s3Config->setRegion($region);
+			$s3 = new AKS3Connector($s3Config);
 
-			$newDir = rtrim($params['newdir'], '/');
+			$bucket = $params['bucket'];
+
+			$directory = rtrim($params['newdir'], '/');
 
 			debugMsg('Preparing to list S3 bucket');
 			debugMsg('  accessKey: ' . $params['access']);
 			debugMsg('  secretKey: ' . $params['access']);
 			debugMsg('  bucket   : ' . $params['bucket']);
+			debugMsg('  region   : ' . $region);
 
-			$folders = $s3->getFolders($newDir);
-			$files   = $s3->getFiles($newDir);
+			list($files, $folders) = $this->listBucketContents($s3, $bucket, $directory);
 
 			$retArray['crumbs']['&lt; Root &gt;'] = '/';
-			if (!empty($newDir))
+
+			if (!empty($directory))
 			{
 				$retArray['folders']['&lt; Up &gt;'] = '/';
 
-				$folderParts = explode('/', $newDir);
+				$folderParts = explode('/', $directory);
 				$stack       = array();
+
 				foreach ($folderParts as $fp)
 				{
 					$stack[]                 = $fp;
 					$retArray['crumbs'][$fp] = implode('/', $stack);
 				}
 
-				$newDir .= '/';
+				$directory .= '/';
 
 			}
 
@@ -574,17 +578,20 @@ class AKFeatureS3Import
 				{
 					continue;
 				}
-				$retArray['folders'][$f] = $newDir . $f;
+
+				$retArray['folders'][$f] = $directory . $f;
 			}
 
 			foreach ($files as $f)
 			{
 				$filename = $f['filename'];
+
 				if (!in_array(substr($filename, -4), array('.zip', '.jpa', '.jps')))
 				{
 					continue;
 				}
-				$retArray['files'][$filename] = $newDir . $filename;
+
+				$retArray['files'][$filename] = $directory . $filename;
 			}
 		}
 		catch (Exception $e)
@@ -636,7 +643,14 @@ class AKFeatureS3Import
 
 		try
 		{
-			$s3 = new S3Adapter($accessKey, $secretKey, true);
+			$s3Config = new AKS3Configuration($accessKey, $secretKey, 'v4', 'us-east-1');
+			$region = $this->getBucketRegion($params, $s3Config);
+			$s3Config->setRegion($region);
+			$s3 = new AKS3Connector($s3Config);
+
+			debugMsg('  region  : ' . $region);
+
+			$bucket = $params['bucket'];
 
 			if (($totalParts < 0) || (($part < 0) && ($frag < 0)))
 			{
@@ -651,26 +665,32 @@ class AKFeatureS3Import
 					foreach ($allFiles as $name => $file)
 					{
 						$ext = pathinfo($name, PATHINFO_EXTENSION);
+
 						// Make sure the first character of the extension matches
 						if (substr($ext, 0, 1) != substr($remoteExt, 0, 1))
 						{
 							continue;
 						}
+
 						// Make sure that either the extension matches, or it's a number
 						if (($ext != $remoteExt) && !is_numeric(substr($ext, 1)))
 						{
 							continue;
 						}
+
 						// Take into account
 						debugMsg('- File with extension ' . $ext . ', size ' . $file['size']);
+
 						$totalSize += $file['size'];
 						$totalParts++;
 					}
 				}
+
 				$doneSize               = 0;
 				$retArray['totalParts'] = $totalParts;
 				$retArray['totalSize']  = $totalSize;
 				$retArray['doneSize']   = $doneSize;
+
 				debugMsg('- Updating information:');
 				debugMsg("    totalParts: " . $totalParts);
 				debugMsg("    totalSize : " . $totalSize);
@@ -679,6 +699,7 @@ class AKFeatureS3Import
 
 			AKFactory::set('kickstart.tuning.max_exec_time', '5');
 			AKFactory::set('kickstart.tuning.run_time_bias', '75');
+
 			$timer = new AKCoreTimer();
 			$start = $timer->getRunningTime(); // Mark the start of this download
 			$break = false; // Don't break the step
@@ -690,6 +711,7 @@ class AKFeatureS3Import
 				$extension = strtolower(str_replace(".", "", strrchr($basename, ".")));
 
 				debugMsg("- Setting up import for part $part");
+
 				if ($part > 0)
 				{
 					$new_extension = substr($extension, 0, 1) . sprintf('%02u', $part);
@@ -703,6 +725,7 @@ class AKFeatureS3Import
 
 				$filename = $basename . '.' . $new_extension;
 				debugMsg("-- Filename is $filename");
+
 				$remoteFilename = substr($remoteFilename, 0, -strlen($extension)) . $new_extension;
 				debugMsg("-- Remote filename is $remoteFilename");
 
@@ -715,8 +738,10 @@ class AKFeatureS3Import
 				if ($part == -1)
 				{
 					debugMsg("-- First part, resetting doneSize and part");
+
 					// Currently downloaded size
 					$doneSize = 0;
+
 					// Init
 					$part = 0;
 				}
@@ -726,12 +751,16 @@ class AKFeatureS3Import
 				{
 					debugMsg("-- First frag in part $part, killing local file");
 					// Delete and touch the output file
+
 					@unlink($local_file);
+
 					$fp = @fopen($local_file, 'wb');
+
 					if ($fp !== false)
 					{
 						@fclose($fp);
 					}
+
 					// Init
 					$frag = 0;
 				}
@@ -746,15 +775,20 @@ class AKFeatureS3Import
 				$temp_file = $local_file . '.tmp';
 				@unlink($temp_file);
 				$required_time = 1.0;
+
 				debugMsg("-- Importing part $part, frag $frag, byte position from/to: $from / $to");
+				debugMsg("-- Temp file: $temp_file");
+
 				try
 				{
-					$result = $s3->getObject($bucket, $remoteFilename, $temp_file, $from, $to);
+					$s3->getObject($bucket, $remoteFilename, $temp_file, $from, $to);
+					$result = true;
 				}
-				catch (S3Exception $e)
+				catch (Exception $e)
 				{
 					$result = false;
 				}
+
 				if (!$result)
 				{
 					@unlink($temp_file);
@@ -770,6 +804,7 @@ class AKFeatureS3Import
 						// Failure to download the part's beginning = failure to download. Period.
 						$retArray['status'] = false;
 						$retArray['error']  = 'Could not download the file';
+
 						debugMsg("-- Download FAILED");
 
 						return $retArray;
@@ -778,8 +813,10 @@ class AKFeatureS3Import
 					{
 						// What?! We're already done here!
 						debugMsg("-- We are already done.");
+
 						$doneSize = $totalSize;
 						$break    = true;
+
 						continue;
 					}
 					else
@@ -787,6 +824,7 @@ class AKFeatureS3Import
 						// Since this is a staggered download, consider this normal and go to the next part.
 						$part++;
 						$frag = -1;
+
 						if ($part >= $totalParts)
 						{
 							debugMsg("-- Import complete - there is no next part ($part >= $totalParts)");
@@ -806,14 +844,17 @@ class AKFeatureS3Import
 				{
 					clearstatcache();
 					$filesize = (int) @filesize($temp_file);
+
 					debugMsg("-- Successful download of $filesize bytes");
 					$doneSize += $filesize;
 
 					// Append the file
 					$fp = @fopen($local_file, 'ab');
+
 					if ($fp === false)
 					{
 						debugMsg("-- Can't open local file for writing");
+
 						// Can't open the file for writing
 						@unlink($temp_file);
 						$retArray['status'] = false;
@@ -821,12 +862,15 @@ class AKFeatureS3Import
 
 						return false;
 					}
+
 					$tf = fopen($temp_file, 'rb');
+
 					while (!feof($tf))
 					{
 						$data = fread($tf, 262144);
 						fwrite($fp, $data);
 					}
+
 					fclose($tf);
 					fclose($fp);
 					@unlink($temp_file);
@@ -841,10 +885,12 @@ class AKFeatureS3Import
 
 				// Do we predict that we have enough time?
 				$required_time = max(1.1 * ($end - $start), $required_time);
+
 				if ($required_time > (10 - $end + $start))
 				{
 					$break = true;
 				}
+
 				$start = $end;
 			}
 
@@ -873,6 +919,7 @@ class AKFeatureS3Import
 		{
 			debugMsg("EXCEPTION RAISED:");
 			debugMsg($e->getMessage());
+
 			$retArray['status'] = false;
 			$retArray['error']  = $e->getMessage();
 		}
@@ -913,6 +960,84 @@ class AKFeatureS3Import
 			'AKS3_TITLE_STEP5'  => "Import is complete",
 			'AKS3_BTN_RELOAD'   => "Reload Kickstart",
 		));
+	}
+
+	/**
+	 * Returns the region for the bucket
+	 *
+	 * @param   array  $params
+	 *
+	 * @return  string
+	 */
+	protected function getBucketRegion(&$params, AKS3Configuration $config)
+	{
+		$bucket = $params['bucket'];
+		$bucketForRegion = $params['bucketForRegion'];
+		$region = $params['region'];
+
+		if (!empty($bucket) && (($bucketForRegion != $bucket) || empty($region)))
+		{
+			$config->setRegion('us-east-1');
+
+			$s3 = new AKS3Connector($config);
+			$region = $s3->getBucketLocation($bucket);
+
+			$params['bucketForRegion'] = $bucket;
+			$params['region'] = $region;
+		}
+
+		return $region;
+	}
+
+	/**
+	 * Get the contents of a specific directory of a bucket separated into files and folders.
+	 *
+	 * @param   AKS3Connector  $s3
+	 * @param   string         $bucket
+	 * @param   string         $directory
+	 *
+	 * @return  array  [files, folders]
+	 */
+	public function listBucketContents(AKS3Connector $s3, $bucket, $directory)
+	{
+		$everything = $s3->getBucket($bucket, $directory, null, null, '/', true);
+
+		if ($directory != '/')
+		{
+			$directory = trim($directory, '/') . '/';
+		}
+
+		$files = array();
+		$folders = array();
+		$dirLength = strlen($directory);
+
+		if (count($everything)) {
+			foreach ($everything as $path => $info) {
+				if (array_key_exists('size', $info) && (substr($path, -1) != '/')) {
+					if (substr($path, 0, $dirLength) == $directory) {
+						$path = substr($path, $dirLength);
+					}
+					$path = trim($path, '/');
+					$files[] = array(
+						'filename' => $path,
+						'time' => $info['time'],
+						'size' => $info['size']
+					);
+				}
+			}
+
+			foreach ($everything as $path => $info) {
+				if (!array_key_exists('size', $info) && (substr($path, -1) == '/')) {
+					if (substr($path, 0, $dirLength) == $directory) {
+						$path = substr($path, $dirLength);
+					}
+					$path = trim($path, '/');
+					$folders[] = $path;
+				}
+			}
+		}
+
+		return array($files, $folders);
 	}
 }
 

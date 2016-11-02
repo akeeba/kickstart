@@ -1,3 +1,7 @@
+Kickstart 5.1.1
+================================================================================
++ Now using Amazon S3 v4 API for the Import from Amazon S3 feature (Professional version only)
+
 Kickstart 5.1
 ================================================================================
 ! mcrypt is deprecated in PHP 7.1. Using OpenSSL instead when available.

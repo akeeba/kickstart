@@ -10,7 +10,9 @@ define('KSROOTDIR', __DIR__);
 define('KSLANGDIR', __DIR__ . '/kslang');
 define('MINIBUILD', __DIR__ . '/minibuild');
 define('KSSELFNAME', 'kickstart_test.php');
-//define('KSDEBUG', 1);
+define('KSDEBUG', 1);
+error_reporting(E_ALL | E_NOTICE | E_DEPRECATED);
+ini_set('display_errors', 1);
 
 include_once MINIBUILD . '/minibuild.php';
 
