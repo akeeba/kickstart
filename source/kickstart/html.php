@@ -189,7 +189,7 @@ function echoPage()
 							<label for="kickstart.ftp.dir">FTP_DIR</label>
 				<span class="field">
                     <input type="text" id="kickstart.ftp.dir" value=""/>
-                    <span class="button" id="browseFTP" style="margin-top:0;margin-bottom:0">FTP_BROWSE</span>
+                    <?php //<span class="button" id="browseFTP" style="margin-top:0;margin-bottom:0">FTP_BROWSE</span> ?>
                 </span><br/>
 
 							<label for="kickstart.ftp.tempdir">FTP_TEMPDIR</label>
