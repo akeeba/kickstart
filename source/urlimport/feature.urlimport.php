@@ -14,7 +14,6 @@
  */
 class AKFeatureURLImport
 {
-	private static $downloadPageURL = 'http://www.joomla.org/download.html';
 	private $params = array();
 
 	/**
@@ -353,6 +352,11 @@ class AKFeatureURLImport
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 					@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
+					if (defined('AKEEBA_CACERT_PEM'))
+					{
+						curl_setopt($ch, CURLOPT_CAINFO, AKEEBA_CACERT_PEM);
+					}
+
 					$result = curl_exec($ch);
 
 					$errno       = curl_errno($ch);
@@ -542,9 +546,14 @@ class AKFeatureURLImport
 	private function getLatestJoomlaURL()
 	{
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, self::$downloadPageURL);
+		curl_setopt($ch, CURLOPT_URL, 'https://downloads.joomla.org/latest');
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+		if (defined('AKEEBA_CACERT_PEM'))
+		{
+			curl_setopt($ch, CURLOPT_CAINFO, AKEEBA_CACERT_PEM);
+		}
 
 		$pageHTML    = curl_exec($ch);
 		$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -554,25 +563,60 @@ class AKFeatureURLImport
 			return '';
 		}
 
-		$pos_start = stripos($pageHTML, 'class="download"');
+		// Convert HTML to XML
+		$dom = new DOMDocument();
+		$dom->loadHTML($pageHTML);
+		$xml = $dom->saveXML();
 
-		if ($pos_start === false)
+		// Load XML in a SimpleXMLElement
+		$doc = new SimpleXMLElement($xml);
+
+		// Find the download links for the ZIP format
+		$links = $doc->xpath("//a[contains(@href,'format=zip')]");
+		$dlLinkAttributes = $links[0]->attributes();
+
+		// Make it into an absolute URL and return it
+		return $this->resolveRedirect('https://downloads.joomla.org' . $dlLinkAttributes['href']);
+	}
+
+	private function resolveRedirect($url)
+	{
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_NOBODY, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HEADER, 1);
+		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+
+		if (defined('AKEEBA_CACERT_PEM'))
 		{
-			return '';
+			curl_setopt($ch, CURLOPT_CAINFO, AKEEBA_CACERT_PEM);
 		}
 
-		$pos_end = stripos($pageHTML, '>', $pos_start);
+		$headers     = curl_exec($ch);
+		$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-		if ($pos_end === false)
+		if (($http_status < 300) || ($http_status > 399))
 		{
-			return '';
+			return $url;
 		}
 
-		$innerContent = substr($pageHTML, $pos_start, $pos_end - $pos_end - 1);
-		$pos_start    = stripos($innerContent, 'href="');
-		$pos_end      = stripos($innerContent, '"', $pos_start + 6);
+		$headers = explode("\r", $headers);
+		$headers = array_map('trim', $headers);
+		$newURL = '';
 
-		return substr($innerContent, $pos_start + 6, $pos_end - $pos_start - 6);
+		foreach ($headers as $line)
+		{
+			if (strpos($line, 'Location') === false)
+			{
+				continue;
+			}
+
+			list($junk, $newURL) = explode(':', $line, 2);
+			$newURL = trim($newURL);
+		}
+
+		return $this->resolveRedirect($newURL);
 	}
 
 	public function onLoadTranslations()

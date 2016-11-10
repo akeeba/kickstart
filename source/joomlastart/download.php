@@ -261,6 +261,11 @@ class JoomlastartDownload
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
+		if (defined('AKEEBA_CACERT_PEM'))
+		{
+			curl_setopt($ch, CURLOPT_CAINFO, AKEEBA_CACERT_PEM);
+		}
+
 		$data = curl_exec($ch);
 		curl_close($ch);
 
@@ -325,6 +330,11 @@ class JoomlastartDownload
 		curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+		if (defined('AKEEBA_CACERT_PEM'))
+		{
+			curl_setopt($ch, CURLOPT_CAINFO, AKEEBA_CACERT_PEM);
+		}
 
 		if (!(empty($from) && empty($to)))
 		{
