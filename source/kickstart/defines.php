@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -11,7 +11,7 @@
 
 /*
     Akeeba Kickstart - The server-side archive extraction wizard
-    Copyright (C) 2008-2016  Nicholas K. Dionysopoulos / AkeebaBackup.com
+    Copyright (C) 2008-2017  Nicholas K. Dionysopoulos / AkeebaBackup.com
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

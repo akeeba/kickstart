@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
