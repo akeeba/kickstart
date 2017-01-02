@@ -11,4 +11,6 @@
 /documentation/kickstart/*.xml~
 
 /release/*
+
+/source/buildscripts/debug.txt
 /source/output/*.php
