@@ -22,7 +22,7 @@ class AKS3Response
 	/**
 	 * Error object
 	 *
-	 * @var  Error
+	 * @var  AKS3Error
 	 */
 	private $error = null;
 
@@ -88,9 +88,9 @@ class AKS3Response
 	/**
 	 * Set the response error object
 	 *
-	 * @param   Error  $error
+	 * @param   AKS3Error  $error
 	 */
-	public function setError(Error $error)
+	public function setError(AKS3Error $error)
 	{
 		$this->error = $error;
 	}
@@ -309,7 +309,7 @@ class AKS3Response
 	}
 
 	/**
-	 * Scans the SimpleXMLElement body for errors and propagates them to the Error object
+	 * Scans the SimpleXMLElement body for errors and propagates them to the AKS3Error object
 	 */
 	protected function parseBody()
 	{

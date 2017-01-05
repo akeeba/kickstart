@@ -1,3 +1,7 @@
+Kickstart 5.2.1
+================================================================================
+# [MEDIUM] Errors in Amazon S3 connection would result in a blank error message on most servers
+
 Kickstart 5.2.0
 ================================================================================
 + Now using Amazon S3 v4 API for the Import from Amazon S3 feature (Professional version only)
