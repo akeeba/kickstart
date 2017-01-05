@@ -1,6 +1,7 @@
 Kickstart 5.2.1
 ================================================================================
-# [MEDIUM] Errors in Amazon S3 connection would result in a blank error message on most servers
+# [MEDIUM] Errors in Amazon S3 connection would result in a blank error message on most servers (Pro only)
+# [HIGH] Cannot import from Amazon S3 subdirectories (Pro only)
 
 Kickstart 5.2.0
 ================================================================================

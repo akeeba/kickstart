@@ -546,10 +546,11 @@ HTML;
 			$directory = rtrim($params['newdir'], '/');
 
 			debugMsg('Preparing to list S3 bucket');
-			debugMsg('  accessKey: ' . $params['access']);
-			debugMsg('  secretKey: ' . $params['access']);
-			debugMsg('  bucket   : ' . $params['bucket']);
-			debugMsg('  region   : ' . $region);
+			debugMsg('  accessKey : ' . $params['access']);
+			debugMsg('  secretKey : ' . $params['access']);
+			debugMsg('  bucket    : ' . $params['bucket']);
+			debugMsg('  region    : ' . $region);
+			debugMsg('  directory : ' . $directory);
 
 			list($files, $folders) = $this->listBucketContents($s3, $bucket, $directory);
 
@@ -1000,12 +1001,14 @@ HTML;
 	 */
 	public function listBucketContents(AKS3Connector $s3, $bucket, $directory)
 	{
-		$everything = $s3->getBucket($bucket, $directory, null, null, '/', true);
+		$directory = trim($directory, '/') . '/';
 
-		if ($directory != '/')
+		if ($directory == '/')
 		{
-			$directory = trim($directory, '/') . '/';
+		    $directory = '';
 		}
+
+		$everything = $s3->getBucket($bucket, $directory, null, null, '/', true);
 
 		$files = array();
 		$folders = array();
