@@ -1,3 +1,7 @@
+Kickstart 5.2.2
+================================================================================
+# [MEDIUM] The stealth .htaccess doesn't work as expected (thanks invader_11)
+
 Kickstart 5.2.1
 ================================================================================
 # [MEDIUM] Errors in Amazon S3 connection would result in a blank error message on most servers (Pro only)

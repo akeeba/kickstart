@@ -353,7 +353,7 @@ function createStealthURL()
 	$stealthHtaccess = <<<ENDHTACCESS
 RewriteEngine On
 RewriteBase /$rewrite_base
-RewriteCond %{REMOTE_HOST}		!$userIP
+RewriteCond %{REMOTE_ADDR}		!$userIP
 RewriteCond %{REQUEST_URI}		!$filename_quoted
 RewriteCond %{REQUEST_URI}		!(\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.swf|\.css|\.js)$
 RewriteRule (.*)				$filename	[R=307,L]
