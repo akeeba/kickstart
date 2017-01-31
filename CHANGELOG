@@ -1,5 +1,6 @@
-Kickstart 5.2.2
+Kickstart 5.3.0
 ================================================================================
++ Support for JPS format v2.0 with improved password security
 # [MEDIUM] The stealth .htaccess doesn't work as expected (thanks invader_11)
 
 Kickstart 5.2.1

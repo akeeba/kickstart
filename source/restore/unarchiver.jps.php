@@ -18,6 +18,14 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 
 	protected $password = '';
 
+	private static $pbkdf2Algorithm = 'sha1';
+
+	private static $pbkdf2Iterations = 1000;
+
+	private static $pbkdf2UseStaticSalt = 0;
+
+	private static $pbkdf2StaticSalt = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -54,15 +62,24 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		$bin_data    = fread($this->fp, 5);
 		$header_data = unpack('Cmajor/Cminor/cspanned/vextra', $bin_data);
 
-		// Load any remaining header data (forward compatibility)
+		// Is this a v2 archive?
+		$versionHumanReadable = $header_data['major'] . '.' . $header_data['minor'];
+		$isV2Archive = version_compare($versionHumanReadable, '2.0', 'ge');
+
+		// Load any remaining header data
 		$rest_length = $header_data['extra'];
-		if ($rest_length > 0)
+
+		if ($isV2Archive && $rest_length)
+		{
+			// V2 archives only have one kind of extra header
+			if (!$this->readKeyExpansionExtraHeader())
+			{
+				return false;
+			}
+		}
+		elseif ($rest_length > 0)
 		{
 			$junk = fread($this->fp, $rest_length);
-		}
-		else
-		{
-			$junk = '';
 		}
 
 		// Temporary array with all the data we read
@@ -145,9 +162,16 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 				return false;
 			}
 		}
-		// This a JPA Entity Block. Process the header.
+
+		// This a JPS Entity Block. Process the header.
 
 		$isBannedFile = false;
+
+		// Make sure the decryption is all set up
+		AKEncryptionAES::setPbkdf2Algorithm(self::$pbkdf2Algorithm);
+		AKEncryptionAES::setPbkdf2Iterations(self::$pbkdf2Iterations);
+		AKEncryptionAES::setPbkdf2UseStaticSalt(self::$pbkdf2UseStaticSalt);
+		AKEncryptionAES::setPbkdf2StaticSalt(self::$pbkdf2StaticSalt);
 
 		// Read and decrypt the header
 		$edbhData = fread($this->fp, 4);
@@ -155,7 +179,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		$bin_data = fread($this->fp, $edbh['encsize']);
 
 		// Decrypt and truncate
-		$bin_data = AKEncryptionAES::AESDecryptCBC($bin_data, $this->password, 128);
+		$bin_data = AKEncryptionAES::AESDecryptCBC($bin_data, $this->password);
 		$bin_data = substr($bin_data, 0, $edbh['decsize']);
 
 		// Read length of EDB and of the Entity Path Data
@@ -480,7 +504,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		}
 
 		// Decrypt the data
-		$data = AKEncryptionAES::AESDecryptCBC($data, $this->password, 128);
+		$data = AKEncryptionAES::AESDecryptCBC($data, $this->password);
 
 		// Is the length of the decrypted data less than expected?
 		$data_length = akstringlen($data);
@@ -692,7 +716,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			}
 
 			// Decrypt the data
-			$data = AKEncryptionAES::AESDecryptCBC($data, $this->password, 128);
+			$data = AKEncryptionAES::AESDecryptCBC($data, $this->password);
 
 			// Is the length of the decrypted data less than expected?
 			$data_length = akstringlen($data);
@@ -744,6 +768,59 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			$this->runState       = AK_STATE_DATAREAD;
 			$this->dataReadLength = 0;
 		}
+
+		return true;
+	}
+
+	private function readKeyExpansionExtraHeader()
+	{
+		$signature = fread($this->fp, 4);
+
+		if ($signature != "JH\x00\x01")
+		{
+			// Not a valid JPS file
+			$this->setError(AKText::_('ERR_NOT_A_JPS_FILE'));
+
+			return false;
+		}
+
+		$bin_data    = fread($this->fp, 8);
+		$header_data = unpack('vlength/Calgo/Viterations/CuseStaticSalt', $bin_data);
+
+		if ($header_data['length'] != 28)
+		{
+			// Not a valid JPS file
+			$this->setError(AKText::_('ERR_NOT_A_JPS_FILE'));
+
+			return false;
+		}
+
+		switch ($header_data['algo'])
+		{
+			case 0:
+				$algorithm = 'sha1';
+				break;
+
+			case 1:
+				$algorithm = 'sha256';
+				break;
+
+			case 2:
+				$algorithm = 'sha512';
+				break;
+
+			default:
+				// Not a valid JPS file
+				$this->setError(AKText::_('ERR_NOT_A_JPS_FILE'));
+
+				return false;
+				break;
+		}
+
+		self::$pbkdf2Algorithm     = $algorithm;
+		self::$pbkdf2Iterations    = $header_data['iterations'];
+		self::$pbkdf2UseStaticSalt = $header_data['useStaticSalt'];
+		self::$pbkdf2StaticSalt    = fread($this->fp, 16);
 
 		return true;
 	}

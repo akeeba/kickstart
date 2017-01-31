@@ -81,6 +81,24 @@ if (!function_exists('akstringlen'))
 	}
 }
 
+if (!function_exists('aksubstr'))
+{
+	if (function_exists('mb_strlen'))
+	{
+		function aksubstr($string, $start, $length = null)
+		{
+			return mb_substr($string, $start, $length, '8bit');
+		}
+	}
+	else
+	{
+		function aksubstr($string, $start, $length = null)
+		{
+			return substr($string, $start, $length);
+		}
+	}
+}
+
 /**
  * Gets a query parameter from GET or POST data
  *
