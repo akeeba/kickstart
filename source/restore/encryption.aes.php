@@ -512,7 +512,7 @@ class AKEncryptionAES
 		$data_size = unpack('V', substr($ciphertext, -4));
 
 		// Do I have a PBKDF2 salt?
-		$salt             = substr($ciphertext, -44, 20);
+		$salt             = substr($ciphertext, -92, 68);
 		$rightStringLimit = -4;
 
 		$params        = self::getKeyDerivationParameters();
@@ -528,7 +528,7 @@ class AKEncryptionAES
 			// uncompressed string length - note that using PBKDF2 means we're also using a randomized IV per the
 			// format specification).
 			$salt             = substr($salt, 4);
-			$rightStringLimit -= 20;
+			$rightStringLimit -= 68;
 
 			$key          = self::pbkdf2($password, $salt, $algorithm, $iterations, $keySizeBytes);
 		}
@@ -572,7 +572,7 @@ class AKEncryptionAES
 	}
 
 	/**
-	 * That's the old way of craeting an IV that's definitely not cryptographically sound.
+	 * That's the old way of creating an IV that's definitely not cryptographically sound.
 	 *
 	 * DO NOT USE, EVER, UNLESS YOU WANT TO DECRYPT LEGACY DATA
 	 *
