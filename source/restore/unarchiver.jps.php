@@ -787,7 +787,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		$bin_data    = fread($this->fp, 8);
 		$header_data = unpack('vlength/Calgo/Viterations/CuseStaticSalt', $bin_data);
 
-		if ($header_data['length'] != 28)
+		if ($header_data['length'] != 76)
 		{
 			// Not a valid JPS file
 			$this->setError(AKText::_('ERR_NOT_A_JPS_FILE'));
@@ -820,7 +820,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		self::$pbkdf2Algorithm     = $algorithm;
 		self::$pbkdf2Iterations    = $header_data['iterations'];
 		self::$pbkdf2UseStaticSalt = $header_data['useStaticSalt'];
-		self::$pbkdf2StaticSalt    = fread($this->fp, 16);
+		self::$pbkdf2StaticSalt    = fread($this->fp, 64);
 
 		return true;
 	}
