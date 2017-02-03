@@ -894,7 +894,7 @@ function echoHeadJavascript()
 					'kickstart.stealth.enable':       $('#kickstart\\.stealth\\.enable').is(':checked'),
 					'kickstart.stealth.url':          $('#kickstart\\.stealth\\.url').val(),
 					'kickstart.tuning.run_time_bias': 75,
-					'kickstart.setup.restoreperms':   0,
+					'kickstart.setup.restoreperms':   $('#kickstart\\.restorepermissions\\.enable').is(':checked'),
 					'kickstart.setup.dryrun':         0,
 					'kickstart.setup.ignoreerrors':   $('#kickstart\\.setup\\.ignoreerrors').is(':checked'),
 					'kickstart.enabled':              1,

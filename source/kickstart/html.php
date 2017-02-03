@@ -235,6 +235,9 @@ function echoPage()
 						<label for="kickstart.setup.renameback">RENAME_FILES</label>
 						<span class="field"><input type="checkbox" id="kickstart.setup.renameback"
 						                           checked="checked"/></span><br/>
+
+						<label for="kickstart.setup.restoreperms">RESTORE_PERMISSIONS</label>
+						<span class="field"><input type="checkbox" id="kickstart.setup.restoreperms"/></span><br/>
 					</div>
 				</div>
 

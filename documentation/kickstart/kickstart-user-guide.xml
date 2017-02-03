@@ -741,7 +741,7 @@
           negatively affect your SEO while restoring your site.</para>
         </tip>
 
-        <para>Finally, we have the <guilabel>Rename server configuration
+        <para>Then, we have the <guilabel>Rename server configuration
         files</guilabel> checkbox. By default, Kickstart will rename .htaccess
         to htaccess.bak, web.config to web.config.bak, php.ini to php.ini.bak
         and .user.ini to user.ini.bak before extracting the archive. Moreover,
@@ -780,6 +780,56 @@
           edit the htaccess.bak, web.config.bak, php.ini.bak and user.ini.bak
           files.</para>
         </warning>
+
+        <para>Finally you will find the <guilabel>Restore file
+        permissions</guilabel> checkbox. When this is checked Kickstart will
+        restore the permissions of the files (not folders!) to the ones they
+        were at backup time. Please note that there are a few caveats:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>This option only makes sense for backup archives taken on a
+            Linux or macOS server and being restored to a Linux or macOS
+            server. Windows servers do NOT have the concept of file
+            permissions. Trying to use this option when restoring an archive
+            on Windows OR with an archive that belongs to a backup taken on
+            Windows this will have unpredictable effects. Just don't do
+            it.</para>
+          </listitem>
+
+          <listitem>
+            <para>This option only works with JPA and JPS archives. ZIP
+            archives do NOT store file permissions. Using this option with ZIP
+            files has no effect.</para>
+          </listitem>
+
+          <listitem>
+            <para>Please remember that only permissions are restored, not the
+            file ownership. The ownership of the files depends on your server
+            setup and the file writing method you have used. Generally, it's a
+            REALLY BAD IDEA to restore permissions if your original site had
+            mixed ownership of its files.</para>
+          </listitem>
+
+          <listitem>
+            <para>This option does not restore folder permissions. Folders are
+            listed before files in the archive and there's no guarantee that
+            you're "done" extracting files to a folder. Therefore changing the
+            folder permissions could easily make the folder unwriteable before
+            we are done writing files to it, therefore causing the extraction
+            to fail. As a result the folders always get 0755
+            permissions.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>It is a generally BAD IDEA using this option. Restoring a backup
+        archive will result, in most cases, in all files and folders having
+        the same ownership and the same, safe permissions (0644 for files and
+        0755 for folders). Unless you truly understand what you are doing and
+        have a very specific use case you are recommended to not use this
+        option. If you are not positively sure about what you are doing you
+        may end up breaking your restored site and we won't be able to help
+        you.</para>
 
         <screenshot>
           <info>
