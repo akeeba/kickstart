@@ -152,6 +152,8 @@ class AkeebaMinibuild
 		$filteredString = '';
 
 		$tokens = token_get_all($fileString);
+		$flagInsideHeredoc = false;
+		$forceNewLine = false;
 
 		foreach ($tokens as $token)
 		{
@@ -161,25 +163,53 @@ class AkeebaMinibuild
 			{
 				$tokenType = $token[0];
 				$token = $token[1];
+			}
 
-				if (in_array($tokenType, [T_DOC_COMMENT, T_COMMENT]))
+			// Is this the start of a HEREDOC?
+			if ($tokenType == T_START_HEREDOC)
+			{
+				$flagInsideHeredoc = true;
+				$filteredString .= $token;
+
+				continue;
+			}
+
+			// Are we still inside a HEREDOC?
+			if ($flagInsideHeredoc)
+			{
+				$flagInsideHeredoc = ($tokenType != T_END_HEREDOC);
+
+				if (!$flagInsideHeredoc)
 				{
-					continue;
+					$forceNewLine = true;
 				}
 
-				$trimToken = trim($token, "\r\n\t");
+				$filteredString .= $token;
 
-				if (strlen($trimToken) == 0)
-				{
-					continue;
-				}
+				continue;
+			}
+
+			// Is this a comment we need to skip?
+			if (in_array($tokenType, [T_DOC_COMMENT, T_COMMENT]))
+			{
+				continue;
+			}
+
+			// Anything else needs to be trimmed
+			$trimToken = trim($token, "\r\n\t");
+
+			// If it's an empty line, skip it
+			if (strlen($trimToken) == 0)
+			{
+				continue;
 			}
 
 			$filteredString .= $token;
 
-			if ($tokenType == T_END_HEREDOC)
+			if ($forceNewLine)
 			{
 				$filteredString .= "\n";
+				$forceNewLine = false;
 			}
 		}
 
