@@ -1,3 +1,4 @@
+header/restore.php
 restore/preamble.php
 restore/abstract.object.php
 restore/abstract.part.php

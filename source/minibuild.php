@@ -19,7 +19,7 @@ class AkeebaMinibuild
 	 *
 	 * @throws  Exception
 	 */
-	public function minibuild($buildfile, $merge = true, $rootDir = null)
+	public function minibuild($buildfile, $merge = true, $rootDir = null, $includeHeaders = true)
 	{
 		$buildFileDir = dirname($buildfile);
 
@@ -40,53 +40,78 @@ class AkeebaMinibuild
 		foreach ($lines as $line)
 		{
 			$line = trim($line);
-			$output .= "\n";
 
 			if (substr($line, 0, 6) == 'BUILD:')
 			{
 				$newFilename = substr($line, 6);
 				$newFilename = $buildFileDir . '/' . $newFilename . '.build';
 
-				$ret = $this->minibuild($newFilename, $merge, $rootDir);
+				$ret = $this->minibuild($newFilename, $merge, $rootDir, false);
 
 				if (is_string($ret))
 				{
 					$output .= $ret;
 				}
+
+				continue;
 			}
-			else
+
+			$path = $rootDir . '/' . $line;
+
+			if (!is_file($path))
 			{
-				$path = $rootDir . '/' . $line;
-
-				if (!is_file($path))
-				{
-					throw new Exception("Included file $path not found");
-				}
-
-				if (!$merge)
-				{
-					// Bust opcode caches
-					if (function_exists('opcache_invalidate')) opcache_invalidate($path);
-					if (function_exists('apc_compile_file')) apc_compile_file($path);
-					if (function_exists('wincache_refresh_if_changed')) wincache_refresh_if_changed(array($path));
-					if (function_exists('xcache_asm')) xcache_asm($path);
-					@include_once $path;
-				}
-				else
-				{
-					$output .= $this->prepareFile($path);
-				}
+				throw new Exception("Included file $path not found");
 			}
+
+			if ($merge)
+			{
+				if (substr($line, 0, 7) == 'header/')
+				{
+					if (!$includeHeaders)
+					{
+						continue;
+					}
+
+					$output .= file_get_contents($path);
+
+					continue;
+				}
+
+				$output .= "\n" . $this->prepareFile($path);
+
+				continue;
+			}
+
+			// Bust opcode caches
+			if (function_exists('opcache_invalidate'))
+			{
+				opcache_invalidate($path);
+			}
+
+			if (function_exists('apc_compile_file'))
+			{
+				apc_compile_file($path);
+			}
+
+			if (function_exists('wincache_refresh_if_changed'))
+			{
+				wincache_refresh_if_changed(array($path));
+			}
+
+			if (function_exists('xcache_asm'))
+			{
+				xcache_asm($path);
+			}
+
+			@include_once $path;
 		}
 
 		if ($merge)
 		{
 			return $output;
 		}
-		else
-		{
-			return true;
-		}
+
+		return true;
 	}
 
 	/**
@@ -96,7 +121,7 @@ class AkeebaMinibuild
 	 *
 	 * @return  string
 	 */
-	protected function prepareFile($path)
+	protected function XXX_prepareFile($path)
 	{
 		$lines = file($path);
 
@@ -112,4 +137,69 @@ class AkeebaMinibuild
 
 		return $ret;
 	}
+
+	/**
+	 * Prepares a .php file for merge
+	 *
+	 * @param   string $path The full path to the file to include
+	 *
+	 * @return  string
+	 */
+	protected function prepareFile($path)
+	{
+		// Remove comments
+		$fileString = file_get_contents($path);
+		$filteredString = '';
+
+		$tokens = token_get_all($fileString);
+
+		foreach ($tokens as $token)
+		{
+			$tokenType = null;
+
+			if (is_array($token))
+			{
+				$tokenType = $token[0];
+				$token = $token[1];
+
+				if (in_array($tokenType, [T_DOC_COMMENT, T_COMMENT]))
+				{
+					continue;
+				}
+
+				$trimToken = trim($token, "\r\n\t");
+
+				if (strlen($trimToken) == 0)
+				{
+					continue;
+				}
+			}
+
+			$filteredString .= $token;
+
+			if ($tokenType == T_END_HEREDOC)
+			{
+				$filteredString .= "\n";
+			}
+		}
+
+		unset($fileString);
+
+		$lines = explode("\n", $filteredString);
+
+		// Remove the first line (open php tag)
+		$yanked = array_shift($lines);
+
+		unset ($yanked);
+
+		$ret = '';
+
+		foreach ($lines as $l)
+		{
+			$ret .= rtrim($l) . "\n";
+		}
+
+		return $ret;
+	}
+
 }

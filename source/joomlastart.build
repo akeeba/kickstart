@@ -1,3 +1,4 @@
+header/joomlastart.php
 joomlastart/defines.php
 restore/preamble.php
 restore/abstract.object.php
