@@ -454,12 +454,14 @@ class AKFeatureURLImport
 					if ($filesize > $length)
 					{
 						debugMsg("-- Read more data than the requested length. I assume this file is complete.");
-						$frag = -1;
+						$break = true;
+						$frag  = - 1;
 					}
 					elseif ($filesize < $length)
 					{
 						debugMsg("-- Read less data than the requested length. I assume this file is complete.");
-						$frag = -1;
+						$break = true;
+						$frag  = - 1;
 					}
 					else
 					{
