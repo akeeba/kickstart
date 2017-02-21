@@ -1,21 +1,26 @@
 <h3>Release highlights</h3>
 <p>
-    <strong>Amazon S3 v4 API support</strong>. Kickstart Professional's Import from S3 feature is now using the modern
-    Amazon S3 v4 API. This lets you import archives from Amazon S3 regions which only support the v4 API such as
-    Frankfurt and Sao Paolo. It also supports S3 regions in China –currently Amazon only offers one in Beijing– which
-    work only with the v4 API.
+    <strong>Support for JPS format v2.0</strong>. Akeeba Backup for Joomla! 5.3 as well as Akeeba Backup for WordPress
+    and Akeeba Solo 2.1 and later versions use a newer version of the JPS encrypted archive format. Please use Kickstart
+    5.3.0 or later to extract these backup archives.
 </p>
 <p>
-    <strong>Support for the new Joomla download location</strong>. The Import from URL feature now lets you import the
-    latest Joomla version's installation ZIP file. This was broken in all previous Kickstart versions due to changes
-    in the way Joomla itself serves the downloads since November 2016.
+    <strong>Option to restore file permissions</strong>. If you are restoring a JPA or JPS backup archive on a Linux,
+    macOS, *BSD or other UNIX-based operating system you can now restore the file permissions. WARNING! DANGER! This is
+    a BAD IDEA if your original site had mixed ownership of files. Furthermore please note that Windows DOES NOT have a
+    concept of file permissions, therefore this feature will do NOTHING AT ALL on Windows. Kindly remember that this is
+    how Windows works and there is nothing we can do about it (we are not Microsoft). Thank you.
 </p>
 <p>
-    <strong>Better support from importing from HTTPS sites</strong>.
+    <strong>Importing large files from a URL now actually works</strong>. There was a bug with importing large files
+    from a URL which caused the download to restart repeatedly and ultimately fail.
+</p>
+<p>
+    <strong>The Stealth mode .htaccess didn't work as expected</strong>. Fixed thanks to the bug report by invader_11.
 </p>
 
 <h3>PHP 5.3.04+ is required</h3>
 <p>
-    Akeeba Kickstart requires PHP 5.3.04+, 5.4, 5.5, 5.6 or 7.0. It won't run on hosts running PHP 5.3.03 (usually
+    Akeeba Kickstart requires PHP 5.3.04+, 5.4, 5.5, 5.6, 7.0 or 7.1. It won't run on hosts running PHP 5.3.03 (usually
     written as 5.3.3) or earlier, including PHP 5.2, 5.1, 5.0 and all 4.x versions.
 </p>
