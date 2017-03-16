@@ -1,5 +1,5 @@
+header/restore.php
 restore/preamble.php
-restore/json_services.php
 restore/abstract.object.php
 restore/abstract.part.php
 restore/abstract.unarchiver.php
@@ -16,6 +16,10 @@ restore/core.timer.php
 restore/utils.lister.php
 restore/text.php
 restore/factory.php
+restore/encryption.interface.php
+restore/encryption.adapter.php
+restore/encryption.mcrypt.php
+restore/encryption.openssl.php
 restore/encryption.aes.php
 restore/mastersetup.php
 restore/application.php

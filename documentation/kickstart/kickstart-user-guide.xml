@@ -7,7 +7,7 @@
       xmlns:html="http://www.w3.org/1999/xhtml"
       xmlns:db="http://docbook.org/ns/docbook">
   <info>
-    <title>Akeeba Kickstart 4.x User's Guide</title>
+    <title>Akeeba Kickstart 5.x User's Guide</title>
 
     <author>
       <personname><firstname>Nicholas</firstname><othername>K.</othername><surname>Dionysopoulos</surname></personname>
@@ -17,7 +17,7 @@
       </affiliation>
     </author>
 
-    <pubdate>March 2016</pubdate>
+    <pubdate>August 2016</pubdate>
 
     <copyright>
       <year>2008-2016</year>
@@ -50,7 +50,8 @@
 
       <para><application>Kickstart</application> is a <acronym>PHP</acronym>
       executable file ( <emphasis>script</emphasis> ) which extracts JPA, JPS
-      and ZIP archives.</para>
+      and ZIP archives. It can be used over the web (from a web browser) or
+      directly from the CLI.</para>
 
       <para>Typically, it's used to extract the backup archives created with
       Akeeba Backup and Akeeba Solo on a new server or when the administrative
@@ -449,7 +450,12 @@
         automatically scans the directory it's in for JPA and ZIP archives,
         populating the drop-down list with these results. If there are
         multiple archives present, please click on the drop down list and
-        select the one you would like to use.</para>
+        select the one you would like to use. Extracting JPS (encrypted)
+        backup archives requires either the mcrypt or OpenSSL PHP extension to
+        be installed and activated on your server. Please keep in mind that
+        even if your site is using HTTPS this doesn't mean that you have the
+        OpenSSL <emphasis>PHP extension</emphasis> installed. You usually have
+        to ask your host to enable it for you.</para>
 
         <para>If you want to import a backup archive stored in external
         storage such as Amazon S3, Dropbox etc please consult <link
@@ -735,7 +741,7 @@
           negatively affect your SEO while restoring your site.</para>
         </tip>
 
-        <para>Finally, we have the <guilabel>Rename server configuration
+        <para>Then, we have the <guilabel>Rename server configuration
         files</guilabel> checkbox. By default, Kickstart will rename .htaccess
         to htaccess.bak, web.config to web.config.bak, php.ini to php.ini.bak
         and .user.ini to user.ini.bak before extracting the archive. Moreover,
@@ -774,6 +780,56 @@
           edit the htaccess.bak, web.config.bak, php.ini.bak and user.ini.bak
           files.</para>
         </warning>
+
+        <para>Finally you will find the <guilabel>Restore file
+        permissions</guilabel> checkbox. When this is checked Kickstart will
+        restore the permissions of the files (not folders!) to the ones they
+        were at backup time. Please note that there are a few caveats:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>This option only makes sense for backup archives taken on a
+            Linux or macOS server and being restored to a Linux or macOS
+            server. Windows servers do NOT have the concept of file
+            permissions. Trying to use this option when restoring an archive
+            on Windows OR with an archive that belongs to a backup taken on
+            Windows this will have unpredictable effects. Just don't do
+            it.</para>
+          </listitem>
+
+          <listitem>
+            <para>This option only works with JPA and JPS archives. ZIP
+            archives do NOT store file permissions. Using this option with ZIP
+            files has no effect.</para>
+          </listitem>
+
+          <listitem>
+            <para>Please remember that only permissions are restored, not the
+            file ownership. The ownership of the files depends on your server
+            setup and the file writing method you have used. Generally, it's a
+            REALLY BAD IDEA to restore permissions if your original site had
+            mixed ownership of its files.</para>
+          </listitem>
+
+          <listitem>
+            <para>This option does not restore folder permissions. Folders are
+            listed before files in the archive and there's no guarantee that
+            you're "done" extracting files to a folder. Therefore changing the
+            folder permissions could easily make the folder unwriteable before
+            we are done writing files to it, therefore causing the extraction
+            to fail. As a result the folders always get 0755
+            permissions.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>It is a generally BAD IDEA using this option. Restoring a backup
+        archive will result, in most cases, in all files and folders having
+        the same ownership and the same, safe permissions (0644 for files and
+        0755 for folders). Unless you truly understand what you are doing and
+        have a very specific use case you are recommended to not use this
+        option. If you are not positively sure about what you are doing you
+        may end up breaking your restored site and we won't be able to help
+        you.</para>
 
         <screenshot>
           <info>
@@ -1228,6 +1284,151 @@
       <para>You will have to follow a similar procedure. As long as you can
       get a publicly accessible HTTP/HTTPS URL for your files you can import
       them using Akeeba Kickstart's Import from URL feature.</para>
+    </section>
+
+    <section xml:id="cli-mode">
+      <title>Using from the CLI</title>
+
+      <note>
+        <para>This is an advanced feature for power users. Most regular users
+        should only use Kickstart as a web application.</para>
+      </note>
+
+      <para>Akeeba Kickstart 5.0 and later includes a CLI mode. It lets you
+      run Kickstart as a command line application which can extract a backup
+      archive taken with Akeeba Backup or Akeeba Solo.</para>
+
+      <para>In its simplest form you can use it as:</para>
+
+      <programlisting>php kickstart.php archive.jpa</programlisting>
+
+      <para>where</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><option>php</option> is the path to the PHP CLI executable.
+          You need PHP 5.3.03 or later to run Kickstart.</para>
+        </listitem>
+
+        <listitem>
+          <para><option>kickstart.php</option> is the path to Kickstart
+          itself.</para>
+        </listitem>
+
+        <listitem>
+          <para><option>archive.jpa</option> is the path to the JPA, JPS or
+          ZIP archive you want to extract.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Kickstart will extract the backup archive to the current
+      directory. If you want to extract the backup archive to a different
+      directory you should instead use it as</para>
+
+      <programlisting>php kickstart.php archive.jpa /extract/to</programlisting>
+
+      <para>where</para>
+
+      <para><itemizedlist>
+          <listitem>
+            <para><option>/extract/to</option> is the path where extracted
+            files will be placed.</para>
+          </listitem>
+        </itemizedlist>Please note that the directory where files are being
+      extracted must be writable by the user under which the PHP process will
+      be executing. This is typically the same user you are logged in with.
+      Furthermore, unlike the web interface, Kickstart CLI does
+      <emphasis>NOT</emphasis> support the FTP or Hybrid write mode.</para>
+
+      <para>The following options can be added at the the end of the command
+      line, separated from the rest of the command line and each other with a
+      space:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><option>--password=<replaceable>yourPassword</replaceable></option>
+          Informs Kickstart about the JPS encryption password. Required when
+          extracting JPS files, ignored otherwise.
+          <replaceable>yourPassword</replaceable> is the JPS encryption
+          password. Remember that it's case-sensitive. Extracting JPS backup
+          archives requires either the mcrypt or OpenSSL PHP extension to be
+          installed and activated on your server. Please keep in mind that
+          even if your site is using HTTPS this doesn't mean that you have the
+          OpenSSL <emphasis>PHP extension</emphasis> installed. You usually
+          have to ask your host to enable it for you.</para>
+        </listitem>
+
+        <listitem>
+          <para><option>--silent</option> Do not print out any messages. If an
+          error occurs you'll get exit code 255. If the extraction succeeds
+          you'll get exit code 0.</para>
+        </listitem>
+
+        <listitem>
+          <para><option>--permissions</option> Restore the permissions stored
+          in the backup archive. Otherwise folders get 0755 permissions and
+          files get 0644 permissions (recommended for most sites).</para>
+        </listitem>
+
+        <listitem>
+          <para><option>--dry-run</option> Do not write anything to disk.
+          Useful to test the integrity of a backup archive.</para>
+        </listitem>
+
+        <listitem>
+          <para><option>--ignore-errors</option> Ignore most file write and
+          archive errors. Useful to extract semi-corrupt archives which
+          otherwise fail.</para>
+        </listitem>
+      </itemizedlist>
+
+      <bridgehead>Differences from the Kickstart web interface</bridgehead>
+
+      <para>Unlike Kickstart's web interface, the CLI mode does NOT rename the
+      .htaccess, php.ini and .user.ini files. If you are extracting on a
+      different server or location (file system directory, web subdirectory,
+      domain or sub-domain) than the one you backed up from it MAY be
+      impossible to access the restoration script (visit the
+      <filename>installation</filename> directory from the web).</para>
+
+      <para>Kickstart CLI merely <emphasis>extracts</emphasis> the backup
+      archive, it <emphasis>does NOT restore the site</emphasis>. This isn't
+      different from Kickstart's web interface (the site restoration is done
+      by the restoration script which is included in the backup archive, not
+      Kickstart) but we feel we have to stress it out. After extraction you
+      still need to access the installation directory to complete the site
+      restoration. Alternatively, if you are a subscriber to any subscription
+      which includes Akeeba Backup or Akeeba Solo, you may use Akeeba UNiTE to
+      automatically extract <emphasis>and</emphasis> restore backup
+      archives.</para>
+
+      <para>Kickstart CLI does not support writing to files over FTP or the
+      Hybrid file write mode. This is deliberate and won't change. Both FTP
+      and Hybrid file write modes were created as an attempt to overcome
+      limitations in the way <emphasis>web servers</emphasis> handle PHP
+      scripts. Kickstart CLI running from the command line it has the same
+      privileges as the user you are logged in with, therefore doesn't need to
+      go through the inefficient FTP upload workaround.</para>
+
+      <para>Kickstart CLI does not support the Stealth Mode. That requires
+      replacing the extracted .htaccess file and switch it back after the
+      site's restoration. While that makes sense in a web interface, it
+      doesn't make sense in a CLI environment. You can always create your own
+      stealth .htaccess file after extracting the backup archive.</para>
+
+      <para>Kickstart CLI does not support the additional Kickstart features
+      like importing from a URL, importing from S3 or downloading Joomla! or
+      WordPress for you. These are all features which only make sense in the
+      web. In a command line environment you can always use
+      <command>wget</command> or <command>curl</command> to import files from
+      a URL (including downloading the latest CMS versions!) and
+      <command>s3cmd</command> to download from Amazon S3. Therefore Kickstart
+      CLI won't try to reinvent the wheel by reproducing partial functionality
+      of well-tested solutions.</para>
+
+      <para>All in all, Kickstart CLI is meant to be a part of your command
+      line toolchain which will help you manage your site backups most
+      efficiently.</para>
     </section>
   </chapter>
 

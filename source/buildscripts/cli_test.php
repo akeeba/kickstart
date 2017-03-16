@@ -4,7 +4,6 @@ define('KSDEBUG', 1);
 define('KSDEBUGCLI', 1);
 
 require_once __DIR__ . '/../restore/preamble.php';
-require_once __DIR__ . '/../restore/json_services.php';
 require_once __DIR__ . '/../restore/abstract.object.php';
 require_once __DIR__ . '/../restore/abstract.part.php';
 require_once __DIR__ . '/../restore/abstract.unarchiver.php';
@@ -21,6 +20,10 @@ require_once __DIR__ . '/../restore/core.timer.php';
 require_once __DIR__ . '/../restore/utils.lister.php';
 require_once __DIR__ . '/../restore/text.php';
 require_once __DIR__ . '/../restore/factory.php';
+require_once __DIR__ . '/../restore/encryption.interface.php';
+require_once __DIR__ . '/../restore/encryption.adapter.php';
+require_once __DIR__ . '/../restore/encryption.mcrypt.php';
+require_once __DIR__ . '/../restore/encryption.openssl.php';
 require_once __DIR__ . '/../restore/encryption.aes.php';
 require_once __DIR__ . '/../restore/mastersetup.php';
 require_once __DIR__ . '/../restore/application.php';

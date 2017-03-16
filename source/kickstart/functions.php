@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -47,29 +47,39 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 	$dir       = $directory;
 
 	// Parse directory to parts
-	$parsed_dir = trim($dir,'/');
-	$parts = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
+	$parsed_dir = trim($dir, '/');
+	$parts      = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
 
 	// Find the path to the parent directory
-	if(!empty($parts)) {
+	if (!empty($parts))
+	{
 		$copy_of_parts = $parts;
 		array_pop($copy_of_parts);
-		if(!empty($copy_of_parts)) {
+		if (!empty($copy_of_parts))
+		{
 			$parent_directory = '/' . implode('/', $copy_of_parts);
-		} else {
+		}
+		else
+		{
 			$parent_directory = '/';
 		}
-	} else {
+	}
+	else
+	{
 		$parent_directory = '';
 	}
 
 	// Connect to the server
-	if($ssl) {
+	if ($ssl)
+	{
 		$con = @ftp_ssl_connect($host, $port);
-	} else {
+	}
+	else
+	{
 		$con = @ftp_connect($host, $port);
 	}
-	if($con === false) {
+	if ($con === false)
+	{
 		return array(
 			'error' => 'FTPBROWSER_ERROR_HOSTNAME'
 		);
@@ -77,7 +87,8 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 
 	// Login
 	$result = @ftp_login($con, $username, $password);
-	if($result === false) {
+	if ($result === false)
+	{
 		return array(
 			'error' => 'FTPBROWSER_ERROR_USERPASS'
 		);
@@ -87,9 +98,11 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 	@ftp_pasv($con, $passive);
 
 	// Try to chdir to the specified directory
-	if(!empty($dir)) {
+	if (!empty($dir))
+	{
 		$result = @ftp_chdir($con, $dir);
-		if($result === false) {
+		if ($result === false)
+		{
 			return array(
 				'error' => 'FTPBROWSER_ERROR_NOACCESS'
 			);
@@ -99,16 +112,17 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 	{
 		$directory = @ftp_pwd($con);
 
-		$parsed_dir  = trim($directory, '/');
-		$parts = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
+		$parsed_dir       = trim($directory, '/');
+		$parts            = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
 		$parent_directory = $this->directory;
 	}
 
 	// Get a raw directory listing (hoping it's a UNIX server!)
-	$list = @ftp_rawlist($con,'.');
+	$list = @ftp_rawlist($con, '.');
 	ftp_close($con);
 
-	if($list === false) {
+	if ($list === false)
+	{
 		return array(
 			'error' => 'FTPBROWSER_ERROR_UNSUPPORTED'
 		);
@@ -118,30 +132,33 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 	$folders = parse_rawlist($list);
 
 	return array(
-		'error'			=> '',
-		'list'			=> $folders,
-		'breadcrumbs'	=> $parts,
-		'directory'		=> $directory,
-		'parent'		=> $parent_directory
+		'error'       => '',
+		'list'        => $folders,
+		'breadcrumbs' => $parts,
+		'directory'   => $directory,
+		'parent'      => $parent_directory
 	);
 }
 
 function parse_rawlist($list)
 {
 	$folders = array();
-	foreach($list as $v)
+	foreach ($list as $v)
 	{
-		$info = array();
+		$info  = array();
 		$vinfo = preg_split("/[\s]+/", $v, 9);
-		if ($vinfo[0] !== "total") {
+		if ($vinfo[0] !== "total")
+		{
 			$perms = $vinfo[0];
-			if(substr($perms,0,1) == 'd') {
+			if (substr($perms, 0, 1) == 'd')
+			{
 				$folders[] = $vinfo[8];
 			}
 		}
 	}
 
 	asort($folders);
+
 	return $folders;
 }
 
@@ -151,19 +168,25 @@ function getSftpListing($directory, $host, $port, $username, $password)
 	$dir       = $directory;
 
 	// Parse directory to parts
-	$parsed_dir = trim($dir,'/');
-	$parts = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
+	$parsed_dir = trim($dir, '/');
+	$parts      = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
 
 	// Find the path to the parent directory
-	if(!empty($parts)) {
+	if (!empty($parts))
+	{
 		$copy_of_parts = $parts;
 		array_pop($copy_of_parts);
-		if(!empty($copy_of_parts)) {
+		if (!empty($copy_of_parts))
+		{
 			$parent_directory = '/' . implode('/', $copy_of_parts);
-		} else {
+		}
+		else
+		{
 			$parent_directory = '/';
 		}
-	} else {
+	}
+	else
+	{
 		$parent_directory = '';
 	}
 
@@ -172,7 +195,7 @@ function getSftpListing($directory, $host, $port, $username, $password)
 	$sftphandle = null;
 
 	// Open a connection
-	if(!function_exists('ssh2_connect'))
+	if (!function_exists('ssh2_connect'))
 	{
 		return array(
 			'error' => AKText::_('SFTP_NO_SSH2')
@@ -188,7 +211,7 @@ function getSftpListing($directory, $host, $port, $username, $password)
 		);
 	}
 
-	if(!ssh2_auth_password($connection, $username, $password))
+	if (!ssh2_auth_password($connection, $username, $password))
 	{
 		return array(
 			'error' => AKText::_('SFTP_WRONG_USER')
@@ -197,7 +220,7 @@ function getSftpListing($directory, $host, $port, $username, $password)
 
 	$sftphandle = ssh2_sftp($connection);
 
-	if($sftphandle === false)
+	if ($sftphandle === false)
 	{
 		return array(
 			'error' => AKText::_('SFTP_NO_FTP_SUPPORT')
@@ -210,24 +233,30 @@ function getSftpListing($directory, $host, $port, $username, $password)
 
 	if (empty($dir))
 	{
-		$dir = ssh2_sftp_realpath($sftphandle, ".");
+		$dir       = ssh2_sftp_realpath($sftphandle, ".");
 		$directory = $dir;
 
 		// Parse directory to parts
-		$parsed_dir  = trim($dir, '/');
-		$parts = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
+		$parsed_dir = trim($dir, '/');
+		$parts      = empty($parsed_dir) ? array() : explode('/', $parsed_dir);
 
 		// Find the path to the parent directory
-		if (!empty($parts)) {
+		if (!empty($parts))
+		{
 			$copy_of_parts = $parts;
 			array_pop($copy_of_parts);
 
-			if (!empty($copy_of_parts)) {
+			if (!empty($copy_of_parts))
+			{
 				$parent_directory = '/' . implode('/', $copy_of_parts);
-			} else {
+			}
+			else
+			{
 				$parent_directory = '/';
 			}
-		} else {
+		}
+		else
+		{
 			$parent_directory = '';
 		}
 	}
@@ -259,11 +288,11 @@ function getSftpListing($directory, $host, $port, $username, $password)
 	}
 
 	return array(
-		'error'			=> '',
-		'list'			=> $list,
-		'breadcrumbs'	=> $parts,
-		'directory'		=> $directory,
-		'parent'		=> $parent_directory
+		'error'       => '',
+		'list'        => $list,
+		'breadcrumbs' => $parts,
+		'directory'   => $directory,
+		'parent'      => $parent_directory
 	);
 }
 
@@ -279,16 +308,22 @@ function getSftpListing($directory, $host, $port, $username, $password)
 function resolvePath($filename)
 {
 	$filename = str_replace('//', '/', $filename);
-	$parts = explode('/', $filename);
-	$out = array();
-	foreach ($parts as $part){
-		if ($part == '.') continue;
-		if ($part == '..') {
+	$parts    = explode('/', $filename);
+	$out      = array();
+	foreach ($parts as $part)
+	{
+		if ($part == '.')
+		{
+			continue;
+		}
+		if ($part == '..')
+		{
 			array_pop($out);
 			continue;
 		}
 		$out[] = $part;
 	}
+
 	return implode('/', $out);
 }
 
@@ -296,13 +331,19 @@ function createStealthURL()
 {
 	$filename = AKFactory::get('kickstart.stealth.url', '');
 	// We need an HTML file!
-	if(empty($filename)) return;
+	if (empty($filename))
+	{
+		return;
+	}
 	// Make sure it ends in .html or .htm
 	$filename = basename($filename);
-	if( (strtolower(substr($filename,-5)) != '.html') && (strtolower(substr($filename,-4)) != '.htm') ) return;
+	if ((strtolower(substr($filename, -5)) != '.html') && (strtolower(substr($filename, -4)) != '.htm'))
+	{
+		return;
+	}
 
-	$filename_quoted = str_replace('.','\\.',$filename);
-	$rewrite_base = trim(dirname(AKFactory::get('kickstart.stealth.url', '')),'/');
+	$filename_quoted = str_replace('.', '\\.', $filename);
+	$rewrite_base    = trim(dirname(AKFactory::get('kickstart.stealth.url', '')), '/');
 
 	// Get the IP
 	$userIP = $_SERVER['REMOTE_ADDR'];
@@ -312,7 +353,7 @@ function createStealthURL()
 	$stealthHtaccess = <<<ENDHTACCESS
 RewriteEngine On
 RewriteBase /$rewrite_base
-RewriteCond %{REMOTE_HOST}		!$userIP
+RewriteCond %{REMOTE_ADDR}		!$userIP
 RewriteCond %{REQUEST_URI}		!$filename_quoted
 RewriteCond %{REQUEST_URI}		!(\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.swf|\.css|\.js)$
 RewriteRule (.*)				$filename	[R=307,L]

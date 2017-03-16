@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd.
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -17,28 +17,39 @@ class AKUtilsLister extends AKAbstractObject
 	public function &getFiles($folder, $pattern = '*')
 	{
 		// Initialize variables
-		$arr = array();
+		$arr   = array();
 		$false = false;
 
-		if(!is_dir($folder)) return $false;
+		if (!is_dir($folder))
+		{
+			return $false;
+		}
 
 		$handle = @opendir($folder);
 		// If directory is not accessible, just return FALSE
-		if ($handle === FALSE) {
-			$this->setWarning( 'Unreadable directory '.$folder);
+		if ($handle === false)
+		{
+			$this->setWarning('Unreadable directory ' . $folder);
+
 			return $false;
 		}
 
 		while (($file = @readdir($handle)) !== false)
 		{
-			if( !fnmatch($pattern, $file) ) continue;
+			if (!fnmatch($pattern, $file))
+			{
+				continue;
+			}
 
 			if (($file != '.') && ($file != '..'))
 			{
-				$ds = ($folder == '') || ($folder == '/') || (@substr($folder, -1) == '/') || (@substr($folder, -1) == DIRECTORY_SEPARATOR) ? '' : DIRECTORY_SEPARATOR;
-				$dir = $folder . $ds . $file;
+				$ds    =
+					($folder == '') || ($folder == '/') || (@substr($folder, -1) == '/') || (@substr($folder, -1) == DIRECTORY_SEPARATOR) ?
+						'' : DIRECTORY_SEPARATOR;
+				$dir   = $folder . $ds . $file;
 				$isDir = is_dir($dir);
-				if (!$isDir) {
+				if (!$isDir)
+				{
 					$arr[] = $dir;
 				}
 			}
@@ -51,28 +62,39 @@ class AKUtilsLister extends AKAbstractObject
 	public function &getFolders($folder, $pattern = '*')
 	{
 		// Initialize variables
-		$arr = array();
+		$arr   = array();
 		$false = false;
 
-		if(!is_dir($folder)) return $false;
+		if (!is_dir($folder))
+		{
+			return $false;
+		}
 
 		$handle = @opendir($folder);
 		// If directory is not accessible, just return FALSE
-		if ($handle === FALSE) {
-			$this->setWarning( 'Unreadable directory '.$folder);
+		if ($handle === false)
+		{
+			$this->setWarning('Unreadable directory ' . $folder);
+
 			return $false;
 		}
 
 		while (($file = @readdir($handle)) !== false)
 		{
-			if( !fnmatch($pattern, $file) ) continue;
+			if (!fnmatch($pattern, $file))
+			{
+				continue;
+			}
 
 			if (($file != '.') && ($file != '..'))
 			{
-				$ds = ($folder == '') || ($folder == '/') || (@substr($folder, -1) == '/') || (@substr($folder, -1) == DIRECTORY_SEPARATOR) ? '' : DIRECTORY_SEPARATOR;
-				$dir = $folder . $ds . $file;
+				$ds    =
+					($folder == '') || ($folder == '/') || (@substr($folder, -1) == '/') || (@substr($folder, -1) == DIRECTORY_SEPARATOR) ?
+						'' : DIRECTORY_SEPARATOR;
+				$dir   = $folder . $ds . $file;
 				$isDir = is_dir($dir);
-				if ($isDir) {
+				if ($isDir)
+				{
 					$arr[] = $dir;
 				}
 			}

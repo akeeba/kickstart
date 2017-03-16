@@ -8,7 +8,7 @@
  * This tool is derived from Akeeba Kickstart, the on-line archive extraction
  * tool by Akeeba Ltd.
  *
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     joomla
  * @subpackage  joomlastart
@@ -22,14 +22,14 @@ function echoPage()
 	$translationStrings = getTranslationStrings();
 
 	$downloadHelper = new JoomlastartDownload();
-	$downloadRet = $downloadHelper->getJoomlaDownloadURL();
+	$downloadRet    = $downloadHelper->getJoomlaDownloadURL();
 
 	$vars = array(
-		'download-error'	=> $downloadRet['error'],
-		'download-url'		=> $downloadRet['url'],
-		'ftp-checked'		=> $downloadRet['needftp'] ? 'selected="selected"' : '',
-		'copyright-year' 	=> date('Y'),
-		'self_filename'		=> defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__),
+		'download-error' => $downloadRet['error'],
+		'download-url'   => $downloadRet['url'],
+		'ftp-checked'    => $downloadRet['needftp'] ? 'selected="selected"' : '',
+		'copyright-year' => date('Y'),
+		'self_filename'  => defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__),
 	);
 
 	echo <<< HTML

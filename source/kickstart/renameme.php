@@ -3,14 +3,14 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
  */
 
 // Make sure the file has been renamed
-$myself = strtolower(__FILE__);
+$myself   = strtolower(__FILE__);
 $basename = basename(__FILE__, '.php');
 if (strpos($basename, 'kickstart') === 0)
 {

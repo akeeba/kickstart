@@ -8,7 +8,7 @@
  * This tool is derived from Akeeba Kickstart, the on-line archive extraction
  * tool by Akeeba Ltd.
  *
- * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     joomla
  * @subpackage  joomlastart
@@ -16,7 +16,7 @@
 
 /*
     Joomla! Start - The quickest path to installing Joomla! on your server
-    Copyright (C) 2008-2016  Nicholas K. Dionysopoulos / Akeeba Ltd
+    Copyright (C) 2008-2017  Nicholas K. Dionysopoulos / Akeeba Ltd
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,25 +32,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('KICKSTART',1);
+define('KICKSTART', 1);
 define('VERSION', '##VERSION##');
 // Uncomment the following line to enable debug mode
 define('KSDEBUG', 1);
 
-if(!defined('KSROOTDIR'))
+if (!defined('KSROOTDIR'))
 {
 	define('KSROOTDIR', dirname(__FILE__));
 }
 
-if(defined('KSDEBUG')) {
-	@ini_set('error_log', KSROOTDIR.'/joomlastart_error_log' );
-	if(file_exists(KSROOTDIR.'/joomlastart_error_log')) {
-		@unlink(KSROOTDIR.'/joomlastart_error_log');
+if (defined('KSDEBUG'))
+{
+	@ini_set('error_log', KSROOTDIR . '/joomlastart_error_log');
+	if (file_exists(KSROOTDIR . '/joomlastart_error_log'))
+	{
+		@unlink(KSROOTDIR . '/joomlastart_error_log');
 	}
 	error_reporting(E_ALL | E_STRICT);
 	@ini_set('display_errors', 1);
-} else {
-	error_reporting(0);
+}
+else
+{
+	@error_reporting(E_NONE);
 }
 
 // ==========================================================================================
@@ -75,12 +79,17 @@ if (!isset($_SERVER['REQUEST_URI']))
 	else
 	{
 		//Someone didn't follow the instructions!
-		if(isset($_SERVER['SCRIPT_NAME']))
-		$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+		if (isset($_SERVER['SCRIPT_NAME']))
+		{
+			$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+		}
 		else
-		$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['PHP_SELF'];
-		if($_SERVER['QUERY_STRING']){
-			$_SERVER['HTTP_REQUEST_URI'] .=  '?' . $_SERVER['QUERY_STRING'];
+		{
+			$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['PHP_SELF'];
+		}
+		if ($_SERVER['QUERY_STRING'])
+		{
+			$_SERVER['HTTP_REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
 		}
 		//WARNING: This is a workaround!
 		//For guaranteed compatibility, HTTP_REQUEST_URI *MUST* be defined!
@@ -91,8 +100,10 @@ if (!isset($_SERVER['REQUEST_URI']))
 
 // Define the cacert.pem location, if it exists
 $cacertpem = KSROOTDIR . '/cacert.pem';
-if(is_file($cacertpem)) {
-	if(is_readable($cacertpem)) {
+if (is_file($cacertpem))
+{
+	if (is_readable($cacertpem))
+	{
 		define('AKEEBA_CACERT_PEM', $cacertpem);
 	}
 }

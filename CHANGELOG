@@ -1,5 +1,30 @@
-Kickstart 4.2.1
+Kickstart 5.3.0
 ================================================================================
++ Support for JPS format v2.0 with improved password security
++ Option to restore file permissions
+# [HIGH] Importing large files from URL fails with repeated download restarts
+# [MEDIUM] The stealth .htaccess doesn't work as expected (thanks invader_11)
+
+Kickstart 5.2.1
+================================================================================
+# [MEDIUM] Errors in Amazon S3 connection would result in a blank error message on most servers (Pro only)
+# [HIGH] Cannot import from Amazon S3 subdirectories (Pro only)
+
+Kickstart 5.2.0
+================================================================================
++ Now using Amazon S3 v4 API for the Import from Amazon S3 feature (Professional version only)
+# [HIGH] The import latest Joomla release stopped working since Joomla switched to a new download system
+# [LOW] The cacert.pem wasn't used everywhere, making it impossible to import from HTTPS URLs on badly configure servers
+
+Kickstart 5.1.0
+================================================================================
+! mcrypt is deprecated in PHP 7.1. Using OpenSSL instead when available.
+# [HIGH] Servers with a lax interpretation of RFC 7233 could result in the downloaded file having double the size or the download failing outright when importing a backup archive from URL
+# [LOW] Importing from a URL with a query string would include the query string as part of the extension name
+
+Kickstart 5.0.0
+================================================================================
++ Kickstart CLI mode. Extract any Akeeba Backup / Akeeba Solo archive from the command line.
 + Bust opcode caches before including feature and configuration files. Fixes issues with Zend OPcache, APC, XCache etc.
 
 Kickstart 4.2.0
