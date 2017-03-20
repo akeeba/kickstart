@@ -1,3 +1,7 @@
+Kickstart 5.3.1
+================================================================================
+# [HIGH] JPS extraction was broken
+
 Kickstart 5.3.0
 ================================================================================
 + Support for JPS format v2.0 with improved password security

@@ -18,13 +18,13 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 
 	protected $password = '';
 
-	private static $pbkdf2Algorithm = 'sha1';
+	private $pbkdf2Algorithm = 'sha1';
 
-	private static $pbkdf2Iterations = 1000;
+	private $pbkdf2Iterations = 1000;
 
-	private static $pbkdf2UseStaticSalt = 0;
+	private $pbkdf2UseStaticSalt = 0;
 
-	private static $pbkdf2StaticSalt = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+	private $pbkdf2StaticSalt = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
 	public function __construct()
 	{
@@ -168,10 +168,10 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		$isBannedFile = false;
 
 		// Make sure the decryption is all set up
-		AKEncryptionAES::setPbkdf2Algorithm(self::$pbkdf2Algorithm);
-		AKEncryptionAES::setPbkdf2Iterations(self::$pbkdf2Iterations);
-		AKEncryptionAES::setPbkdf2UseStaticSalt(self::$pbkdf2UseStaticSalt);
-		AKEncryptionAES::setPbkdf2StaticSalt(self::$pbkdf2StaticSalt);
+		AKEncryptionAES::setPbkdf2Algorithm($this->pbkdf2Algorithm);
+		AKEncryptionAES::setPbkdf2Iterations($this->pbkdf2Iterations);
+		AKEncryptionAES::setPbkdf2UseStaticSalt($this->pbkdf2UseStaticSalt);
+		AKEncryptionAES::setPbkdf2StaticSalt($this->pbkdf2StaticSalt);
 
 		// Read and decrypt the header
 		$edbhData = fread($this->fp, 4);
@@ -817,10 +817,10 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 				break;
 		}
 
-		self::$pbkdf2Algorithm     = $algorithm;
-		self::$pbkdf2Iterations    = $header_data['iterations'];
-		self::$pbkdf2UseStaticSalt = $header_data['useStaticSalt'];
-		self::$pbkdf2StaticSalt    = fread($this->fp, 64);
+		$this->pbkdf2Algorithm     = $algorithm;
+		$this->pbkdf2Iterations    = $header_data['iterations'];
+		$this->pbkdf2UseStaticSalt = $header_data['useStaticSalt'];
+		$this->pbkdf2StaticSalt    = fread($this->fp, 64);
 
 		return true;
 	}
