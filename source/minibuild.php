@@ -65,7 +65,7 @@ class AkeebaMinibuild
 
 			if ($merge)
 			{
-				if (substr($line, 0, 7) == 'header/')
+				if ((substr($line, 0, 7) == 'header/') || (substr($line, -11) == 'defines.php'))
 				{
 					if (!$includeHeaders)
 					{
