@@ -1,7 +1,8 @@
 <?php
 define('KICKSTART', 1);
 define('KSDEBUG', 1);
-define('KSDEBUGCLI', 1);
+//define('KSDEBUGCLI', 1);
+//define('VERBOSEOBSERVER', 1);
 
 require_once __DIR__ . '/../restore/preamble.php';
 require_once __DIR__ . '/../restore/abstract.object.php';
@@ -31,16 +32,18 @@ require_once __DIR__ . '/../restore/application.php';
 $sourcefile = $argv[1];
 $fileInfo = new SplFileInfo($sourcefile);
 
+$targetPath = isset($argv[2]) ? $argv[2] : null;
+
 $ksOptions  = array(
 	'kickstart.tuning.max_exec_time' => 5,
 	'kickstart.tuning.run_time_bias' => 75,
 	'kickstart.tuning.min_exec_time' => 0,
 	'kickstart.procengine' => 'direct',
 	'kickstart.setup.sourcefile' => $sourcefile,
-	'kickstart.setup.destdir' => sys_get_temp_dir(),
+	'kickstart.setup.destdir' => empty($targetPath) ? sys_get_temp_dir() : $targetPath,
 	'kickstart.setup.restoreperms' => '0',
 	'kickstart.setup.filetype' => strtolower($fileInfo->getExtension()),
-	'kickstart.setup.dryrun' => '1',
+	'kickstart.setup.dryrun' => empty($targetPath) ? 1 : 0,
 	'kickstart.jps.password' => 'test'
 );
 
@@ -53,21 +56,54 @@ class RestorationObserver extends AKAbstractPartObserver
 
 	public function update($object, $message)
 	{
-		if(!is_object($message)) return;
-
-		if( !array_key_exists('type', get_object_vars($message)) ) return;
-
-		if( $message->type == 'startfile' )
+		if (!is_object($message))
 		{
-			echo "\tReal file:    {$message->content->realfile}\n";
-			echo "\tFile:         {$message->content->file}\n";
-			echo "\tCompressed:   {$message->content->compressed}\n";
-			echo "\tUncompressed: {$message->content->uncompressed}\n";
+			return;
+		}
+
+		if (!array_key_exists('type', get_object_vars($message)))
+		{
+			return;
+		}
+
+		if ($message->type == 'startfile')
+		{
+			if (defined('VERBOSEOBSERVER'))
+			{
+				echo "\tReal file:    {$message->content->realfile}\n";
+				echo "\tFile:         {$message->content->file}\n";
+				echo "\tCompressed:   {$message->content->compressed}\n";
+				echo "\tUncompressed: {$message->content->uncompressed}\n";
+			}
 
 			$this->filesProcessed++;
 			$this->compressedTotal += $message->content->compressed;
 			$this->uncompressedTotal += $message->content->uncompressed;
 		}
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCompressedTotal()
+	{
+		return $this->compressedTotal;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getUncompressedTotal()
+	{
+		return $this->uncompressedTotal;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getFilesProcessed()
+	{
+		return $this->filesProcessed;
 	}
 
 	public function __toString()
@@ -87,14 +123,16 @@ foreach ($ksOptions as $k => $v)
 AKFactory::set('kickstart.enabled', true);
 /** @var \AKAbstractUnarchiver $engine */
 $engine = \AKFactory::getUnarchiver();
-$observer = new RestorationObserver();
-$engine->attach($observer);
+$observer = new ExtractionObserver();
 
 $done = false;
 
 while (!$done)
 {
-	echo "Tick\n";
+	echo date('d/m/Y H:i:s') . " Tick\n";
+
+	$engine = \AKFactory::getUnarchiver();
+	$engine->attach($observer);
 
 	$engine->tick();
 	$ret = $engine->getStatusArray();
@@ -113,7 +151,16 @@ while (!$done)
 		break;
 	}
 
+	echo "Compressed:   " . $observer->getCompressedTotal() . "\n";
+	echo "Uncompressed: " . $observer->getUncompressedTotal() . "\n";
+	echo "Processed:    " . $observer->getFilesProcessed() . "\n";
+
+	$serializedFactory = AKFactory::serialize();
+
+	AKFactory::nuke();
+	AKFactory::unserialize($serializedFactory);
 	AKFactory::getTimer()->resetTime();
+	unset($engine);
 }
 
 echo "Done\n";
