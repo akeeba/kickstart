@@ -33,6 +33,18 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		$this->password = AKFactory::get('kickstart.jps.password', '');
 	}
 
+	public function __wakeup()
+	{
+		parent::__wakeup();
+
+		// Make sure the decryption is all set up (required!)
+		AKEncryptionAES::setPbkdf2Algorithm($this->pbkdf2Algorithm);
+		AKEncryptionAES::setPbkdf2Iterations($this->pbkdf2Iterations);
+		AKEncryptionAES::setPbkdf2UseStaticSalt($this->pbkdf2UseStaticSalt);
+		AKEncryptionAES::setPbkdf2StaticSalt($this->pbkdf2StaticSalt);
+	}
+
+
 	protected function readArchiveHeader()
 	{
 		// Initialize header data array
@@ -379,7 +391,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 	 * Concrete classes must use this method to process file data. It must set $runState to AK_STATE_DATAREAD when
 	 * it's finished processing the file data.
 	 *
-	 * @return bool True if processing the file data was successful, false if an error occured
+	 * @return bool True if processing the file data was successful, false if an error occurred
 	 */
 	protected function processFileData()
 	{
