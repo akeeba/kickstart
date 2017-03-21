@@ -65,7 +65,7 @@ class AkeebaMinibuild
 
 			if ($merge)
 			{
-				if ((substr($line, 0, 7) == 'header/') || (substr($line, -11) == 'defines.php'))
+				if (substr($line, 0, 7) == 'header/')
 				{
 					if (!$includeHeaders)
 					{
@@ -121,7 +121,7 @@ class AkeebaMinibuild
 	 *
 	 * @return  string
 	 */
-	protected function XXX_prepareFile($path)
+	protected function prepareFile($path)
 	{
 		$lines = file($path);
 
@@ -145,7 +145,7 @@ class AkeebaMinibuild
 	 *
 	 * @return  string
 	 */
-	protected function prepareFile($path)
+	protected function XXX_prepareFile($path)
 	{
 		// Remove comments
 		$fileString = file_get_contents($path);
