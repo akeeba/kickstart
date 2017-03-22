@@ -14,17 +14,54 @@
  */
 class AKUnarchiverJPS extends AKUnarchiverJPA
 {
+	/**
+	 * Header data for the archive
+	 *
+	 * @var   array
+	 */
 	protected $archiveHeaderData = array();
 
+	/**
+	 * Plaintext password from which the encryption key will be derived with PBKDF2
+	 *
+	 * @var   string
+	 */
 	protected $password = '';
 
+	/**
+	 * Which hash algorithm should I use for key derivation with PBKDF2.
+	 *
+	 * @var   string
+	 */
 	private $pbkdf2Algorithm = 'sha1';
 
+	/**
+	 * How many iterations should I use for key derivation with PBKDF2
+	 *
+	 * @var   int
+	 */
 	private $pbkdf2Iterations = 1000;
 
+	/**
+	 * Should I use a static salt for key derivation with PBKDF2?
+	 *
+	 * @var   bool
+	 */
 	private $pbkdf2UseStaticSalt = 0;
 
+	/**
+	 * Static salt for key derivation with PBKDF2
+	 *
+	 * @var   string
+	 */
 	private $pbkdf2StaticSalt = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+
+	/**
+	 * How much compressed data I have read since the last file header read
+	 *
+	 * @var   int
+	 */
+	private $compressedSizeReadSinceLastFileHeader = 0;
 
 	public function __construct()
 	{
@@ -117,7 +154,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 	/**
 	 * Concrete classes must use this method to read the file header
 	 *
-	 * @return bool True if reading the file was successful, false if an error occured or we reached end of archive
+	 * @return bool True if reading the file was successful, false if an error occurred or we reached end of archive
 	 */
 	protected function readFileHeader()
 	{
@@ -189,6 +226,9 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		$edbhData = fread($this->fp, 4);
 		$edbh     = unpack('vencsize/vdecsize', $edbhData);
 		$bin_data = fread($this->fp, $edbh['encsize']);
+
+		// Add the header length to the data read
+		$this->compressedSizeReadSinceLastFileHeader += $edbh['encsize'] + 4;
 
 		// Decrypt and truncate
 		$bin_data = AKEncryptionAES::AESDecryptCBC($bin_data, $this->password);
@@ -295,11 +335,14 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 					// Skip forward by the amount of compressed data
 					$miniHead = unpack('Vencsize/Vdecsize', $binMiniHead);
 					@fseek($this->fp, $miniHead['encsize'], SEEK_CUR);
+					$this->compressedSizeReadSinceLastFileHeader += 8 + $miniHead['encsize'];
 				}
 			}
 
-			$this->currentPartOffset = @ftell($this->fp);
-			$this->runState          = AK_STATE_DONE;
+			$this->currentPartOffset                     = @ftell($this->fp);
+			$this->runState                              = AK_STATE_DONE;
+			$this->fileHeader->compressed                = $this->compressedSizeReadSinceLastFileHeader;
+			$this->compressedSizeReadSinceLastFileHeader = 0;
 
 			return true;
 		}
@@ -350,6 +393,9 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			$this->postProcEngine->processFilename(null);
 		}
 
+		$this->fileHeader->compressed                = $this->compressedSizeReadSinceLastFileHeader;
+		$this->compressedSizeReadSinceLastFileHeader = 0;
+
 		$this->createDirectory();
 
 		// Header is read
@@ -373,18 +419,17 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		// Do we need to create a directory?
 		$lastSlash = strrpos($this->fileHeader->realFile, '/');
 		$dirName   = substr($this->fileHeader->realFile, 0, $lastSlash);
-		$perms     = $this->flagRestorePermissions ? $retArray['permissions'] : 0755;
+		$perms     = 0755;
 		$ignore    = AKFactory::get('kickstart.setup.ignoreerrors', false) || $this->isIgnoredDirectory($dirName);
+
 		if (($this->postProcEngine->createDirRecursive($dirName, $perms) == false) && (!$ignore))
 		{
 			$this->setError(AKText::sprintf('COULDNT_CREATE_DIR', $dirName));
 
 			return false;
 		}
-		else
-		{
-			return true;
-		}
+
+		return true;
 	}
 
 	/**
@@ -455,6 +500,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		// Read the mini header
 		$binMiniHeader   = fread($this->fp, 8);
 		$reallyReadBytes = akstringlen($binMiniHeader);
+
 		if ($reallyReadBytes < 8)
 		{
 			// We read less than requested! Why? Did we hit local EOF?
@@ -487,6 +533,8 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		$toReadBytes     = $miniHeader['encsize'];
 		$data            = $this->fread($this->fp, $toReadBytes);
 		$reallyReadBytes = akstringlen($data);
+		$this->compressedSizeReadSinceLastFileHeader += 8 + $miniHeader['encsize'];
+
 		if ($reallyReadBytes < $toReadBytes)
 		{
 			// We read less than requested! Why? Did we hit local EOF?
@@ -597,14 +645,10 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 
 			return true;
 		}
-		else
-		{
-			$this->setError('An uncompressed file was detected; this is not supported by this archive extraction utility');
 
-			return false;
-		}
+		$this->setError('An uncompressed file was detected; this is not supported by this archive extraction utility');
 
-		return true;
+		return false;
 	}
 
 	private function processTypeFileCompressedSimple()
@@ -692,6 +736,9 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			$toReadBytes     = $miniHeader['encsize'];
 			$data            = $this->fread($this->fp, $toReadBytes);
 			$reallyReadBytes = akstringlen($data);
+
+			$this->compressedSizeReadSinceLastFileHeader += $miniHeader['encsize'] + 8;
+
 			if ($reallyReadBytes < $toReadBytes)
 			{
 				// We read less than requested! Why? Did we hit local EOF?

@@ -1,6 +1,7 @@
 Kickstart 5.3.1
 ================================================================================
 # [HIGH] JPS extraction was broken
+# [LOW] No progress is show when extracting JPS archives
 
 Kickstart 5.3.0
 ================================================================================

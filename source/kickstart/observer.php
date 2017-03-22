@@ -30,18 +30,23 @@ class ExtractionObserver extends AKAbstractPartObserver
 			return;
 		}
 
-		if ($message->type == 'startfile')
+		switch ($message->type)
 		{
-			$this->lastFile = $message->content->file;
-			$this->filesProcessed++;
-			$this->compressedTotal += $message->content->compressed;
-			$this->uncompressedTotal += $message->content->uncompressed;
+			// Sent when we read the list of archive parts and their total size
+			case 'totalsize':
+				$this->totalSize = $message->content->totalsize;
+				$this->fileList  = $message->content->filelist;
+				break;
+
+			// Sent when a file header is read from the archive
+			case 'startfile':
+				$this->lastFile = $message->content->file;
+				$this->filesProcessed++;
+				$this->compressedTotal += $message->content->compressed;
+				$this->uncompressedTotal += $message->content->uncompressed;
+				break;
 		}
-		elseif ($message->type == 'totalsize')
-		{
-			$this->totalSize = $message->content->totalsize;
-			$this->fileList  = $message->content->filelist;
-		}
+
 	}
 
 	public function __toString()
