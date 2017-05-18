@@ -188,4 +188,12 @@ class AKCoreTimer extends AKAbstractObject
 	{
 		$this->start_time = $this->microtime_float();
 	}
+
+	/**
+	 * @param int $max_exec_time
+	 */
+	public function setMaxExecTime($max_exec_time)
+	{
+		$this->max_exec_time = $max_exec_time;
+	}
 }

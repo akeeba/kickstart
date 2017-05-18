@@ -342,18 +342,18 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 					if ($status)
 					{
 						// Send start of file notification
-						$message          = new stdClass;
-						$message->type    = 'startfile';
-						$message->content = new stdClass;
+						$message                        = new stdClass;
+						$message->type                  = 'startfile';
+						$message->content               = new stdClass;
+						$message->content->realfile     = $this->fileHeader->file;
+						$message->content->file         = $this->fileHeader->file;
+						$message->content->uncompressed = $this->fileHeader->uncompressed;
+
 						if (array_key_exists('realfile', get_object_vars($this->fileHeader)))
 						{
 							$message->content->realfile = $this->fileHeader->realFile;
 						}
-						else
-						{
-							$message->content->realfile = $this->fileHeader->file;
-						}
-						$message->content->file = $this->fileHeader->file;
+
 						if (array_key_exists('compressed', get_object_vars($this->fileHeader)))
 						{
 							$message->content->compressed = $this->fileHeader->compressed;
@@ -362,7 +362,6 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 						{
 							$message->content->compressed = 0;
 						}
-						$message->content->uncompressed = $this->fileHeader->uncompressed;
 
 						debugMsg(__CLASS__ . '::_run() - Preparing to extract ' . $message->content->realfile);
 

@@ -121,7 +121,7 @@ class AkeebaMinibuild
 	 *
 	 * @return  string
 	 */
-	protected function XXX_prepareFile($path)
+	protected function prepareFile($path)
 	{
 		$lines = file($path);
 
@@ -145,7 +145,7 @@ class AkeebaMinibuild
 	 *
 	 * @return  string
 	 */
-	protected function prepareFile($path)
+	protected function XXX_prepareFile($path)
 	{
 		// Remove comments
 		$fileString = file_get_contents($path);

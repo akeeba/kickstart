@@ -15,13 +15,16 @@
  */
 class AKFactory
 {
-	/** @var array A list of instanciated objects */
+	/** @var   array  A list of instanciated objects */
 	private $objectlist = array();
 
-	/** @var array Simple hash data storage */
+	/** @var   array  Simple hash data storage */
 	private $varlist = array();
 
-	/** Private constructor makes sure we can't directly instanciate the class */
+	/** @var   self   Static instance */
+	private static $instance = null;
+
+	/** Private constructor makes sure we can't directly instantiate the class */
 	private function __construct()
 	{
 	}
@@ -166,6 +169,7 @@ class AKFactory
 	public static function get($key, $default = null)
 	{
 		$self = self::getInstance();
+
 		if (array_key_exists($key, $self->varlist))
 		{
 			return $self->varlist[$key];
@@ -185,20 +189,19 @@ class AKFactory
 	 */
 	protected static function &getInstance($serialized_data = null)
 	{
-		static $myInstance;
-		if (!is_object($myInstance) || !is_null($serialized_data))
+		if (!is_object(self::$instance) || !is_null($serialized_data))
 		{
 			if (!is_null($serialized_data))
 			{
-				$myInstance = unserialize($serialized_data);
+				self::$instance = unserialize($serialized_data);
 			}
 			else
 			{
-				$myInstance = new self();
+				self::$instance = new self();
 			}
 		}
 
-		return $myInstance;
+		return self::$instance;
 	}
 
 	/**
@@ -212,6 +215,7 @@ class AKFactory
 	protected static function &getClassInstance($class_name)
 	{
 		$self = self::getInstance();
+
 		if (!isset($self->objectlist[$class_name]))
 		{
 			$self->objectlist[$class_name] = new $class_name;
@@ -243,12 +247,7 @@ class AKFactory
 	 */
 	public static function nuke()
 	{
-		$self = self::getInstance();
-		foreach ($self->objectlist as $key => $object)
-		{
-			$self->objectlist[$key] = null;
-		}
-		$self->objectlist = array();
+		self::$instance = null;
 	}
 
 	// ========================================================================
