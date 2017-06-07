@@ -1,0 +1,1 @@
+<?php echo base64_encode(file_get_contents('akeeba-kickstart-24.png'));
