@@ -358,7 +358,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/kickstart.01.png" width="14cm"/>
+              <imagedata fileref="images/kickstart.01.png" width="100%"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -439,7 +439,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/kickstart.02.png" width="14cm"/>
+              <imagedata fileref="images/kickstart.02.png" width="100%"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -563,7 +563,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/kickstart.07.png" width="14cm"/>
+              <imagedata fileref="images/kickstart.07.png" width="100%"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -838,7 +838,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/kickstart.03.png" width="14cm"/>
+              <imagedata fileref="images/kickstart.03.png" width="100%"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -855,7 +855,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/kickstart.04.png" width="14cm"/>
+              <imagedata fileref="images/kickstart.04.png" width="100%"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -883,7 +883,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/kickstart.05.png" width="14cm"/>
+              <imagedata fileref="images/kickstart.05.png" width="100%"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -921,7 +921,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/kickstart.06.png" width="14cm"/>
+              <imagedata fileref="images/kickstart.06.png" width="100%"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -1078,7 +1078,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/kickstart.12.png" width="14cm"/>
+            <imagedata fileref="images/kickstart.12.png" width="100%"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1115,7 +1115,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/kickstart.13.png" width="14cm"/>
+            <imagedata fileref="images/kickstart.13.png" width="100%"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1136,7 +1136,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/kickstart.14.png" width="14cm"/>
+            <imagedata fileref="images/kickstart.14.png" width="100%"/>
           </imageobject>
         </mediaobject>
       </screenshot>
