@@ -9,6 +9,7 @@
 /build/tools
 
 /documentation/kickstart/*.xml~
+/documentation/output/*
 
 /release/*
 
