@@ -172,11 +172,11 @@ class AKS3SignatureV4 extends AKS3Signature
 
             if ($amazonIsBraindead && ($lowercaseHeaderName == 'content-length'))
             {
-                // No, it doesn't look stupid. It is FUCKING STUPID. But somehow Amazon requires me to do it and only
-                // on some servers. Yeah, I had the same "WHAT THE ACTUAL FUCK?!" reaction myself, thank you very much.
-                // I wasted an entire day on this shit. And then you wonder why I write my own connector libraries
-                // instead of pulling something through Composer, huh? Because the official library doesn't deal with
-                // this stupid shit, that's why.
+	            /**
+	             * No, it doesn't look daft. It is. Somehow Amazon requires me to do it and only on some servers. Yeah,
+	             * I am puzzled too. I wasted an entire day on this. That's the reason I write my own libraries; the
+	             * official SDK doesn't address this!
+                 */
                 $v = "$v,$v";
             }
 
