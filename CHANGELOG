@@ -1,3 +1,9 @@
+Kickstart 5.3.1
+================================================================================
+! Akeeba Restore (restore.php) would always throw an error about the file being invalid.
+# [HIGH] JPS extraction was broken
+# [LOW] No progress is show when extracting JPS archives
+
 Kickstart 5.3.0
 ================================================================================
 + Support for JPS format v2.0 with improved password security

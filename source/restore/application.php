@@ -68,11 +68,16 @@ if (!defined('KICKSTART'))
 				$timer->enforce_min_exec_time();
 				break;
 
+			/**
+			 * There are two separate steps here since we were using an inefficient restoration intialization method in
+			 * the past. Now both startRestore and stepRestore are identical. The difference in behavior depends
+			 * exclusively on the calling Javascript. If no serialized factory was passed in the request then we start a
+			 * new restoration. If a serialized factory was passed in the request then the restoration is resumed. For
+			 * this reason we should NEVER call AKFactory::nuke() in startRestore anymore: that would simply reset the
+			 * extraction engine configuration which was done in masterSetup() leading to an error about the file being
+			 * invalid (since no file is found).
+			 */
 			case 'startRestore':
-				AKFactory::nuke(); // Reset the factory
-
-			// Let the control flow to the next step (the rest of the code is common!!)
-
 			case 'stepRestore':
 				$engine   = AKFactory::getUnarchiver(); // Get the engine
 				$observer = new RestorationObserver(); // Create a new observer

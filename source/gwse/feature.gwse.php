@@ -68,6 +68,7 @@ h2 {
    margin-top: -4.5em;
    right: 5px;
    position: absolute;
+   pointer-events: none;
 }
 .ribbon {
    position: absolute;

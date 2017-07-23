@@ -1,8 +1,21 @@
 <?php
+/**
+ * Used to repeat a web request under an easier to debug environment
+ *
+ * 1. Run Charles Proxy and enable recording AND the proxy (system or Firefox)
+ * 2. Run Kickstart
+ * 3. When it borks look at the Contents tab of the request in Charles Proxy
+ * 4. Double click the value of the "json" parameter
+ * 5. Copy all that stuff into the $json variable here
+ */
+$json = <<<JSON
+{"factory":"SOME_BASE_64_ENCODED_STUFF_HERE"}
+JSON;
+
 define('KICKSTART', 1);
 define('KSDEBUG', 1);
-//define('KSDEBUGCLI', 1);
-//define('VERBOSEOBSERVER', 1);
+define('KSDEBUGCLI', 1);
+define('VERBOSEOBSERVER', 1);
 
 require_once __DIR__ . '/../restore/preamble.php';
 require_once __DIR__ . '/../restore/abstract.object.php';
@@ -29,30 +42,12 @@ require_once __DIR__ . '/../restore/encryption.aes.php';
 require_once __DIR__ . '/../restore/mastersetup.php';
 require_once __DIR__ . '/../restore/application.php';
 
-$sourcefile = $argv[1];
-$fileInfo = new SplFileInfo($sourcefile);
-
-$targetPath = isset($argv[2]) ? $argv[2] : null;
-
-$ksOptions  = array(
-	'kickstart.tuning.max_exec_time' => 5,
-	'kickstart.tuning.run_time_bias' => 75,
-	'kickstart.tuning.min_exec_time' => 0,
-	'kickstart.procengine' => 'direct',
-	'kickstart.setup.sourcefile' => $sourcefile,
-	'kickstart.setup.destdir' => empty($targetPath) ? sys_get_temp_dir() : $targetPath,
-	'kickstart.setup.restoreperms' => '0',
-	'kickstart.setup.filetype' => strtolower($fileInfo->getExtension()),
-	'kickstart.setup.dryrun' => empty($targetPath) ? 1 : 0,
-	'kickstart.jps.password' => 'test'
-);
-
 // The observer class, used to report number of files and bytes processed
-class RestorationObserver extends AKAbstractPartObserver
+class ExtractionObserver extends AKAbstractPartObserver
 {
-	public $compressedTotal = 0;
+	public $compressedTotal   = 0;
 	public $uncompressedTotal = 0;
-	public $filesProcessed = 0;
+	public $filesProcessed    = 0;
 
 	public function update($object, $message)
 	{
@@ -113,26 +108,26 @@ class RestorationObserver extends AKAbstractPartObserver
 
 }
 
-AKFactory::nuke();
+$json              = trim($json);
+$jsonParams        = json_decode($json, true);
+$serializedFactory = $jsonParams['factory'];
 
-foreach ($ksOptions as $k => $v)
-{
-	AKFactory::set($k, $v);
-}
-
-AKFactory::set('kickstart.enabled', true);
-/** @var \AKAbstractUnarchiver $engine */
-$engine = \AKFactory::getUnarchiver();
 $observer = new ExtractionObserver();
-
-$done = false;
+$done     = false;
 
 while (!$done)
 {
+	AKFactory::nuke();
+	AKFactory::unserialize($serializedFactory);
 	echo date('d/m/Y H:i:s') . " Tick\n";
 
+	/** @var \AKAbstractUnarchiver $engine */
 	$engine = \AKFactory::getUnarchiver();
 	$engine->attach($observer);
+
+	// TODO Comment out if you decide to detach the debugger and let everything run to their natural conclusion
+	$timer = AKFactory::getTimer();
+	$timer->setMaxExecTime(3600);
 
 	$engine->tick();
 	$ret = $engine->getStatusArray();
@@ -157,8 +152,6 @@ while (!$done)
 
 	$serializedFactory = AKFactory::serialize();
 
-	AKFactory::nuke();
-	AKFactory::unserialize($serializedFactory);
 	AKFactory::getTimer()->resetTime();
 	unset($engine);
 }
