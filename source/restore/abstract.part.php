@@ -88,9 +88,9 @@ abstract class AKAbstractPart extends AKAbstractObject
 	/**
 	 * The public interface to an engine part. This method takes care for
 	 * calling the correct method in order to perform the initialisation -
-	 * run - finalisation cycle of operation and return a proper reponse array.
+	 * run - finalisation cycle of operation and return a proper response array.
 	 *
-	 * @return    array    A Reponse Array
+	 * @return    array    A Response Array
 	 */
 	final public function tick()
 	{
@@ -325,7 +325,7 @@ abstract class AKAbstractPart extends AKAbstractObject
 	}
 
 	/**
-	 * Dettaches an observer object
+	 * Detaches an observer object
 	 *
 	 * @param AKAbstractPartObserver $obs
 	 */

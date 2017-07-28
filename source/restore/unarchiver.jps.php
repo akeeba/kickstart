@@ -626,7 +626,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			// Can we write to the file?
 			if (($outfp === false) && (!$ignore))
 			{
-				// An error occured
+				// An error occurred
 				$this->setError(AKText::sprintf('COULDNT_WRITE_FILE', $this->fileHeader->realFile));
 
 				return false;
@@ -673,7 +673,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 				AKFactory::get('kickstart.setup.ignoreerrors', false) || $this->isIgnoredDirectory($this->fileHeader->file);
 			if (($outfp === false) && (!$ignore))
 			{
-				// An error occured
+				// An error occurred
 				$this->setError(AKText::sprintf('COULDNT_WRITE_FILE', $this->fileHeader->realFile));
 
 				return false;

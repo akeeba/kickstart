@@ -15,7 +15,7 @@
  */
 class AKFactory
 {
-	/** @var   array  A list of instanciated objects */
+	/** @var   array  A list of instantiated objects */
 	private $objectlist = array();
 
 	/** @var   array  Simple hash data storage */
