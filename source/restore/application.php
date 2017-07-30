@@ -120,7 +120,7 @@ if (!defined('KICKSTART'))
 				/**
 				 * Should I rename the htaccess.bak and web.config.bak files back to their live filenames...?
 				 */
-				$renameFiles = AKFactory::get('kickstart.setup.renamefiles', true);
+				$renameFiles = AKFactory::get('kickstart.setup.postrenamefiles', true);
 
 				if ($renameFiles)
 				{
