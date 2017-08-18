@@ -1,3 +1,7 @@
+Kickstart 5.4.0
+================================================================================
+~ Improved internal authentication between the client (browser) and server parts of the application
+
 Kickstart 5.3.1
 ================================================================================
 ! Akeeba Restore (restore.php) would always throw an error about the file being invalid.

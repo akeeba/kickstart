@@ -10,6 +10,37 @@
  */
 
 /**
+ * A timing safe equals comparison
+ *
+ * @param   string  $safe  The internal (safe) value to be checked
+ * @param   string  $user  The user submitted (unsafe) value
+ *
+ * @return  boolean  True if the two strings are identical.
+ *
+ * @see     http://blog.ircmaxell.com/2014/11/its-all-about-time.html
+ */
+function timingSafeEquals($safe, $user)
+{
+	$safeLen = strlen($safe);
+	$userLen = strlen($user);
+
+	if ($userLen != $safeLen)
+	{
+		return false;
+	}
+
+	$result = 0;
+
+	for ($i = 0; $i < $userLen; $i++)
+	{
+		$result |= (ord($safe[$i]) ^ ord($user[$i]));
+	}
+
+	// They are only identical strings if $result is exactly 0...
+	return $result === 0;
+}
+
+/**
  * The Master Setup will read the configuration parameters from restoration.php or
  * the JSON-encoded "configuration" input variable and return the status.
  *
@@ -87,6 +118,9 @@ function masterSetup()
 	// Detect a JSON string in the request variable and store it.
 	$json = getQueryParam('json', null);
 
+	// Detect a password in the request variable and store it.
+	$userPassword = getQueryParam('password', '');
+
 	// Remove everything from the request, post and get arrays
 	if (!empty($_REQUEST))
 	{
@@ -112,41 +146,75 @@ function masterSetup()
 		}
 	}
 
-	// Decrypt a possibly encrypted JSON string
+	// Authentication - Akeeba Restore 5.4.0 or later
 	$password = AKFactory::get('kickstart.security.password', null);
+	$isAuthenticated = false;
 
-	if (!empty($json))
+	/**
+	 * Akeeba Restore 5.3.1 and earlier use a custom implementation of AES-128 in CTR mode to encrypt the JSON data
+	 * between client and server. This is not used as a means to maintain secrecy (it's symmetrical encryption and the
+	 * key is, by necessity, transmitted with the HTML page to the client). It's meant as a form of authentication, so
+	 * that the server part can ensure that it only receives commands by an authorized client.
+	 *
+	 * The downside is that encryption in CTR mode (like CBC) is an all-or-nothing affair. This opens the possibility
+	 * for a padding oracle attack (https://en.wikipedia.org/wiki/Padding_oracle_attack). While Akeeba Restore was
+	 * hardened in 2014 to prevent the bulk of suck attacks it is still possible to attack the encryption using a very
+	 * large number of requests (several dozens of thousands).
+	 *
+	 * Since Akeeba Restore 5.4.0 we have removed this authentication method and replaced it with the transmission of a
+	 * very large length password. On the server side we use a timing safe password comparison. By its very nature, it
+	 * will only leak the (well known, constant and large) length of the password but no more information about the
+	 * password itself. See http://blog.ircmaxell.com/2014/11/its-all-about-time.html  As a result this form of
+	 * authentication is many orders of magnitude harder to crack than regular encryption.
+	 *
+	 * Now you may wonder "how is sending a password in the clear hardier than encryption?". If you ask that question
+	 * you were not paying attention. The password needs to be known by BOTH the server AND the client (browser). Since
+	 * this password is generated programmatically by the server, it MUST be sent to the client by the server. If an
+	 * attacker is able to intercept this transmission (man in the middle attack) using encryption is irrelevant: the
+	 * attacker already knows your password. This situation also applies when the user sends their own password to the
+	 * server, e.g. when logging into their site. The ONLY way to avoid security issues regarding information being
+	 * stolen in transit is using HTTPS with a commercially signed SSL certificate. Unlike 2008, when Kickstart was
+	 * originally written, obtaining such a certificate nowadays is trivial and costs absolutely nothing thanks to Let's
+	 * Encrypt (https://letsencrypt.org/).
+	 *
+	 * TL;DR: Use HTTPS with a commercially signed SSL certificate, e.g. a free certificate from Let's Encrypt. Client-
+	 * side cryptography does NOT protect you against an attacker (see
+	 * https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2011/august/javascript-cryptography-considered-harmful/).
+	 * Moreover, sending a plaintext password is safer than relying on client-side encryption for authentication as it
+	 * reoves the possibility of an attacker inferring the contents of the authentication key (password) in a relatively
+	 * easy and automated manner.
+	 */
+	if (!empty($password))
 	{
-		if (!empty($password))
-		{
-			$json = AKEncryptionAES::AESDecryptCtr($json, $password, 128);
-
-			if (empty($json))
-			{
-				die('###{"status":false,"message":"Invalid login"}###');
-			}
-		}
-
-		// Get the raw data
-		$raw = json_decode($json, true);
-
-		if (!empty($password) && (empty($raw)))
+		// Timing-safe password comparison. See http://blog.ircmaxell.com/2014/11/its-all-about-time.html
+		if (!timingSafeEquals($password, $userPassword))
 		{
 			die('###{"status":false,"message":"Invalid login"}###');
 		}
-
-		// Pass all JSON data to the request array
-		if (!empty($raw))
-		{
-			foreach ($raw as $key => $value)
-			{
-				$_REQUEST[$key] = $value;
-			}
-		}
 	}
-	elseif (!empty($password))
+
+	// No JSON data? Die.
+	if (empty($json))
 	{
-		die('###{"status":false,"message":"Invalid login"}###');
+		die('###{"status":false,"message":"Invalid JSON data"}###');
+	}
+
+	// Handle the JSON string
+	$raw = json_decode($json, true);
+
+	// Invalid JSON data?
+	if (empty($raw))
+	{
+		die('###{"status":false,"message":"Invalid JSON data"}###');
+	}
+
+	// Pass all JSON data to the request array
+	if (!empty($raw))
+	{
+		foreach ($raw as $key => $value)
+		{
+			$_REQUEST[$key] = $value;
+		}
 	}
 
 	// ------------------------------------------------------------

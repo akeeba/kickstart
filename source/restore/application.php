@@ -202,12 +202,6 @@ if (!defined('KICKSTART'))
 
 	// JSON encode the message
 	$json = json_encode($retArray);
-	// Do I have to encrypt?
-	$password = AKFactory::get('kickstart.security.password', null);
-	if (!empty($password))
-	{
-		$json = AKEncryptionAES::AESEncryptCtr($json, $password, 128);
-	}
 
 	// Return the message
 	echo "###$json###";
