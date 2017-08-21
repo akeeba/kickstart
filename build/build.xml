@@ -53,12 +53,12 @@
 				</replacetokens>
 			</filterchain>
 
-            <fileset dir="${dirs.kickstart}/output">
+            <fileset dir="${dirs.root}/output">
 				<include name="kickstart.php" />
 			</fileset>
 		</append>
 
-        <copy file="${dirs.release}/kickstart.php" tofile="${dirs.kickstart}/output/kickstart_core.php" />
+        <copy file="${dirs.release}/kickstart.php" tofile="${dirs.root}/output/kickstart_core.php" />
 
 		<copy todir="${dirs.release}">
 			<fileset dir="${dirs.kickstart}/dist">
@@ -92,12 +92,12 @@
 					<token key="KICKSTARTPRO" value="1" />
 				</replacetokens>
 			</filterchain>
-			<fileset dir="${dirs.kickstart}/output">
+			<fileset dir="${dirs.root}/output">
 				<include name="kickstart_pro.php" />
 			</fileset>
 		</append>
 
-        <copy file="${dirs.release}/kickstart.php" tofile="${dirs.kickstart}/output/kickstart_pro.php" />
+        <copy file="${dirs.release}/kickstart.php" tofile="${dirs.root}/output/kickstart_pro.php" />
 
 		<copy todir="${dirs.release}">
 			<fileset dir="${dirs.kickstart}">
@@ -149,7 +149,7 @@
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
-			<fileset dir="${dirs.kickstart}/output">
+			<fileset dir="${dirs.root}/output">
 				<include name="joomlastart.php" />
 			</fileset>
 		</append>
