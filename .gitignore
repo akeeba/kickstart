@@ -13,5 +13,6 @@
 
 /release/*
 
+output/*.php
+
 /source/buildscripts/debug.txt
-/source/output/*.php

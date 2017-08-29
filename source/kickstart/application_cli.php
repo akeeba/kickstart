@@ -103,7 +103,7 @@ class AKCliParams
 
 				if (is_null($key))
 				{
-					array_push($values, $value);
+					$values[] = $value;
 				}
 				else
 				{

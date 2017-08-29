@@ -117,24 +117,32 @@ if (!defined('KICKSTART'))
 
 				$postproc = AKFactory::getPostProc();
 
-				// Rename htaccess.bak to .htaccess
-				if (file_exists($root . '/htaccess.bak'))
-				{
-					if (file_exists($root . '/.htaccess'))
-					{
-						$postproc->unlink($root . '/.htaccess');
-					}
-					$postproc->rename($root . '/htaccess.bak', $root . '/.htaccess');
-				}
+				/**
+				 * Should I rename the htaccess.bak and web.config.bak files back to their live filenames...?
+				 */
+				$renameFiles = AKFactory::get('kickstart.setup.postrenamefiles', true);
 
-				// Rename htaccess.bak to .htaccess
-				if (file_exists($root . '/web.config.bak'))
+				if ($renameFiles)
 				{
-					if (file_exists($root . '/web.config'))
+					// Rename htaccess.bak to .htaccess
+					if (file_exists($root . '/htaccess.bak'))
 					{
-						$postproc->unlink($root . '/web.config');
+						if (file_exists($root . '/.htaccess'))
+						{
+							$postproc->unlink($root . '/.htaccess');
+						}
+						$postproc->rename($root . '/htaccess.bak', $root . '/.htaccess');
 					}
-					$postproc->rename($root . '/web.config.bak', $root . '/web.config');
+
+					// Rename htaccess.bak to .htaccess
+					if (file_exists($root . '/web.config.bak'))
+					{
+						if (file_exists($root . '/web.config'))
+						{
+							$postproc->unlink($root . '/web.config');
+						}
+						$postproc->rename($root . '/web.config.bak', $root . '/web.config');
+					}
 				}
 
 				// Remove restoration.php
@@ -194,12 +202,6 @@ if (!defined('KICKSTART'))
 
 	// JSON encode the message
 	$json = json_encode($retArray);
-	// Do I have to encrypt?
-	$password = AKFactory::get('kickstart.security.password', null);
-	if (!empty($password))
-	{
-		$json = AKEncryptionAES::AESEncryptCtr($json, $password, 128);
-	}
 
 	// Return the message
 	echo "###$json###";

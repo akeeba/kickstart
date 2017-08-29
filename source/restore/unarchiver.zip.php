@@ -78,7 +78,7 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
 	/**
 	 * Concrete classes must use this method to read the file header
 	 *
-	 * @return bool True if reading the file was successful, false if an error occured or we reached end of archive
+	 * @return bool True if reading the file was successful, false if an error occurred or we reached end of archive
 	 */
 	protected function readFileHeader()
 	{

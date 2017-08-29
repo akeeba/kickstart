@@ -440,7 +440,7 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 	/**
 	 * Concrete classes must use this method to read the file header
 	 *
-	 * @return bool True if reading the file was successful, false if an error occured or we reached end of archive
+	 * @return bool True if reading the file was successful, false if an error occurred or we reached end of archive
 	 */
 	protected abstract function readFileHeader();
 
@@ -448,7 +448,7 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 	 * Concrete classes must use this method to process file data. It must set $runState to AK_STATE_DATAREAD when
 	 * it's finished processing the file data.
 	 *
-	 * @return bool True if processing the file data was successful, false if an error occured
+	 * @return bool True if processing the file data was successful, false if an error occurred
 	 */
 	protected abstract function processFileData();
 

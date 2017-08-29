@@ -592,7 +592,7 @@ function echoHeadJavascript()
 				{
 					if (data.error != false)
 					{
-						// An error occured
+						// An error occurred
 						$('#ftpBrowserError').html(trans(data.error));
 						$('#ftpBrowserErrorContainer').css('display', 'block');
 						$('#ftpBrowserFolderList').css('display', 'none');
@@ -760,7 +760,7 @@ function echoHeadJavascript()
 				{
 					if (data.error != false)
 					{
-						// An error occured
+						// An error occurred
 						$('#ftpBrowserError').html(data.error);
 						$('#ftpBrowserErrorContainer').css('display', 'block');
 						$('#ftpBrowserFolderList').css('display', 'none');

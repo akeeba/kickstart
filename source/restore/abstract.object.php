@@ -25,7 +25,7 @@ abstract class AKAbstractObject
 	private $_warnings = array();
 
 	/**
-	 * Public constructor, makes sure we are instanciated only by the factory class
+	 * Public constructor, makes sure we are instantiated only by the factory class
 	 */
 	public function __construct()
 	{
@@ -141,7 +141,7 @@ abstract class AKAbstractObject
 	 * Propagates errors and warnings to a foreign object. The foreign object SHOULD
 	 * implement the setError() and/or setWarning() methods but DOESN'T HAVE TO be of
 	 * AKAbstractObject type. For example, this can even be used to propagate to a
-	 * JObject instance in Joomla!. Propagated items will be removed from ourself.
+	 * JObject instance in Joomla!. Propagated items will be removed from ourselves.
 	 *
 	 * @param object $object The object to propagate errors and warnings to.
 	 */
@@ -234,7 +234,8 @@ abstract class AKAbstractObject
 				array_shift($this->_errors);
 			}
 		}
-		array_push($this->_errors, $error);
+
+		$this->_errors[] = $error;
 	}
 
 	/**
@@ -252,7 +253,7 @@ abstract class AKAbstractObject
 			}
 		}
 
-		array_push($this->_warnings, $warning);
+		$this->_warnings[] = $warning;
 	}
 
 	/**

@@ -12,10 +12,10 @@ include_once __DIR__ . '/../minibuild.php';
 $minibuild = new AkeebaMinibuild;
 
 $buffer = $minibuild->minibuild(MINIBUILD . '/../restore.build', true);
-file_put_contents(__DIR__ . '/../output/restore.php', $buffer);
+file_put_contents(__DIR__ . '/../../output/restore.php', $buffer);
 
 $buffer = $minibuild->minibuild(MINIBUILD . '/../kickstart_core.build', true);
-file_put_contents(__DIR__ . '/../output/kickstart.php', $buffer);
+file_put_contents(__DIR__ . '/../../output/kickstart.php', $buffer);
 
 $buffer = $minibuild->minibuild(MINIBUILD . '/../kickstart_pro.build', true);
-file_put_contents(__DIR__ . '/../output/kickstart_pro.php', $buffer);
+file_put_contents(__DIR__ . '/../../output/kickstart_pro.php', $buffer);
