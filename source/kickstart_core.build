@@ -1,5 +1,4 @@
 header/kickstart.php
 kickstart/defines.php
 BUILD:kickstart_base
-urlimport/feature.urlimport.php
 gwse/feature.gwse.php

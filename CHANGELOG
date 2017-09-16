@@ -1,3 +1,7 @@
+Kickstart 5.4.1
+================================================================================
+- Removing the URL Import feature from the Core version (for security reasons). This feature is only safe when kickstart.php is renamed to a hard to guess name.
+
 Kickstart 5.4.0
 ================================================================================
 ~ Improved internal authentication between the client (browser) and server parts of the application
