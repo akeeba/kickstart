@@ -358,45 +358,51 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 
 		// Get the translated path name
 		$restorePerms = AKFactory::get('kickstart.setup.restoreperms', false);
-		if ($this->fileHeader->type == 'file')
-		{
-			// Regular file; ask the postproc engine to process its filename
-			if ($restorePerms)
-			{
-				$this->fileHeader->realFile =
-					$this->postProcEngine->processFilename($this->fileHeader->file, $this->fileHeader->permissions);
-			}
-			else
-			{
-				$this->fileHeader->realFile = $this->postProcEngine->processFilename($this->fileHeader->file);
-			}
-		}
-		elseif ($this->fileHeader->type == 'dir')
-		{
-			$dir                        = $this->fileHeader->file;
-			$this->fileHeader->realFile = $dir;
 
-			// Directory; just create it
-			if ($restorePerms)
+		if (!$this->mustSkip())
+		{
+			if ($this->fileHeader->type == 'file')
 			{
-				$this->postProcEngine->createDirRecursive($this->fileHeader->file, $this->fileHeader->permissions);
+				// Regular file; ask the postproc engine to process its filename
+				if ($restorePerms)
+				{
+					$this->fileHeader->realFile =
+						$this->postProcEngine->processFilename($this->fileHeader->file, $this->fileHeader->permissions);
+				}
+				else
+				{
+					$this->fileHeader->realFile = $this->postProcEngine->processFilename($this->fileHeader->file);
+				}
+			}
+			elseif ($this->fileHeader->type == 'dir')
+			{
+				$dir                        = $this->fileHeader->file;
+				$this->fileHeader->realFile = $dir;
+
+				// Directory; just create it
+				if ($restorePerms)
+				{
+					$this->postProcEngine->createDirRecursive($this->fileHeader->file, $this->fileHeader->permissions);
+				}
+				else
+				{
+					$this->postProcEngine->createDirRecursive($this->fileHeader->file, 0755);
+				}
+
+				$this->postProcEngine->processFilename(null);
 			}
 			else
 			{
-				$this->postProcEngine->createDirRecursive($this->fileHeader->file, 0755);
+				// Symlink; do not post-process
+				$this->postProcEngine->processFilename(null);
 			}
-			$this->postProcEngine->processFilename(null);
+
+			$this->createDirectory();
 		}
-		else
-		{
-			// Symlink; do not post-process
-			$this->postProcEngine->processFilename(null);
-		}
+
 
 		$this->fileHeader->compressed                = $this->compressedSizeReadSinceLastFileHeader;
 		$this->compressedSizeReadSinceLastFileHeader = 0;
-
-		$this->createDirectory();
 
 		// Header is read
 		$this->runState = AK_STATE_HEADER;
@@ -411,7 +417,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 	 */
 	protected function createDirectory()
 	{
-		if (AKFactory::get('kickstart.setup.dryrun', '0'))
+		if ($this->mustSkip())
 		{
 			return true;
 		}
@@ -578,7 +584,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		// Trim the data
 		$data = substr($data, 0, $miniHeader['decsize']);
 
-		if (!AKFactory::get('kickstart.setup.dryrun', '0'))
+		if (!$this->mustSkip())
 		{
 			// Try to remove an existing file or directory by the same name
 			if (file_exists($this->fileHeader->file))
@@ -603,14 +609,14 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 	private function processTypeFileUncompressed()
 	{
 		// Uncompressed files are being processed in small chunks, to avoid timeouts
-		if (($this->dataReadLength == 0) && !AKFactory::get('kickstart.setup.dryrun', '0'))
+		if (($this->dataReadLength == 0) && !$this->mustSkip())
 		{
 			// Before processing file data, ensure permissions are adequate
 			$this->setCorrectPermissions($this->fileHeader->file);
 		}
 
 		// Open the output file
-		if (!AKFactory::get('kickstart.setup.dryrun', '0'))
+		if (!$this->mustSkip())
 		{
 			$ignore =
 				AKFactory::get('kickstart.setup.ignoreerrors', false) || $this->isIgnoredDirectory($this->fileHeader->file);
@@ -637,7 +643,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		if ($this->fileHeader->uncompressed == 0)
 		{
 			// No file data!
-			if (!AKFactory::get('kickstart.setup.dryrun', '0') && is_resource($outfp))
+			if (!$this->mustSkip() && is_resource($outfp))
 			{
 				@fclose($outfp);
 			}
@@ -656,14 +662,14 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		$timer = AKFactory::getTimer();
 
 		// Files are being processed in small chunks, to avoid timeouts
-		if (($this->dataReadLength == 0) && !AKFactory::get('kickstart.setup.dryrun', '0'))
+		if (($this->dataReadLength == 0) && !$this->mustSkip())
 		{
 			// Before processing file data, ensure permissions are adequate
 			$this->setCorrectPermissions($this->fileHeader->file);
 		}
 
 		// Open the output file
-		if (!AKFactory::get('kickstart.setup.dryrun', '0'))
+		if (!$this->mustSkip())
 		{
 			// Open the output file
 			$outfp = @fopen($this->fileHeader->realFile, 'wb');
@@ -684,7 +690,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		if ($this->fileHeader->uncompressed == 0)
 		{
 			// No file data!
-			if (!AKFactory::get('kickstart.setup.dryrun', '0'))
+			if (!$this->mustSkip())
 			{
 				if (is_resource($outfp))
 				{
@@ -794,7 +800,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			$unc_len = akstringlen($data);
 
 			// Write the decrypted data
-			if (!AKFactory::get('kickstart.setup.dryrun', '0'))
+			if (!$this->mustSkip())
 			{
 				if (is_resource($outfp))
 				{
@@ -808,7 +814,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		}
 
 		// Close the file pointer
-		if (!AKFactory::get('kickstart.setup.dryrun', '0'))
+		if (!$this->mustSkip())
 		{
 			if (is_resource($outfp))
 			{

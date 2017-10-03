@@ -54,6 +54,7 @@ class AKPostprocDirect extends AKAbstractPostproc
 		{
 			return true;
 		}
+
 		if (@mkdir($dirName, 0755, true))
 		{
 			@chmod($dirName, 0755);

@@ -618,4 +618,108 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 
 		return $path;
 	}
+
+	/**
+	 * Am I supposed to skip the extraction of the current file? This depends on
+	 *
+	 * @return bool
+	 */
+	protected function mustSkip()
+	{
+		static $isDryRun = null;
+
+		// List of files (and patterns) to extract
+		static $extractList = null;
+
+		// Internal cache of the last file we checked and whether it must be skipped
+		static $lastFileName = '';
+		static $mustSkip = false;
+
+		// Make sure the dry run flag is, indeed, populated
+		if (is_null($isDryRun))
+		{
+			$isDryRun = AKFactory::get('kickstart.setup.dryrun', '0');
+		}
+
+		// If it's a Kickstart dry run we have to skip the extraction of the file
+		if ($isDryRun)
+		{
+			return true;
+		}
+
+		// Make sure I have a list of files and patterns to extract
+		if (is_null($extractList))
+		{
+			$extractList = $this->getExtractList();
+		}
+
+		// No list of files to extract is given; we must extract everything.
+		if (empty($extractList))
+		{
+			return false;
+		}
+
+		// I am asked about the same file again. Return the cached result.
+		if ($this->fileHeader->file == $lastFileName)
+		{
+			return $mustSkip;
+		}
+
+		// Does the current file match the extract patterns or not?
+		$lastFileName = $this->fileHeader->file;
+		$mustSkip     = !$this->matchesGlobPatterns($lastFileName, $extractList);
+
+		return $mustSkip;
+	}
+
+	/**
+	 * Get the list of files / folders to extract. The list can contain filenames or glob patterns.
+	 *
+	 * @return  array
+	 */
+	private function getExtractList()
+	{
+		$rawList = trim(AKFactory::get('kickstart.setup.extract_list', ''));
+
+		if (empty($rawList))
+		{
+			return array();
+		}
+
+		// Convert commas to newlines so we can support both ways to express lists
+		$rawList = str_replace(",", "\n", $rawList);
+		$rawList = trim($rawList);
+
+		// Convert the list to an array and clean it
+		$list = explode("\n", $rawList);
+		$list = array_map('trim', $list);
+
+		return array_unique($list);
+	}
+
+	/**
+	 * Tests whether the item $item matches the list of shell patterns $list.
+	 *
+	 * @param   string  $item  The file name to test
+	 * @param   array   $list  The list of glob patterns to match
+	 *
+	 * @return  bool
+	 */
+	private function matchesGlobPatterns($item, array $list)
+	{
+		if (empty($list))
+		{
+			return true;
+		}
+
+		foreach ($list as $pattern)
+		{
+			if (fnmatch($pattern, $item))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
