@@ -44,7 +44,8 @@ $ksOptions  = array(
 	'kickstart.setup.restoreperms' => '0',
 	'kickstart.setup.filetype' => strtolower($fileInfo->getExtension()),
 	'kickstart.setup.dryrun' => empty($targetPath) ? 1 : 0,
-	'kickstart.jps.password' => 'test'
+	'kickstart.jps.password' => 'test',
+	'kickstart.setup.extract_list' => 'installation/README.html, images/*',
 );
 
 // The observer class, used to report number of files and bytes processed
@@ -123,7 +124,7 @@ foreach ($ksOptions as $k => $v)
 AKFactory::set('kickstart.enabled', true);
 /** @var \AKAbstractUnarchiver $engine */
 $engine = \AKFactory::getUnarchiver();
-$observer = new ExtractionObserver();
+$observer = new RestorationObserver();
 
 $done = false;
 

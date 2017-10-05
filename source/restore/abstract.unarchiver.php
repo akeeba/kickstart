@@ -667,6 +667,7 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 
 		// Does the current file match the extract patterns or not?
 		$lastFileName = $this->fileHeader->file;
+		$lastFileName = (strpos($lastFileName, $this->addPath) === 0) ? substr($lastFileName, strlen(rtrim($this->addPath, "\\/")) + 1) : $lastFileName;
 		$mustSkip     = !$this->matchesGlobPatterns($lastFileName, $extractList);
 
 		return $mustSkip;
