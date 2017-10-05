@@ -241,6 +241,11 @@ function echoPage()
 
 						<label for="kickstart.setup.restoreperms">RESTORE_PERMISSIONS</label>
 						<span class="field"><input type="checkbox" id="kickstart.setup.restoreperms"/></span><br/>
+
+
+                        <label for="kickstart.setup.extract_list">EXTRACT_LIST</label>
+                        <span class="field"><textarea id="kickstart.setup.extract_list" rows="5" cols="50"></textarea></span><br/>
+                        <div class="help">EXTRACT_LIST_HELP</div>
 					</div>
 				</div>
 

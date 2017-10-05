@@ -129,7 +129,7 @@ function echoHeadJavascript()
 				transKey = $(e).text();
 				if (array_key_exists(transKey, translation))
 				{
-					$(e).text(translation[transKey]);
+					$(e).html(translation[transKey]);
 				}
 			});
 		}
@@ -908,7 +908,8 @@ function echoHeadJavascript()
 					'kickstart.ftp.user':             $('#kickstart\\.ftp\\.user').val(),
 					'kickstart.ftp.pass':             $('#kickstart\\.ftp\\.pass').val(),
 					'kickstart.ftp.dir':              $('#kickstart\\.ftp\\.dir').val(),
-					'kickstart.ftp.tempdir':          $('#kickstart\\.ftp\\.tempdir').val()
+					'kickstart.ftp.tempdir':          $('#kickstart\\.ftp\\.tempdir').val(),
+					'kickstart.setup.extract_list':   $('#kickstart\\.setup\\.extract_list').val()
 				})
 			};
 			doAjax(data, function (ret)

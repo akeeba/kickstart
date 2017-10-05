@@ -127,6 +127,8 @@ class AKText extends AKAbstractObject
 		'ERR_COULD_NOT_OPEN_ARCHIVE_PART' => 'Could not open archive part file %s for reading. Check that the file exists, is readable by the web server and is not in a directory made out of reach by chroot, open_basedir restrictions or any other restriction put in place by your host.',
 		'RENAME_FILES'                    => 'Rename server configuration files',
 		'RESTORE_PERMISSIONS'             => 'Restore file permissions',
+		'EXTRACT_LIST'                    => 'Files to extract',
+		'EXTRACT_LIST_HELP'               => 'Enter a file path such as <code>images/cat.png</code> or shell pattern such as <code>images/*.png</code> on each line. Only files matching this list will be written to disk. Leave empty to extract everything (default).',
 	);
 
 	/**

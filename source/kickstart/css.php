@@ -180,6 +180,13 @@ label {
 	margin:.5em 0;
 }
 
+.help {
+	width: 60%;
+	margin-left: 30%;
+	font-size: small;
+	color: #333;
+}
+
 input:focus, input:hover {
 	background-color: #f6f6ff;
 }
