@@ -220,6 +220,7 @@ BANNER;
 		echo <<< HOWTOUSE
 Usage: {$argv[0]} archive.jpa [output_path] [--password=yourPassword]
          [--silent] [--permissions] [--dry-run] [--ignore-errors]
+         [--extract=<pattern>[,<pattern>...]]
 
 
 HOWTOUSE;
@@ -266,6 +267,8 @@ BANNER;
 	AKFactory::set('kickstart.setup.dryrun', AKCliParams::hasOption('dry-run'));
 	// Ignore errors?
 	AKFactory::set('kickstart.setup.ignoreerrors', AKCliParams::hasOption('ignore-errors'));
+	// Which files should I extract?
+	AKFactory::set('kickstart.setup.extract_list', AKCliParams::getOption('extract', '', true));
 	// Do not rename any files (this is the CLI...)
 	AKFactory::set('kickstart.setup.renamefiles', array());
 	// Optimize time limits

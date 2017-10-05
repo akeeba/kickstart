@@ -680,7 +680,16 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 	 */
 	private function getExtractList()
 	{
-		$rawList = trim(AKFactory::get('kickstart.setup.extract_list', ''));
+		$rawList = AKFactory::get('kickstart.setup.extract_list', '');
+
+		// Sometimes I could get an array, e.g. from CLI
+		if (is_array($rawList))
+		{
+			$rawList = implode("\n", $rawList);
+		}
+
+		// Remove any whitespace
+		$rawList = trim($rawList);
 
 		if (empty($rawList))
 		{
