@@ -16,3 +16,6 @@
 output/*.php
 
 /source/buildscripts/debug.txt
+
+# Internal translations
+translations
