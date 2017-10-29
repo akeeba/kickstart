@@ -17,10 +17,10 @@
       </affiliation>
     </author>
 
-    <pubdate>August 2016</pubdate>
+    <pubdate>October 2017</pubdate>
 
     <copyright>
-      <year>2008-2016</year>
+      <year>2008-2017</year>
 
       <holder>Akeeba Ltd</holder>
     </copyright>
@@ -62,10 +62,10 @@
       process Kickstart lets you clean up with one click which removes itself,
       the backup archive and the restoration script.</para>
 
-      <para>Additionally, Kickstart can be used to install PHP CMS and popular
-      scripts such as Joomla!, WordPress, Drupal etc. It can also be used to
-      extract ZIP archives with numerous or big files that cannot be extracted
-      otherwise. Just make sure your ZIP files are using the Deflate
+      <para>Additionally, Kickstart can be used to install various PHP CMS and
+      popular scripts such as Joomla!, WordPress, Drupal etc. It can also be
+      used to extract ZIP archives with numerous or big files that cannot be
+      extracted otherwise. Just make sure your ZIP files are using the Deflate
       compression method.</para>
 
       <para>Kickstart is also localisable, meaning that it can display itself
@@ -81,15 +81,15 @@
       archive. Restoring it is a pretty much different story.</para>
 
       <para>Without Kickstart you would have to download the file to your PC;
-      extract it; upload all the files, via FTP, to you site (with 5000+ files
-      per site this is slow); go through the restoration process; remove the
-      installation directory.</para>
+      extract it; upload all the files to your site via FTP or SFTP (with
+      5000+ files per site this is slow); go through the restoration process;
+      remove the installation directory.</para>
 
       <para>Most of this process is the same for every backup restoration. The
       only place where human intervention is truly required is the restoration
-      process part. Moreover, transferring thousands of files over FTP is
-      intrinsically slower than transferring big archive files. These are the
-      problems Kickstart is designed to solve.</para>
+      process part. Moreover, transferring thousands of files over SFTP or,
+      worse, FTP is orders of magnitude slower than transferring big archive
+      files. These are the problems Kickstart is designed to solve.</para>
 
       <para>Kickstart extracts the backup JPS, JPS and ZIP archives directly
       on the target server. The only thing you need to perform a restoration
@@ -111,6 +111,11 @@
 
     <section xml:id="what-kickstart-is-and-what-it-is-not">
       <title>What Kickstart is and what it's not</title>
+
+      <important>
+        <para>Kickstart IS NOT the restoration script. You DO NOT need it to
+        restore backups.</para>
+      </important>
 
       <para>Kickstart is an interactive archive extraction script and a
       clean-up tool. It is <emphasis>not</emphasis> a site restoration utility
@@ -155,10 +160,10 @@
       </itemizedlist>
 
       <para>As you can see, Kickstart is a very generic tool, not strictly
-      limited to restoring Akeeba Backup backup archives. In fact it can be
-      used to install popular CMS such as Joomla! and WordPress. It even lets
-      you download their installation ZIP archives directly from Kickstart
-      itself!</para>
+      limited to restoring Akeeba Backup / Akeeba Solo backup archives. In
+      fact it can be used to install popular CMS such as Joomla! and
+      WordPress. It even lets you download their installation ZIP archives
+      directly from Kickstart itself!</para>
 
       <tip>
         <para>The correct way to see Kickstart is as a generic, interactive,
@@ -283,10 +288,11 @@
       <para>The JS files are not required, unless you don't have an Internet
       connection (e.g. restoring to a local server without an Internet
       connection) or have trouble accessing the sites where copies of these
-      files are stored in (e.g. behind a corporate or state firewall). The
-      <filename>cacert.pem</filename> file is required on some servers if
-      importing from an HTTPS URL. If unsure, upload all files (see
-      below).</para>
+      files are stored in (e.g. behind a corporate or state firewall). </para>
+
+      <para>The <filename>cacert.pem</filename> file is required on some
+      servers if importing from an HTTPS URL or connecting to Amazon S3. If
+      unsure, upload all files (see below).</para>
 
       <para>The second step is uploading those files to your server. Upload
       <filename>kickstart.php</filename> and any files you may need to the
@@ -1089,14 +1095,15 @@
     <title>Advanced features</title>
 
     <section xml:id="import-url">
-      <title>Import from a URL and quickly install a fresh copy of Joomla! or
-      WordPress</title>
+      <title>Import from a URL</title>
 
-      <tip>
-        <para>You can use this feature to <link
-        linkend="import-external">import from Amazon S3, Dropbox and other
-        remote storage providers</link>.</para>
-      </tip>
+      <warning>
+        <para>This feature is restricted to Akeeba Kickstart Professional for
+        security reasons. Please read <link linkend="securing-pro-version">the
+        information on securing Akeeba Kickstart Professional</link>. We would
+        like to kindly remind you that Akeeba Kickstart Professional is only
+        available to paying subscribers.</para>
+      </warning>
 
       <para>This feature allows you to import archives stored in any other
       web-accessible server. Please note that the file must be downloadable
@@ -1213,12 +1220,72 @@
       just imported / install Joomla!.</para>
     </section>
 
+    <section xml:id="import-s3">
+      <title>Import from Amazon S3</title>
+
+      <warning>
+        <para>This feature is restricted to Akeeba Kickstart Professional for
+        security reasons. Please read <link linkend="securing-pro-version">the
+        information on securing Akeeba Kickstart Professional</link>. We would
+        like to kindly remind you that Akeeba Kickstart Professional is only
+        available to paying subscribers.</para>
+      </warning>
+
+      <para>In order to use this feature, upload Akeeba Kickstart into the
+      root of the site where you want to restore your backup / install Joomla!
+      / install WordPress and run it. Right under Step 1 you will see a small
+      blue button reading <guibutton>Import from Aamzon S3</guibutton>. Click
+      on it. A new page appears.</para>
+
+      <para>Enter your Amazon S3 credentials (<guilabel>Access Key</guilabel>
+      and <guilabel>Secret Key</guilabel>) in the provided text boxes. Please
+      remember that the credentials you provide must have adequate privileges
+      to list all buckets and list the contents and get objects from the
+      bucket you want to import from. Then click on the <guibutton>Connect to
+      Amazon S3</guibutton> button to test the credentials.</para>
+
+      <tip>
+        <para>If you get the error "AKS3Connector::listBuckets(): [60] SSL
+        certificate problem: unable to get local issuer certificate" it means
+        that your server does not have an up to date list of SSL Certificate
+        Authorities. Please download the file <link
+        xlink:href="https://curl.haxx.se/ca/cacert.pem">cacert.pem</link> and
+        save it in the same directory as Kickstart. Then retry clicking the
+        Connect to Amazon S3 button.</para>
+      </tip>
+
+      <para>The <guilabel>Bucket</guilabel> dropdown should now have a list of
+      your Amazon S3 buckets. Select the bucket you want to import from and
+      click on <guilabel>List Contents</guilabel>.</para>
+
+      <para>In the panels below you will see a directory browser on the left
+      hand side and a list of JPA, JPS and ZIP files on the right hand side.
+      Navigate to the folder where your backup files are stored and click on
+      the file to import.</para>
+
+      <note>
+        <para>Kickstart Professional is smart. It will figure out if your
+        backup archive consists of multiple parts (e.g. .jpa, .j01, .j02, ...)
+        and download all of them automatically, without asking you, since they
+        are all required to extract the backup.</para>
+      </note>
+
+      <para>You will see the Importing progress. Sit back and make sure your
+      computer doesn't go to sleep or disconnects from the network while this
+      is running.</para>
+
+      <para>In the end of the process you'll be told that the Import is
+      complete. Click on <guibutton>Reload Kickstart</guibutton> to reload
+      Kickstart and extract the newly downloaded backup archive.</para>
+    </section>
+
     <section xml:id="import-external">
-      <title>Importing archives from Amazon S3, Dropbox, etc</title>
+      <title>Importing archives from third party storage services (Dropbox,
+      OneDrive, ...)</title>
 
       <para>The Import from URL feature can be used to import backup archives
-      from external storage such as Amazon S3, Dropbox, Box.com and so on. The
-      generic steps required are very simple:</para>
+      from external storage such as Dropbox, OneDrive and so on. The generic
+      steps required are very simple:</para>
 
       <itemizedlist>
         <listitem>
@@ -1231,65 +1298,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Below we'll see how to use this feature with some of the most
-      common storage services.</para>
-
-      <bridgehead>Importing from Amazon S3</bridgehead>
-
-      <para xlink:href="https://cyberduck.io/?l=en">You will need a third
-      party tool which can create signed URLs for your S3 content. We strongly
-      recommend using <link xlink:href="???">CyberDuck</link>, an Open Source
-      application which runs on Windows and Mac OS X and supports Amazon S3,
-      RackSpace CloudFiles and other OpenStack Swift storage providers.</para>
-
-      <orderedlist>
-        <listitem>
-          <para>Open CyberDuck and connect to your Amazon S3 bucket.</para>
-        </listitem>
-
-        <listitem>
-          <para>Navigate to the location of the backup archive.</para>
-        </listitem>
-
-        <listitem>
-          <para>Right click on it and select <guimenu>Copy URL</guimenu>,
-          <guimenuitem>Signed URL (Expires tomorrow
-          XX:YY:ZZ)</guimenuitem>.</para>
-        </listitem>
-
-        <listitem>
-          <para>Run Kickstart and click on <guibutton>Import from
-          URL</guibutton>.</para>
-        </listitem>
-
-        <listitem>
-          <para>Paste the signed URL in the <guilabel>URL to Import</guilabel>
-          field and click on the <guibutton>Import from URL</guibutton>
-          button.</para>
-        </listitem>
-
-        <listitem>
-          <para>If you have a multipart backup archive repeat the steps 3, 4
-          and 5 for all parts (.jpa/.jps, .j01, .j02, ... or .zip, .z01, .z02,
-          ...). This is important: if you're missing backup archive parts the
-          restoration will not complete.</para>
-        </listitem>
-
-        <listitem>
-          <para>Go back to Kickstart's main page and begin the restoration of
-          the backup archive.</para>
-        </listitem>
-      </orderedlist>
-
-      <tip>
-        <para>It's much easier importing single part backup archives or backup
-        archives with few parts. Since Akeeba Backup for Joomla! 4.1.0, Akeeba
-        Solo 1.2.0 and Akeeba Backup for WordPress 1.2.0 you can use the new
-        <guilabel>Upload to Amazon S3</guilabel> integration to upload up to
-        2Gb backup parts to Amazon S3. Just make sure that the
-        <guilabel>Disable multipart uploads</guilabel> is NOT enabled in
-        Akeeba Backup / Akeeba Solo.å</para>
-      </tip>
+      <para>Below we'll see how to use this feature with Dropbox.</para>
 
       <bridgehead>Importing from Dropbox</bridgehead>
 
@@ -1350,7 +1359,11 @@
 
       <para>You will have to follow a similar procedure. As long as you can
       get a publicly accessible HTTP/HTTPS URL for your files you can import
-      them using Akeeba Kickstart's Import from URL feature.</para>
+      them using Akeeba Kickstart's Import from URL feature. Make sure the URL
+      you get results in the file being immediately downloaded, without
+      showing you a web page that lets you download it. In the latter case
+      Kickstart would download the web page, not the actual file. If unsure
+      consult the documentation of the storage service you are using.</para>
     </section>
 
     <section xml:id="cli-mode">
@@ -1519,6 +1532,99 @@
       <para>All in all, Kickstart CLI is meant to be a part of your command
       line toolchain which will help you manage your site backups most
       efficiently.</para>
+    </section>
+
+    <section xml:id="securing-pro-version">
+      <title>Securing the Professional version</title>
+
+      <para>Akeeba Kickstart is, by necessity, a script that can overwrite
+      your site with the contents of an arbitrary compressed archive. This is
+      not a bug, it's the very definition of what a backup archive extraction
+      tool is meant to do.</para>
+
+      <para>On top of that, Kickstart has to receive commands through the web
+      interface without having to authenticate the user, i.e. it has to do
+      whatever you tell it to do without asking for a username or password.
+      This is a feature by necessity: it's mass distributed software which is
+      meant to be used by users with little to no experience in managing
+      sites. If we were to ask users to edit the file and enter a username /
+      password of their choice we know for a fact that they wouldn't, using
+      the default username and password shipped with the software. Therefore,
+      to save mutual frustration, we decided not to implement authentication
+      for the Kickstart user interface.</para>
+
+      <para>Things get a bit hairy when you throw in features like Import from
+      URL and Import from S3 into the mix. Anyone who knows the URL to
+      Kickstart can tell it to download an arbitrary ZIP, JPA or JPS archive
+      from a location under their control, save it to your site and extract
+      it. An enterprising hacker could abuse that to install a hacking script,
+      backdoor or other malware on your site. However, as we said, <emphasis
+      role="bold">doing that requires knowing the URL to
+      Kickstart</emphasis>.</para>
+
+      <para>Kickstart is a widely used script and has a known name:
+      kickstart.php. Also, because of what it's typically used (restore a
+      full-site backup) it tends to be on the site's root. So if your site's
+      URL is <uri>http://www.example.com</uri> you can reasonably expect
+      Kickstart to be placed in
+      <uri>http://www.example.com/kickstart.php</uri>. Hackers are aware of
+      this, as well as the fact that many people forget to delete Kickstart
+      after they're done restoring their backup (they never click on
+      <guibutton>Clean Up</guibutton>), thus leaving behind a backdoor to
+      their site.</para>
+
+      <para>Your security is our top priority, therefore we have decided to
+      address this potentially dangerous situation. For starters, we are
+      offering two separate editions of Kickstart: Core and Professional. The
+      Core version only allows you to extract the backup archives which are
+      already present on your server. This means that an attacker could not
+      abuse it to import an arbitrary archive into your site.</para>
+
+      <para>The Professional edition does have the features which can import
+      an archive from an arbitrary location <emphasis>but</emphasis> it will
+      not run unless you rename its file from kickstart.php to something which
+      does not contain the word "kickstart" in it. We recommend using a name
+      that's a random collection of letters and numbers, e.g.
+      <filename>afdJuoH7lo2.php</filename>. Then just access this file through
+      your browser, e.g. <uri>http://www.example.com/afdJuoH7lo2.php</uri> to
+      run Kickstart Professional. This makes it unlikely that a hacker would
+      correctly guess the name you used, therefore mitigating the
+      issue.</para>
+
+      <para>A few words of warning are still in order, though.</para>
+
+      <para>Remember to always delete Kickstart Professional's PHP file when
+      you're done. Leaving it behind increases your risk without a good
+      reason.</para>
+
+      <para>Remember that most servers will gladly provide a directory listing
+      to anyone asking <emphasis>unless there is an
+      <filename>index.html</filename> file</emphasis>. This means that the
+      server will "leak" the random name you chose, putting your site at risk.
+      Always upload a blank index.html file <emphasis>BEFORE</emphasis>
+      uploading the (renamed) kickstart.php file to your site to prevent that
+      issue.</para>
+
+      <para>Don't use the Kickstart Professional edition unless you absolutely
+      have to. In other words, if your backup archive is already on the server
+      just use the Kickstart Core edition. It's safer and less
+      complicated.</para>
+
+      <para>Do NOT use plain HTTP with Kickstart Professional (or with
+      anything else, really). Requests sent with plain HTTP are as secure as
+      text written on the back of a postcard: everyone who can get it on their
+      hands can read it. If you are using a public network infrastructure
+      (co-working space, coffee shop, library, airport or even your company's
+      network) there's a very good chance that someone can intercept the
+      request and find out not only that you're using Kickstart Professional
+      but also how you've named the file. Always use HTTPS. Since 2015 using
+      HTTPS is incredibly easy and cheap thanks to the free SSL certificate
+      authority Let's Encrypt and the automated tools surrounding it which
+      have been integrated with all major hosting companies and operating
+      systems. Coupled with SNI, the technology which allows shared hosts to
+      have a different SSL certificate for each site they serve, there's
+      absolutely no excuse whatsoever to use plain old HTTP. Upgrade to HTTPS
+      today and mitigate half of the most common security pitfalls!</para>
     </section>
   </chapter>
 
