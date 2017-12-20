@@ -38,9 +38,6 @@ class AKPostprocSFTP extends AKAbstractPostproc
 	/** @var string Current remote directory, including the remote directory string */
 	private $_currentdir;
 
-	/** @var string The temporary directory where the data will be stored */
-	private $tempDir = '';
-
 	public function __construct()
 	{
 		parent::__construct();

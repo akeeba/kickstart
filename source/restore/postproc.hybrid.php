@@ -42,9 +42,6 @@ class AKPostprocHybrid extends AKAbstractPostproc
 	/** @var resource The FTP handle */
 	private $handle = null;
 
-	/** @var string The temporary directory where the data will be stored */
-	private $tempDir = '';
-
 	/** @var null The FTP connection handle */
 	private $_handle = null;
 

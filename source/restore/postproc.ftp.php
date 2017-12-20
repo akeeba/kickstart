@@ -30,8 +30,6 @@ class AKPostprocFTP extends AKAbstractPostproc
 	public $dir = '';
 	/** @var resource The FTP handle */
 	private $handle = null;
-	/** @var string The temporary directory where the data will be stored */
-	private $tempDir = '';
 
 	public function __construct()
 	{

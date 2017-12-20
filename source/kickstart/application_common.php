@@ -42,19 +42,13 @@ function removeKickstartFiles(AKAbstractPostproc $postProc)
 	$postProc->unlink(basename(__FILE__));
 
 	// Delete translations
-	$dh = opendir(AKKickstartUtils::getPath());
-	if ($dh !== false)
-	{
-		$basename = basename(__FILE__, '.php');
+	removeKickstartTranslationFiles($postProc);
 
-		while (false !== $file = @readdir($dh))
-		{
-			if (strstr($file, $basename . '.ini'))
-			{
-				$postProc->unlink($file);
-			}
-		}
-	}
+	// Delete feature files
+	deleteKickstartFeatureFiles($postProc);
+
+	// Delete the temporary directory IF AND ONLY IF it's called "kicktemp"
+	deleteKickstartTempDirectory($postProc);
 
 	// Delete cacert.pem
 	$postProc->unlink('cacert.pem');
@@ -62,6 +56,94 @@ function removeKickstartFiles(AKAbstractPostproc $postProc)
 	// Delete jquery.min.js and json2.min.js
 	$postProc->unlink('jquery.min.js');
 	$postProc->unlink('json2.min.js');
+}
+
+/**
+ * Remove feature files, e.g. kickstart.transfer.php
+ *
+ * @param AKAbstractPostproc $postProc
+ *
+ * @return void
+ */
+function deleteKickstartFeatureFiles(AKAbstractPostproc $postProc)
+{
+	$dh = opendir(AKKickstartUtils::getPath());
+
+	if ($dh === false)
+	{
+		return;
+	}
+
+	$basename = basename(__FILE__, '.php');
+
+	while (false !== $file = @readdir($dh))
+	{
+		if (
+			(substr($file, 0, strlen($basename) + 1) == $basename . '.')
+			&& (substr($file, -4) == '.php')
+		)
+		{
+			$postProc->unlink($file);
+		}
+	}
+
+	closedir($dh);
+}
+
+/**
+ * Delete the temporary directory IF AND ONLY IF it's called "kicktemp"
+ *
+ * @param AKAbstractPostproc $postProc
+ *
+ * @return void
+ */
+function deleteKickstartTempDirectory(AKAbstractPostproc $postProc)
+{
+	$tempDir = $postProc->getTempDir();
+	$tempDir = trim($tempDir);
+
+	if (empty($tempDir))
+	{
+		return;
+	}
+
+	$basename = basename($tempDir);
+
+	if (strtolower($basename) != 'kicktemp')
+	{
+		return;
+	}
+
+	recursive_remove_directory($tempDir);
+}
+
+/**
+ * Delete language files, e.g. el-GR.kickstart.ini
+ *
+ * @param AKAbstractPostproc $postProc
+ *
+ * @return void
+ */
+function removeKickstartTranslationFiles(AKAbstractPostproc $postProc)
+{
+	$dh = opendir(AKKickstartUtils::getPath());
+
+	if ($dh === false)
+	{
+		return;
+	}
+
+	$basename = basename(__FILE__, '.php');
+
+	while (false !== $file = @readdir($dh))
+	{
+		if (strstr($file, $basename . '.ini'))
+		{
+			$postProc->unlink($file);
+		}
+	}
+
+	closedir($dh);
 }
 
 /**

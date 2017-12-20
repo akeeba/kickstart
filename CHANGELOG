@@ -1,3 +1,7 @@
+Kickstart 5.4.2
+================================================================================
+~ Internal improvements relating to the Site Transfer Wizard
+
 Kickstart 5.4.1
 ================================================================================
 - Removing the URL Import feature from the Core version (for security reasons). This feature is only safe when kickstart.php is renamed to a hard to guess name.
