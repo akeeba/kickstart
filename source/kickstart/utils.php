@@ -4,7 +4,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart

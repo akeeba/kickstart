@@ -1,4 +1,11 @@
 <?php
+/**
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL v2 or - at your option - any later version
+ * @package     akeebabackup
+ * @subpackage  kickstart
+ */
+
 define('KICKSTART', 1);
 define('KSDEBUG', 1);
 //define('KSDEBUGCLI', 1);
