@@ -9,6 +9,31 @@
  * @subpackage  kickstart
  */
 
+/**
+ * Removes trailing slash or backslash from a pathname
+ *
+ * @param   string  $path  The path to treat
+ *
+ * @return  string  The path without the trailing slash/backslash
+ */
+function TrimTrailingSlash($path)
+{
+	$newpath = $path;
+
+	if (substr($path, strlen($path) - 1, 1) == '\\')
+	{
+		$newpath = substr($path, 0, strlen($path) - 1);
+	}
+
+	if (substr($path, strlen($path) - 1, 1) == '/')
+	{
+		$newpath = substr($path, 0, strlen($path) - 1);
+	}
+
+	return $newpath;
+}
+
+
 function TranslateWinPath($p_path)
 {
 	$is_unc = false;

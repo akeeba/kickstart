@@ -173,7 +173,7 @@ class AKText extends AKAbstractObject
 		{
 			$dirname = KSROOTDIR;
 		}
-		$basename = basename(__FILE__, '.php') . '.ini';
+		$basename = basename(KSSELFNAME, '.php') . '.ini';
 		if (empty($lang))
 		{
 			$lang = $this->language;
