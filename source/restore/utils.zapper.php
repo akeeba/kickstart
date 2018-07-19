@@ -145,6 +145,7 @@ class AKUtilsZapper extends AKAbstractPart
 
 			if (!$this->getNextDirectory())
 			{
+			    $this->setState('postrun');
 				return true;
 			}
 		}
@@ -163,33 +164,6 @@ class AKUtilsZapper extends AKAbstractPart
 		elseif (!$this->done_subdir_scanning)
 		{
 			$this->scanSubdirs();
-		}
-		/**
-		 * If we have NOT excluded the entire folder AND removed all of its files THEN try to delete it.
-		 *
-		 * No deletion will happen in the following cases:
-		 *
-		 * - The file is excluded from deletion
-		 * - One or more files under the folder are excluded from deletion
-		 *
-		 * The deletion will fail (it's expected to fail) when one of the contained folders has an excluded folder or
-		 * file. We can gracefully ignore these errors, though :)
-		 */
-		elseif (!$this->excluded_folder && empty($this->file_list))
-		{
-			debugMsg("Deleting directory " . $this->current_directory);
-
-			$postProc = AKFactory::getPostProc();
-            $this->setSubstep($this->current_directory);
-            $this->notify((object) array(
-                'type' => 'deleteFolder',
-                'file' => $this->current_directory
-            ));
-
-            if (!$this->dryRun)
-            {
-                $postProc->rmdir($this->current_directory);
-            }
 		}
 
 		// Do I have an error?
@@ -335,7 +309,25 @@ class AKUtilsZapper extends AKAbstractPart
 
 	protected function progressMarkFolderDone()
 	{
-		$this->done_folders++;
+        debugMsg("Deleting directory " . $this->current_directory);
+
+        $this->setSubstep($this->current_directory);
+        $this->notify((object) array(
+            'type' => 'deleteFolder',
+            'file' => $this->current_directory
+        ));
+
+        if (!$this->dryRun)
+        {
+            /**
+             * The scanner goes from shallow to deep directory. However this means that when it scans
+             * <root>/foo/bar/baz/bat
+             * it will only be able to remove the 'bat' directory, thus leaving foo/bar/baz on the disk. The following
+             * method will check if the directory is a subdirectory of the site root and work its way up the tree until
+             * it finds the site root. Therefore it will end up deleting the parent folders as well.
+             */
+            $this->deleteParentFolders($this->current_directory);
+        }
 	}
 
 	/**
@@ -676,6 +668,42 @@ class AKUtilsZapper extends AKAbstractPart
 
 		return $ret;
 	}
+
+    /**
+     * Recursively delete an empty folder and any of its empty parent folders.
+     *
+     * @param   string  $folder  The folder to deletes
+     */
+	private function deleteParentFolders($folder)
+    {
+        // Don't try to delete an empty folder or the filesystem root
+        if (empty($folder) || ($folder == '/'))
+        {
+            return;
+        }
+
+        $folder = TranslateWinPath($folder);
+        $root   = TranslateWinPath($this->root);
+
+        // Don't try to delete the site's root
+        if ($folder === $root)
+        {
+            return;
+        }
+
+        // Delete the leaf folder
+        $postProc = AKFactory::getPostProc();
+        $postProc->rmdir($folder);
+
+        // If the leaf folder is not under the site's root don't delete its parents
+        if (strpos($folder, $root) !== 0)
+        {
+            return;
+        }
+
+        // Get and recursively delete the parent folder
+        $this->deleteParentFolders(dirname($folder));
+    }
 }
 
 /**
@@ -698,7 +726,7 @@ function runZapper(AKAbstractPartObserver $observer = null)
 
     $zapper = AKFactory::getZapper();
 
-    if ($zapper->getState() == 'postrun')
+    if ($zapper->getState() == 'finished')
     {
         return false;
     }

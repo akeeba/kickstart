@@ -347,6 +347,9 @@ BANNER;
 
 	while (!$retArray['done'])
 	{
+	    $timer = AKFactory::getTimer();
+	    $timer->resetTime();
+
         /**
          * First try to run the filesystem zapper (remove all existing files and folders). If the Zapper is
          * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
