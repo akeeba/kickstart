@@ -175,7 +175,13 @@ class AKUtilsZapper extends AKAbstractPart
 			debugMsg("Deleting directory " . $this->current_directory);
 
 			$postProc = AKFactory::getPostProc();
-			$postProc->rmdir($this->current_directory);
+            $this->setSubstep($this->current_directory);
+            $this->notify((object) array(
+                'type' => 'deleteFolder',
+                'file' => $this->current_directory
+            ));
+
+            $postProc->rmdir($this->current_directory);
 		}
 
 		// Do I have an error?
@@ -274,6 +280,11 @@ class AKUtilsZapper extends AKAbstractPart
 			$numberOfFiles++;
 
 			// Remove the file
+            $this->setSubstep($file);
+            $this->notify((object) array(
+                'type' => 'deleteFile',
+                'file' => $file
+            ));
 			$postProc->unlink($file);
 
 			// Mark a done file
@@ -653,4 +664,53 @@ class AKUtilsZapper extends AKAbstractPart
 
 		return $ret;
 	}
+}
+
+/**
+ * Runs the Zapper and returns a status table. The Zapper only runs if the feature is enabled (kickstart.setup.zapbefore
+ * is 1) and there are more Zapper steps to run (its state is not postrun). If any of these conditions is not met we
+ * return boolean false.
+ *
+ * @return  bool|array  Boolean false or a status array
+ */
+function runZapper()
+{
+    $enabled = AKFactory::get('kickstart.setup.zapbefore', 0);
+
+    if (!$enabled)
+    {
+        return false;
+    }
+
+    $zapper = AKFactory::getZapper();
+
+    if ($zapper->getState() == 'postrun')
+    {
+        return false;
+    }
+
+    $ret = $zapper->tick();
+
+    $retArray = array(
+        'status'  => true,
+        'message' => null,
+        'done' => false,
+    );
+
+    if ($ret['Error'] != '')
+    {
+        $retArray['status']  = false;
+        $retArray['done']    = true;
+        $retArray['message'] = $ret['Error'];
+    }
+    else
+    {
+        $retArray['files']    = 0;
+        $retArray['bytesIn']  = 0;
+        $retArray['bytesOut'] = 0;
+        $retArray['factory']  = AKFactory::serialize();
+        $retArray['lastfile'] = $zapper->getSubstep();
+    }
+
+    return $retArray;
 }

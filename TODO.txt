@@ -1,19 +1,20 @@
 gh-5 Delete everything before extraction
 
+If Dry Run is enabled in Kickstart (kickstart.setup.dryrun) DO NOT actually delete anything.
+	Look for $postProc in Zapper for the two lines where this is to be implemented
+
+Add a CLI control for kickstart.setup.zapbefore
+
+Add a CLI observer for Zapper
+
 Make sure the Zapper works but leaves behind the correct files
 	First a dry run with a null writer
 	Then a real run against a dummy site
 
-If Dry Run is enabled in Kickstart (kickstart.setup.dryrun) DO NOT actually delete anything.
-	Look for $postProc in Zapper for the two lines where this is to be implemented
+Only enable kickstart.setup.zapbefore if this is restore.php (KICKSTART is not defined) OR if it's the Pro version of Kickstart
+    Change in runZapper
 
-Add a Kickstart engine option to enable this feature
-	If enabled run it before extraction
-	Improvement: only enable if this is restore.php (KICKSTART is not defined) OR if it's the Pro version of Kickstart
-
-Add a GUI control for it. ONLY FOR THE PRO VERSION.
-
-Add a CLI control for it
+Add a GUI control for kickstart.setup.zapbefore -- ONLY FOR THE PRO VERSION.
 
 Update Akeeba Backup's integrated restoration with a control for it
 
