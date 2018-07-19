@@ -65,6 +65,9 @@ class AKUtilsZapper extends AKAbstractPart
 	/** @var array Absolute filesystem patterns to never delete (e.g. /var/www/html/*.jpa) */
 	private $excluded = array();
 
+	/** @var bool Are we in a dry-run? */
+	private $dryRun = false;
+
 	/**
 	 * Implements the _prepare() abstract method
 	 *
@@ -84,6 +87,7 @@ class AKUtilsZapper extends AKAbstractPart
 		$parameters = array_merge(array(
 			'root'     => AKFactory::get('kickstart.setup.destdir'),
 			'excluded' => $defaultExcluded,
+            'dryRun'   => AKFactory::get('kickstart.setup.dryrun')
 		), $this->_parametersArray);
 
 		$this->root                 = $parameters['root'];
@@ -95,6 +99,7 @@ class AKUtilsZapper extends AKAbstractPart
 		$this->done_files           = 0;
 		$this->total_folders        = 0;
 		$this->done_folders         = 0;
+		$this->dryRun               = $parameters['dryRun'];
 
 		if (empty($this->root))
 		{
@@ -181,7 +186,10 @@ class AKUtilsZapper extends AKAbstractPart
                 'file' => $this->current_directory
             ));
 
-            $postProc->rmdir($this->current_directory);
+            if (!$this->dryRun)
+            {
+                $postProc->rmdir($this->current_directory);
+            }
 		}
 
 		// Do I have an error?
@@ -285,7 +293,11 @@ class AKUtilsZapper extends AKAbstractPart
                 'type' => 'deleteFile',
                 'file' => $file
             ));
-			$postProc->unlink($file);
+
+            if (!$this->dryRun)
+            {
+                $postProc->unlink($file);
+            }
 
 			// Mark a done file
 			$this->progressMarkFileDone();

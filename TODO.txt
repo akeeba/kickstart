@@ -1,7 +1,6 @@
 gh-5 Delete everything before extraction
 
-If Dry Run is enabled in Kickstart (kickstart.setup.dryrun) DO NOT actually delete anything.
-	Look for $postProc in Zapper for the two lines where this is to be implemented
+-- If Dry Run is enabled in Kickstart (kickstart.setup.dryrun) DO NOT actually delete anything.
 
 Add a CLI control for kickstart.setup.zapbefore
 
