@@ -90,7 +90,7 @@ if (!isset($_SERVER['REQUEST_URI']))
 		{
 			$_SERVER['HTTP_REQUEST_URI'] = $_SERVER['PHP_SELF'];
 		}
-		if ($_SERVER['QUERY_STRING'])
+		if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']))
 		{
 			$_SERVER['HTTP_REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
 		}
