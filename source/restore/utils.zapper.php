@@ -574,7 +574,7 @@ class AKUtilsZapper extends AKAbstractPart
 		 */
 		$backupArchive   = AKFactory::get('kickstart.setup.sourcefile');
 		$backupDirectory = AKFactory::get('kickstart.setup.sourcepath');
-		$backupDirectory = empty($backupDirectory) ? dirname($backupArchive) : '';
+		$backupDirectory = empty($backupDirectory) ? dirname($backupArchive) : $backupDirectory;
 
 		if ($backupDirectory != $destDir)
 		{
@@ -597,8 +597,16 @@ class AKUtilsZapper extends AKAbstractPart
 		 */
 		if (defined('KICKSTART'))
 		{
-			$langDir = defined('KSLANGDIR') ? KSLANGDIR : KSROOTDIR;
-			$ret[]   = $langDir . '/' . basename(KSSELFNAME, '.php') . '.*.ini';
+			$langDir        = defined('KSLANGDIR') ? KSLANGDIR : KSROOTDIR;
+            $iniFilePattern = basename(KSSELFNAME, '.php') . '.*.ini';
+
+			if ($langDir != KSROOTDIR)
+            {
+                $ret[] = KSLANGDIR;
+            }
+
+            $ret[]   = $langDir . '/' . $iniFilePattern;
+            $ret[]   = KSROOTDIR . '/' . $iniFilePattern;
 		}
 
 		/**
@@ -665,6 +673,9 @@ class AKUtilsZapper extends AKAbstractPart
 		{
 			$ret[] = $destDir . '/.htaccess';
 		}
+
+		// Remove any duplicate lines
+        $ret = array_unique($ret);
 
 		return $ret;
 	}
