@@ -2,7 +2,7 @@ gh-5 Delete everything before extraction
 
 -- If Dry Run is enabled in Kickstart (kickstart.setup.dryrun) DO NOT actually delete anything.
 
-Add a CLI control for kickstart.setup.zapbefore
+-- Add a CLI control for kickstart.setup.zapbefore
 
 Add a CLI observer for Zapper
 
