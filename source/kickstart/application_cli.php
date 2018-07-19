@@ -352,7 +352,7 @@ BANNER;
          * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
          * which we can pass directly back to the caller.
          */
-        $ret = runZapper();
+        $ret = runZapper(new CLIDeletionObserver());
 
         // If the Zapper had a step to run we stop here and return its status array to the caller.
         if ($ret !== false)

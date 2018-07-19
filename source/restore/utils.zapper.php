@@ -683,9 +683,11 @@ class AKUtilsZapper extends AKAbstractPart
  * is 1) and there are more Zapper steps to run (its state is not postrun). If any of these conditions is not met we
  * return boolean false.
  *
+ * @param   AKAbstractPartObserver  $observer  Optional observer to attack to the Zapper instance
+ *
  * @return  bool|array  Boolean false or a status array
  */
-function runZapper()
+function runZapper(AKAbstractPartObserver $observer = null)
 {
     $enabled = AKFactory::get('kickstart.setup.zapbefore', 0);
 
@@ -699,6 +701,11 @@ function runZapper()
     if ($zapper->getState() == 'postrun')
     {
         return false;
+    }
+
+    if (is_object($observer))
+    {
+        $zapper->attach($observer);
     }
 
     $ret = $zapper->tick();
