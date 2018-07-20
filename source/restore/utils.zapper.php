@@ -85,7 +85,7 @@ class AKUtilsZapper extends AKAbstractPart
 		$defaultExcluded = $this->getDefaultExclusions();
 
 		$parameters = array_merge(array(
-			'root'     => AKFactory::get('kickstart.setup.destdir'),
+			'root'     => rtrim(AKFactory::get('kickstart.setup.destdir'), '/' . DIRECTORY_SEPARATOR),
 			'excluded' => $defaultExcluded,
             'dryRun'   => AKFactory::get('kickstart.setup.dryrun', false)
 		), $this->_parametersArray);
@@ -282,7 +282,7 @@ class AKUtilsZapper extends AKAbstractPart
 			}
 
 			// I am running out of time.
-			if (!$timer->getTimeLeft())
+			if ($timer->getTimeLeft() <= 0)
 			{
 				return true;
 			}
@@ -761,7 +761,17 @@ function runZapper(AKAbstractPartObserver $observer = null)
     }
 
     // Run a step, create and return a status array
-    $ret = $zapper->tick();
+	$timer = AKFactory::getTimer();
+
+    while ($timer->getTimeLeft() > 0)
+    {
+	    $ret = $zapper->tick();
+
+	    if ($ret['Error'] != '')
+	    {
+	    	break;
+	    }
+    }
 
     $retArray = array(
         'status'  => true,
@@ -781,8 +791,10 @@ function runZapper(AKAbstractPartObserver $observer = null)
         $retArray['bytesIn']  = 0;
         $retArray['bytesOut'] = 0;
         $retArray['factory']  = AKFactory::serialize();
-        $retArray['lastfile'] = $zapper->getSubstep();
+        $retArray['lastfile'] = 'Deleting: ' . $zapper->getSubstep();
     }
+
+	$timer->enforce_min_exec_time();
 
     return $retArray;
 }

@@ -196,7 +196,10 @@ function kickstart_application_web()
 				}
 
 				$retArray['Warnings'] = $ret['Warnings'];
-				$retArray['lastfile'] = $observer->lastFile;
+				$retArray['lastfile'] = empty($observer->lastFile) ? 'Extracting, please wait...' : $observer->lastFile;
+
+				$timer = AKFactory::getTimer();
+				$timer->enforce_min_exec_time();
 			}
 			break;
 

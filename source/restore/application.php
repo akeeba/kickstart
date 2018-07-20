@@ -123,7 +123,10 @@ if (!defined('KICKSTART'))
 					$retArray['done']     = false;
 					$retArray['factory']  = AKFactory::serialize();
 				}
-				break;
+
+				$timer = AKFactory::getTimer();
+				$timer->enforce_min_exec_time();
+			break;
 
 			case 'finalizeRestore':
 				$root = AKFactory::get('kickstart.setup.destdir');
