@@ -10,7 +10,7 @@ gh-5 Delete everything before extraction
 
 -- Only enable kickstart.setup.zapbefore if this is restore.php (KICKSTART is not defined) OR if it's the Pro version of Kickstart
 
-Add a GUI control for kickstart.setup.zapbefore -- ONLY FOR THE PRO VERSION.
+-- Add a GUI control for kickstart.setup.zapbefore -- ONLY FOR THE PRO VERSION.
 
 Update Akeeba Backup's integrated restoration with a control for it
 
