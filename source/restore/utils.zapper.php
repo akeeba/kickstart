@@ -625,7 +625,7 @@ class AKUtilsZapper extends AKAbstractPart
 
 		if (!empty($tempDir))
 		{
-			$ret = TranslateWinPath($tempDir);
+			$ret[] = TranslateWinPath($tempDir);
 		}
 
 		/**
