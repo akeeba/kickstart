@@ -8,8 +8,7 @@ gh-5 Delete everything before extraction
 
 -- Make sure the Zapper works but leaves behind the correct files
 
-Only enable kickstart.setup.zapbefore if this is restore.php (KICKSTART is not defined) OR if it's the Pro version of Kickstart
-    Change in runZapper
+-- Only enable kickstart.setup.zapbefore if this is restore.php (KICKSTART is not defined) OR if it's the Pro version of Kickstart
 
 Add a GUI control for kickstart.setup.zapbefore -- ONLY FOR THE PRO VERSION.
 

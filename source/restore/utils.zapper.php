@@ -728,6 +728,17 @@ class AKUtilsZapper extends AKAbstractPart
  */
 function runZapper(AKAbstractPartObserver $observer = null)
 {
+	// This method should only run in restore.php mode or when we have Kickstart Professional.
+	$isKickstart = defined('KICKSTART');
+	$isPro       = defined('KICKSTARTPRO') ? KICKSTARTPRO : false;
+	$isDebug     = defined('KSDEBUG') ? KSDEBUG : false;
+
+	if ($isKickstart && (!$isPro && !$isDebug))
+	{
+		return false;
+	}
+
+	// Is the feature enabled?
     $enabled = AKFactory::get('kickstart.setup.zapbefore', 0);
 
     if (!$enabled)
@@ -735,6 +746,7 @@ function runZapper(AKAbstractPartObserver $observer = null)
         return false;
     }
 
+    // Do I still have work to do?
     $zapper = AKFactory::getZapper();
 
     if ($zapper->getState() == 'finished')
@@ -742,11 +754,13 @@ function runZapper(AKAbstractPartObserver $observer = null)
         return false;
     }
 
+    // Attach the observer
     if (is_object($observer))
     {
         $zapper->attach($observer);
     }
 
+    // Run a step, create and return a status array
     $ret = $zapper->tick();
 
     $retArray = array(
