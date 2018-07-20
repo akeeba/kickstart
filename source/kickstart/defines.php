@@ -27,11 +27,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('KICKSTART', 1);
-define('VERSION', '##VERSION##');
-define('KICKSTARTPRO', '##KICKSTARTPRO##');
 // Uncomment the following line to enable Kickstart's debug mode
 //define('KSDEBUG', 1);
+
+// =====================================================================================================================
+// DO NOT MODIFY BELOW THIS LINE
+// =====================================================================================================================
+define('KICKSTART', 1);
+
+if (!defined('VERSION'))
+{
+	define('VERSION', '##VERSION##');
+}
+
+if (!defined('KICKSTARTPRO'))
+{
+	define('KICKSTARTPRO', '##KICKSTARTPRO##');
+}
 
 // Used during development
 if (!defined('KSDEBUG') && isset($_SERVER) && isset($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'local.web') !== false))
@@ -112,49 +124,89 @@ if (is_file($cacertpem))
 }
 unset($cacertpem);
 
-// Loads other PHP files containing extra Kickstart features
+/**
+ * Loads other PHP files containing extra Kickstart features. You can do all sorts of tricks such as injecting HTML
+ * and CSS code (see AKFeatureGeorgeWSpecialEdition), adding AJAX task handlers (see AKFeatureURLImport) etc.
+ *
+ * Feature files must follow one of the following naming conventions:
+ *
+ * - kickstart.SOMETHING.php
+ * - script_basename.SOMETHING.php
+ *
+ * where script_basename is the base name of Kickstart's PHP file. If you have renamed kickstart.php to foobar.php this
+ * means that feature files must be named foobar.SOMETHING.php.
+ *
+ * The file must contain a class whose name starts with "AKFeature". The rest of the name is irrelevant and does not
+ * have to follow a convention. It is, however, prudent to name the class using something similar to the filename it is
+ * stored in to preserve your sanity and avoid potential conflicts.
+ *
+ * The class is instantiated ONLY ONCE, when the first call to callExtraFeature() is made. Its methods are called using
+ * callExtraFeature() from Kickstart's (non-user-modifiable) code.
+ */
 $dh = @opendir(KSROOTDIR);
+
 if ($dh === false)
 {
 	return;
 }
+
+$selfBasename = basename(__FILE__, '.php');
+
 while ($filename = readdir($dh))
 {
 	if (in_array($filename, array('.', '..')))
 	{
 		continue;
 	}
+
 	if (!is_file($filename))
 	{
 		continue;
 	}
-	if (substr($filename, 0, 10) != 'kickstart.')
+
+	// Feature files must be named either kickstart.something.php (legacy) or script_basename.something.php (preferred)
+	$hasKickstartInName = substr($filename, 0, 10) == 'kickstart.';
+	$hasSelfInName      = substr($filename, 0, strlen($selfBasename) + 1) == ($selfBasename . '.');
+
+	if (!$hasKickstartInName && !$hasSelfInName)
 	{
 		continue;
 	}
+
 	if (substr($filename, -4) != '.php')
 	{
 		continue;
 	}
-	if ($filename == 'kickstart.php')
+
+	// We have to ignore ourselves or an unmodified copy of kickstart.php
+	if (in_array($filename, array('kickstart.php', basename(__FILE__))))
 	{
 		continue;
 	}
+
+	// Op-code busting before loading the feature (in case it's self-modifying)
 	if (function_exists('opcache_invalidate'))
 	{
 		opcache_invalidate($filename);
 	}
+
 	if (function_exists('apc_compile_file'))
 	{
 		apc_compile_file($filename);
 	}
+
 	if (function_exists('wincache_refresh_if_changed'))
 	{
 		wincache_refresh_if_changed(array($filename));
 	}
+
 	if (function_exists('xcache_asm'))
 	{
 		xcache_asm($filename);
 	}
+
 	include_once $filename;
 }
+
+// This is meant to be a temporary variable. Removing it so it doesn't pollute the top-level scope.
+unset($selfBasename);
