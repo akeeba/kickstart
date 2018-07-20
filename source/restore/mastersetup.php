@@ -181,7 +181,7 @@ function masterSetup()
 	 * side cryptography does NOT protect you against an attacker (see
 	 * https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2011/august/javascript-cryptography-considered-harmful/).
 	 * Moreover, sending a plaintext password is safer than relying on client-side encryption for authentication as it
-	 * reoves the possibility of an attacker inferring the contents of the authentication key (password) in a relatively
+	 * removes the possibility of an attacker inferring the contents of the authentication key (password) in a relatively
 	 * easy and automated manner.
 	 */
 	if (!empty($password))

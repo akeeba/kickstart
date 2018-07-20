@@ -304,4 +304,13 @@ class AKFactory
 		return self::getClassInstance('AKCoreTimer');
 	}
 
+	/**
+	 * Get an instance of the filesystem zapper
+	 *
+	 * @return AKUtilsZapper
+	 */
+	public static function &getZapper()
+	{
+		return self::getClassInstance('AKUtilsZapper');
+	}
 }

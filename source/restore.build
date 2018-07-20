@@ -14,6 +14,7 @@ restore/unarchiver.zip.php
 restore/unarchiver.jps.php
 restore/core.timer.php
 restore/utils.lister.php
+restore/utils.zapper.php
 restore/text.php
 restore/factory.php
 restore/encryption.interface.php

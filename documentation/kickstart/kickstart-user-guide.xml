@@ -288,7 +288,7 @@
       <para>The JS files are not required, unless you don't have an Internet
       connection (e.g. restoring to a local server without an Internet
       connection) or have trouble accessing the sites where copies of these
-      files are stored in (e.g. behind a corporate or state firewall). </para>
+      files are stored in (e.g. behind a corporate or state firewall).</para>
 
       <para>The <filename>cacert.pem</filename> file is required on some
       servers if importing from an HTTPS URL or connecting to Amazon S3. If
@@ -697,10 +697,11 @@
           </varlistentry>
         </variablelist>
 
-        <para>The third step is the Fine-Tuning of the extraction engine. By
-        default these advanced options are hidden. Please click the
+        <para>The third step is the Fine-Tuning of the extraction engine. In
+        older versions these advanced options were hidden. Please click the
         <guibutton>Show advanced options (for experts)</guibutton> button to
-        display the options.</para>
+        display the options. In newer versions (after 5.5.0) these options are
+        displayed by default.</para>
 
         <para>The first two options require you to understand how Kickstart
         works. Kickstart will start extracting files until the
@@ -744,6 +745,26 @@
           result, you are not penalized for duplicate content or otherwise
           negatively affect your SEO while restoring your site.</para>
         </tip>
+
+        <para>The next option, <guilabel>Delete everything before
+        extraction</guilabel> is dangerous, meant for expert users and only
+        available in the Professional version of Kickstart. When you select
+        this option all files and folders under the directory where you are
+        extracting your backup archive (i.e. the directory where Kickstart
+        lives) will be deleted. This may include files and directories which
+        are not present in your backup archive and which may NOT belong to
+        your site. For example, if you have the web root folder of a different
+        domain or subdomain, or a third party script, it would be deleted all
+        the same. This is what makes this feature dangerous. If you don't
+        think everything through you might inadvertently and irreversibly
+        delete something you shouldn't. As such YOU ASSUME ALL RESPONSIBILITY
+        AND LIABILITY if you enable this feature. For security reasons
+        (preventing someone from visiting a leftover kickstart.php file on
+        your site and deleting everything before you knew it) this feature is
+        only available in the Professional version of Kickstart which only
+        works if its file is renamed to something which does not contain the
+        word "kickstart" in it, making it unlikely that it will be
+        abused.</para>
 
         <para>Then, we have the <guilabel>Rename server configuration
         files</guilabel> checkbox. By default, Kickstart will rename .htaccess
@@ -1023,7 +1044,8 @@
           Please include as much information as you can regarding the error
           condition, how you took your backup, which
           <emphasis>EXACT</emphasis> version of Akeeba Backup you were using
-          ("latest" means nothing, a number like 1.2.3 does), which EXACT
+          ("latest" doesn't help since we may have released an update in the
+          meantime, or you may be using a dev release and so one), which EXACT
           version of Kickstart you were using (displayed in very large type at
           the top of the Kickstart page) and the PHP version of your host.
           Remember that the less information you give us, the more time it
@@ -1045,16 +1067,20 @@
           files and extracting the archive with Kickstart.</para>
 
           <important>
-            <para>Some hosts claim "unlimited" disk space. Sadly, this is not
-            always the case. Most hosts have "hidden" limits, such as the
+            <para>Some hosts claim "unlimited" disk space. Sadly, this is
+            never the case. Most hosts have "hidden" limits, such as the
             amount of files you can host under one account. If you go over
             that limit, you'll get extraction errors. Another thing is that
             you "unlimited" host is physically bound to the size of their hard
             drives. If their hard drive was close to completely filling up,
             trying to extract your site will also lead to a restoration
-            failure. If nothing else helps with this kind of errors, do
-            contact your host and ask them if you are hitting a file count
-            limitation or their hard drive is full.</para>
+            failure. Moreover, we have seen hosts with "unlimited" space which
+            actually give you a finite and small amount of space (e.g. 1GB)
+            and you have to explain why you need more to get another chunk of
+            free space (if you successfully convince them). If nothing else
+            helps with this kind of errors, do contact your host and ask them
+            if you are hitting a file count limitation or their hard drive is
+            full.</para>
           </important>
 
           <para>Moreover, some hosts have a limitation on the maximum file
@@ -1075,17 +1101,110 @@
           <para>Finally, it may be a classic case of wrong or mixed file and
           directory permissions (a "permissions hell" situation). This is very
           easy to happen if you are restoring to a host with an existing
-          installation of Joomla! which doesn't use suPHP, i.e. the majority
-          of hosts. You might want to try using the FTP mode. If this still
-          doesn't work for you, try removing all existing files and
-          directories from your server before restoring the backup archive.
-          It's very easy to mix up ownerships and permissions on a shared
-          host, effectively entering into a "permissions hell" which is
-          virtually impossible to work around unless you have root privileges
-          on an SSH console or, more easily, removing all files from the
-          account. Do note that removing files might require using both an FTP
-          program and your host's control panel, or raising a ticket with your
-          host.</para>
+          installation of Joomla! or WordPress which doesn't use per-account
+          web server process ownership through FastCGI or suPHP, i.e. the
+          majority of cheap shared hosting. You might want to try using the
+          FTP or Hybrid file writing mode. If this still doesn't work for you,
+          try removing all existing files and directories from your server
+          before restoring the backup archive. It's very easy to mix up
+          ownerships and permissions on a shared host, effectively entering
+          into a "permissions hell" which is virtually impossible to work
+          around unless you have root privileges on an SSH console or, more
+          easily, removing all files from the account. Do note that removing
+          files might require using both an FTP program and your host's
+          control panel, or raising a ticket with your host.</para>
+
+          <para><emphasis role="bold">I am getting AJAX errors with some weird
+          403, 500, 502 or 503 code</emphasis></para>
+
+          <para>This is actually a server issue. Kickstart works by having
+          your browser visit the same URL repeatedly through AJAX to perform
+          each extraction step. This is necessary since the extraction would
+          otherwise take too long to complete which would cause your server to
+          abort it, or simply run out of memory, reporting an error. By
+          separating the work in smaller chunks we can perform the time, disk
+          and memory intensive process of extracting a backup archive over a
+          web interface. However, this may cause different issues on some
+          servers.</para>
+
+          <para>First of all, some servers impose limits on the amount of
+          resources (CPU, disk, memory) your hosting account can use in a
+          specific period of time. These limits are there to protect the
+          server against abuse by malicious tenants or scripts with coding
+          mistakes which result in very high resource usage. By its very
+          nature, Kickstart needs to do “heavy work”. It has to read a rather
+          big backup archive, decompress the data in memory and write it into
+          the thousands of files which make up your site. This requires a lot
+          of disk and CPU activity to take place and do take up a substantial
+          amount of memory. This may indeed trip the server protection. Tech
+          talk (for IT pros): this is usually implemented either with Linux
+          ulimit settings or through configuration of the virtualization
+          environment (e.g. CloudLinux) under which your hosting account
+          runs.</para>
+
+          <para>Second, some servers may have a built in Denial of Service
+          protection. They keep track of which IP address is visiting which
+          URL. If the same IP address tries to repeatedly access the same URL
+          they treat is as a potential Denial of Service and may either simply
+          reject the request or ban the IP address for a while. If this
+          happens you will probably be unable to connect to your site for
+          anywhere between a few seconds to a few hours. Unfortunately there
+          is no way to know that in advance because, for security reasons, do
+          not publicize this information. Tech talk (for IT pros): this is
+          usually implemented on Apache using mod_evasive.</para>
+
+          <para>Finally, some servers may be filtering requests based on what
+          kind of information is being sent. If they think that the data being
+          sent to the server looks dissimilar to typical web traffic they
+          might either just reject the request or ban the IP address for a
+          while. PHP, the language Kickstart and your site's software is
+          written in, is stateless. This means that it doesn't remember what
+          happened between two successive requests. Extracting a backup
+          archive requires a way to remember state, for example to track of
+          how much of the archive we have already extracted, where to extract
+          it and other options you made in Kickstart. To this end, Kickstart
+          sends its state in an encoded form to your browser after an
+          extraction step is complete. Your browser will then send it back to
+          Kickstart when it asks it to run the next extraction step. The state
+          is a rather long bit of encoded data which does indeed look
+          dissimilar to regular web traffic. This may trip up the server
+          protection discussed above. Tech talk (for IT pros): this is usually
+          implemented on Apache using mod_security2.</para>
+
+          <para>The first two issues can be worked around using the first two
+          options (time settings) in the Fine Tuning section of Kickstart's
+          interface. You can set the minimum execution time to 5 and the
+          maximum to 1. This is not a typo! It creates a 20% duty cycle:
+          Kickstart extracts files for 1 second and then waits, doing nothing,
+          for another 4 seconds so that the time between requests is the
+          configured maximum, 5 seconds. Some servers might not like the
+          predictability of the requests' timing. If this is the case try
+          setting a minimum of 5 and a maximum of 10. This means that
+          Kickstart will work for 5 to 10 seconds before telling your browser
+          to run the next extraction step. This uses more resources, makes the
+          extraction faster and introduces some variance in the time it takes
+          each extraction step to run. If none of these settings work for you
+          the server may be configured with very tight settings. In this case
+          you can extract the backup archive on your computer, using either
+          Akeeba Kickstart or Akeeba eXtract Wizard, and upload all extracted
+          files to your site. Then you can complete the restoration by
+          visiting the /installation/index.php on your site.</para>
+
+          <para>The last issue cannot be worked around by you. You can try
+          asking your host for a temporary way to disable that server
+          protection. It's possible that your host may be unable to help you
+          if you are not on a VPS or dedicated server. In this case you can
+          extract the backup archive on your computer, exactly as described in
+          the previous paragraph.</para>
+
+          <para><emphasis role="bold">I am getting an error restoring my
+          database / after my site was restored</emphasis></para>
+
+          <para>This is NOT a Kickstart issue. Kickstart only extracts the
+          archive. It does not handle the restoration of your database or your
+          site configuration. Please read the chapter about what Kickstart
+          does and does not do you saw earlier in this documentation if you're
+          in doubt.</para>
         </section>
       </section>
     </section>
@@ -1466,6 +1585,15 @@
         </listitem>
 
         <listitem>
+          <para><option>--delete-before</option> Delete all files and folders
+          already present in the path where extracted files will be placed
+          before extracting the archive. THIS MAY INCLUDE FILES AND FOLDERS
+          WHICH DO NOT BELONG TO YOUR SITE AND WHICH DO NOT EXIST INSIDE YOUR
+          BACKUP ARCHIVE. This is a DANGEROUS option and by enabling it you
+          assume all responsibility and liability.</para>
+        </listitem>
+
+        <listitem>
           <para><option>--extract=<replaceable>patterns</replaceable></option>
           Only extract files matching these patterns. Equivalent to the "Files
           to Extract" feature of the web version of Kickstart. Enter the file
@@ -1563,7 +1691,7 @@
       Kickstart</emphasis>.</para>
 
       <para>Kickstart is a widely used script and has a known name:
-      kickstart.php. Also, because of what it's typically used (restore a
+      kickstart.php. Also, because of what it's typically used for (restore a
       full-site backup) it tends to be on the site's root. So if your site's
       URL is <uri>http://www.example.com</uri> you can reasonably expect
       Kickstart to be placed in

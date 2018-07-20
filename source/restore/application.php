@@ -63,13 +63,13 @@ if (!defined('KICKSTART'))
 		switch ($task)
 		{
 			case 'ping':
-				// ping task - realy does nothing!
+				// ping task - really does nothing!
 				$timer = AKFactory::getTimer();
 				$timer->enforce_min_exec_time();
 				break;
 
 			/**
-			 * There are two separate steps here since we were using an inefficient restoration intialization method in
+			 * There are two separate steps here since we were using an inefficient restoration initialization method in
 			 * the past. Now both startRestore and stepRestore are identical. The difference in behavior depends
 			 * exclusively on the calling Javascript. If no serialized factory was passed in the request then we start a
 			 * new restoration. If a serialized factory was passed in the request then the restoration is resumed. For
@@ -79,6 +79,21 @@ if (!defined('KICKSTART'))
 			 */
 			case 'startRestore':
 			case 'stepRestore':
+                /**
+                 * First try to run the filesystem zapper (remove all existing files and folders). If the Zapper is
+                 * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
+                 * which we can pass directly back to the caller.
+                 */
+			    $ret = runZapper();
+
+			    // If the Zapper had a step to run we stop here and return its status array to the caller.
+			    if ($ret !== false)
+                {
+	                $retArray = array_merge($retArray, $ret);
+
+                    break;
+                }
+
 				$engine   = AKFactory::getUnarchiver(); // Get the engine
 				$observer = new RestorationObserver(); // Create a new observer
 				$engine->attach($observer); // Attach the observer
@@ -108,7 +123,10 @@ if (!defined('KICKSTART'))
 					$retArray['done']     = false;
 					$retArray['factory']  = AKFactory::serialize();
 				}
-				break;
+
+				$timer = AKFactory::getTimer();
+				$timer->enforce_min_exec_time();
+			break;
 
 			case 'finalizeRestore':
 				$root = AKFactory::get('kickstart.setup.destdir');

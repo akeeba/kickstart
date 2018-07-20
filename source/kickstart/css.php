@@ -183,8 +183,9 @@ label {
 .help {
 	width: 60%;
 	margin-left: 30%;
+	margin-bottom: 1.5em;
 	font-size: small;
-	color: #333;
+	color: #888;
 }
 
 input:focus, input:hover {

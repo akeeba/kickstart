@@ -55,6 +55,7 @@ function echoHeadJavascript()
 			$('#resetFTPTempDir').click(onresetFTPTempDir);
 			$('#browseFTP').click(onbrowseFTP);
 			$('#testFTP').click(onTestFTPClick);
+			$('#gobutton_top').click(onStartExtraction);
 			$('#gobutton').click(onStartExtraction);
 			$('#runInstaller').click(onRunInstallerClick);
 			$('#runCleanup').click(onRunCleanupClick);
@@ -69,11 +70,6 @@ function echoHeadJavascript()
 				window.close();
 			});
 			$('#gotoStart').click(onGotoStartClick);
-			$('#showFineTune').click(function ()
-			{
-				$('#fine-tune-holder').show();
-				$(this).hide();
-			});
 
 			// Reset the progress bar
 			setProgressBar(0);
@@ -883,6 +879,13 @@ function echoHeadJavascript()
 
 			akeeba_error_callback = errorHandler;
 
+			var zapBefore = 0;
+
+			if ($('#kickstart\\.setup\\.zapbefore').length == 1)
+            {
+				zapBefore = $('#kickstart\\.setup\\.zapbefore').is(':checked');
+			}
+
 			var data = {
 				'task': 'startExtracting',
 				'json': JSON.stringify({
@@ -893,6 +896,7 @@ function echoHeadJavascript()
 					'kickstart.tuning.max_exec_time': $('#kickstart\\.tuning\\.max_exec_time').val(),
 					'kickstart.stealth.enable':       $('#kickstart\\.stealth\\.enable').is(':checked'),
 					'kickstart.stealth.url':          $('#kickstart\\.stealth\\.url').val(),
+					'kickstart.setup.zapbefore':      zapBefore,
 					'kickstart.tuning.run_time_bias': 75,
 					'kickstart.setup.restoreperms':   $('#kickstart\\.restorepermissions\\.enable').is(':checked'),
 					'kickstart.setup.dryrun':         0,

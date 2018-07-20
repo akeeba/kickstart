@@ -186,6 +186,45 @@ class CLIExtractionObserver extends ExtractionObserver
 
 }
 
+class CLIDeletionObserver extends ExtractionObserver
+{
+	public static $silent = false;
+
+	public function update($object, $message)
+	{
+		if (self::$silent)
+		{
+			return;
+		}
+
+		if (!is_object($message))
+		{
+			return;
+		}
+
+		if (!array_key_exists('type', get_object_vars($message)))
+		{
+			return;
+		}
+
+		switch ($message->type)
+        {
+            case 'setup':
+                echo "I will delete existing files and folders\n";
+                break;
+
+            case 'deleteFile':
+                echo "DELETE FILE  : $message->file\n";
+                break;
+
+            case 'deleteFolder':
+                echo "DELETE FOLDER: $message->file\n";
+                break;
+        }
+	}
+
+}
+
 /**
  * Routes the Kickstart CLI application
  */
@@ -220,6 +259,7 @@ BANNER;
 		echo <<< HOWTOUSE
 Usage: {$argv[0]} archive.jpa [output_path] [--password=yourPassword]
          [--silent] [--permissions] [--dry-run] [--ignore-errors]
+         [--delete-before]
          [--extract=<pattern>[,<pattern>...]]
 
 
@@ -267,6 +307,8 @@ BANNER;
 	AKFactory::set('kickstart.setup.dryrun', AKCliParams::hasOption('dry-run'));
 	// Ignore errors?
 	AKFactory::set('kickstart.setup.ignoreerrors', AKCliParams::hasOption('ignore-errors'));
+	// Delete all files and folders before extraction?
+	AKFactory::set('kickstart.setup.zapbefore', AKCliParams::hasOption('delete-before'));
 	// Which files should I extract?
 	AKFactory::set('kickstart.setup.extract_list', AKCliParams::getOption('extract', '', true));
 	// Do not rename any files (this is the CLI...)
@@ -305,7 +347,23 @@ BANNER;
 
 	while (!$retArray['done'])
 	{
-		$unarchiver->tick();
+	    $timer = AKFactory::getTimer();
+	    $timer->resetTime();
+
+        /**
+         * First try to run the filesystem zapper (remove all existing files and folders). If the Zapper is
+         * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
+         * which we can pass directly back to the caller.
+         */
+        $ret = runZapper(new CLIDeletionObserver());
+
+        // If the Zapper had a step to run we stop here and return its status array to the caller.
+        if ($ret !== false)
+        {
+            continue;
+        }
+
+        $unarchiver->tick();
 		$ret = $unarchiver->getStatusArray();
 
 		if ($ret['Error'] != '')

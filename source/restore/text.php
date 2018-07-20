@@ -89,9 +89,9 @@ class AKText extends AKAbstractObject
 		'BTN_TESTSFTPCON'                 => 'Test SFTP connection',
 		'BTN_GOTOSTART'                   => 'Start over',
 		'FINE_TUNE'                       => 'Fine tune',
-		'BTN_SHOW_FINE_TUNE'              => 'Show advanced options (for experts)',
 		'MIN_EXEC_TIME'                   => 'Minimum execution time:',
 		'MAX_EXEC_TIME'                   => 'Maximum execution time:',
+		'TIME_SETTINGS_HELP'              => "Increase the minimum to 3 if you get AJAX errors. Increase the maximum to 10 for faster extraction, decrease back to 5 if you get AJAX errors. Try minimum 5, maximum 1 (not a typo!) if you keep getting AJAX errors.",
 		'SECONDS_PER_STEP'                => 'seconds per step',
 		'EXTRACT_FILES'                   => 'Extract files',
 		'BTN_START'                       => 'Start',
@@ -105,6 +105,7 @@ class AKText extends AKAbstractObject
 		'WARNINGS'                        => 'Extraction Warnings',
 		'ERROR_OCCURED'                   => 'An error occurred',
 		'STEALTH_MODE'                    => 'Stealth mode',
+		'STEALTH_MODE_HELP'               => 'When enabled, only visitors from your IP address will be able to see the site until the restoration is complete. Everyone else will be redirected to and only see the URL above. Your server must see the real IP of the visitor (this is controlled by your host, not you or us).',
 		'STEALTH_URL'                     => 'HTML file to show to web visitors',
 		'ERR_NOT_A_JPS_FILE'              => 'The file is not a JPA archive',
 		'ERR_INVALID_JPS_PASSWORD'        => 'The password you gave is wrong or the archive is corrupt',
@@ -126,9 +127,13 @@ class AKText extends AKAbstractObject
 		'CONFIG_UI_SFTPBROWSER_TITLE'     => 'SFTP Directory Browser',
 		'ERR_COULD_NOT_OPEN_ARCHIVE_PART' => 'Could not open archive part file %s for reading. Check that the file exists, is readable by the web server and is not in a directory made out of reach by chroot, open_basedir restrictions or any other restriction put in place by your host.',
 		'RENAME_FILES'                    => 'Rename server configuration files',
+		'RENAME_FILES_HELP'               => 'Renames .htaccess, web.config, php.ini and .user.ini contained in the archive while extracting. Files are renamed with a .bak extension. The file names are restored when you click on Clean Up.',
 		'RESTORE_PERMISSIONS'             => 'Restore file permissions',
+		'RESTORE_PERMISSIONS_HELP'        => 'Applies the file permissions (but NOT file ownership) which was stored at backup time. Only works with JPA and JPS archives. Does not work on Windows (PHP does not offer such a feature).',
 		'EXTRACT_LIST'                    => 'Files to extract',
 		'EXTRACT_LIST_HELP'               => 'Enter a file path such as <code>images/cat.png</code> or shell pattern such as <code>images/*.png</code> on each line. Only files matching this list will be written to disk. Leave empty to extract everything (default).',
+		'ZAPBEFORE'                       => 'Delete everything before extraction',
+		'ZAPBEFORE_HELP'                  => 'Tries to delete all existing files and folders under the directory where Kickstart is stored before extracting the backup archive. It DOES NOT take into account which files and folders exist in the backup archive. Files and folders deleted by this feature CAN NOT be recovered. <strong>WARNING! THIS MAY DELETE FILES AND FOLDERS WHICH DO NOT BELONG TO YOUR SITE. USE WITH EXTREME CAUTION. BY ENABLING THIS FEATURE YOU ASSUME ALL RESPONSIBILITY AND LIABILITY.</strong>',
 	);
 
 	/**
@@ -173,7 +178,7 @@ class AKText extends AKAbstractObject
 		{
 			$dirname = KSROOTDIR;
 		}
-		$basename = basename(__FILE__, '.php') . '.ini';
+		$basename = basename(KSSELFNAME, '.php') . '.ini';
 		if (empty($lang))
 		{
 			$lang = $this->language;
