@@ -143,70 +143,99 @@ unset($cacertpem);
  * The class is instantiated ONLY ONCE, when the first call to callExtraFeature() is made. Its methods are called using
  * callExtraFeature() from Kickstart's (non-user-modifiable) code.
  */
-$dh = @opendir(KSROOTDIR);
-
-if ($dh === false)
+function importKickstartFeatures($directory, $prefixes = array('kickstart'))
 {
-	return;
+	$dh = @opendir($directory);
+
+	if ($dh === false)
+	{
+		return;
+	}
+
+	// Make sure the prefixes include 'kickstart' and our basename
+	if (!in_array('kickstart', $prefixes))
+	{
+		$prefixes[] = 'kickstart';
+	}
+
+	$selfBasename = basename(defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__), '.php');
+
+	if (!in_array($selfBasename, $prefixes))
+	{
+		$prefixes[] = $selfBasename;
+	}
+
+	// Loop all files in the directory
+	while ($filename = readdir($dh))
+	{
+		if (in_array($filename, array('.', '..')))
+		{
+			continue;
+		}
+
+		if (!is_file($directory . '/' . $filename))
+		{
+			continue;
+		}
+
+		// Feature files must be prefixed with one of the prefixes.
+		$found = false;
+
+		foreach ($prefixes as $prefix)
+		{
+			if (substr($filename, 0, strlen($prefix) + 1) == ($prefix . '.'))
+			{
+				$found = true;
+				break;
+			}
+		}
+
+		if (!$found)
+		{
+			continue;
+		}
+
+		if (substr($filename, -4) != '.php')
+		{
+			continue;
+		}
+
+		/**
+		 * We have to ignore files which are just the prefix and a .php extension (because one of these scripts is the
+		 * currently executing script).
+		 */
+		foreach ($prefixes as $prefix)
+		{
+			if ($filename == ($prefix . '.php'))
+			{
+				continue 2;
+			}
+		}
+
+		// Op-code busting before loading the feature (in case it's self-modifying)
+		if (function_exists('opcache_invalidate'))
+		{
+			opcache_invalidate($directory . '/' . $filename);
+		}
+
+		if (function_exists('apc_compile_file'))
+		{
+			apc_compile_file($directory . '/' . $filename);
+		}
+
+		if (function_exists('wincache_refresh_if_changed'))
+		{
+			wincache_refresh_if_changed(array($directory . '/' . $filename));
+		}
+
+		if (function_exists('xcache_asm'))
+		{
+			xcache_asm($directory . '/' . $filename);
+		}
+
+		include_once $directory . '/' . $filename;
+	}
 }
 
-$selfBasename = basename(__FILE__, '.php');
-
-while ($filename = readdir($dh))
-{
-	if (in_array($filename, array('.', '..')))
-	{
-		continue;
-	}
-
-	if (!is_file($filename))
-	{
-		continue;
-	}
-
-	// Feature files must be named either kickstart.something.php (legacy) or script_basename.something.php (preferred)
-	$hasKickstartInName = substr($filename, 0, 10) == 'kickstart.';
-	$hasSelfInName      = substr($filename, 0, strlen($selfBasename) + 1) == ($selfBasename . '.');
-
-	if (!$hasKickstartInName && !$hasSelfInName)
-	{
-		continue;
-	}
-
-	if (substr($filename, -4) != '.php')
-	{
-		continue;
-	}
-
-	// We have to ignore ourselves or an unmodified copy of kickstart.php
-	if (in_array($filename, array('kickstart.php', basename(__FILE__))))
-	{
-		continue;
-	}
-
-	// Op-code busting before loading the feature (in case it's self-modifying)
-	if (function_exists('opcache_invalidate'))
-	{
-		opcache_invalidate($filename);
-	}
-
-	if (function_exists('apc_compile_file'))
-	{
-		apc_compile_file($filename);
-	}
-
-	if (function_exists('wincache_refresh_if_changed'))
-	{
-		wincache_refresh_if_changed(array($filename));
-	}
-
-	if (function_exists('xcache_asm'))
-	{
-		xcache_asm($filename);
-	}
-
-	include_once $filename;
-}
-
-// This is meant to be a temporary variable. Removing it so it doesn't pollute the top-level scope.
-unset($selfBasename);
+// Import Kickstart features from the top level directory
+importKickstartFeatures(KSROOTDIR);
