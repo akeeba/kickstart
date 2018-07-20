@@ -89,6 +89,8 @@ if (!defined('KICKSTART'))
 			    // If the Zapper had a step to run we stop here and return its status array to the caller.
 			    if ($ret !== false)
                 {
+	                $retArray = array_merge($retArray, $ret);
+
                     break;
                 }
 
