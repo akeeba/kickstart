@@ -87,7 +87,7 @@ class AKUtilsZapper extends AKAbstractPart
 		$parameters = array_merge(array(
 			'root'     => AKFactory::get('kickstart.setup.destdir'),
 			'excluded' => $defaultExcluded,
-            'dryRun'   => AKFactory::get('kickstart.setup.dryrun')
+            'dryRun'   => AKFactory::get('kickstart.setup.dryrun', false)
 		), $this->_parametersArray);
 
 		$this->root                 = $parameters['root'];
@@ -623,7 +623,7 @@ class AKUtilsZapper extends AKAbstractPart
 		$postProc = AKFactory::getPostProc();
 		$tempDir  = $postProc->getTempDir();
 
-		if (!empty($tempDir))
+		if (!empty($tempDir) && (realpath($tempDir) != realpath($destDir)))
 		{
 			$ret[] = TranslateWinPath($tempDir);
 		}
