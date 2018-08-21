@@ -3,6 +3,7 @@ Kickstart 5.5.0
 + Option to delete all files / folders before extraction. DANGEROUS. For advanced users only. Available only in the Pro version.
 ~ Fine tuning settings are visible by default and come with visible help text
 ~ Added a Start button near the archive selection since most users don't need to set up Kicksart's FTP or Hybrid file writer
+~ restore.php: protect against insane 3PDs enabling direct unauthenticated access to remote.php
 # [MEDIUM] Time settings were not taken into account
 
 Kickstart 5.4.2
