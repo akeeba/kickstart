@@ -4,6 +4,7 @@ Kickstart 5.5.0
 ~ Fine tuning settings are visible by default and come with visible help text
 ~ Added a Start button near the archive selection since most users don't need to set up Kicksart's FTP or Hybrid file writer
 ~ restore.php: protect against insane 3PDs enabling direct unauthenticated access to remote.php
+~ restore.php: hardening against left over restoration.php files
 # [MEDIUM] Time settings were not taken into account
 
 Kickstart 5.4.2

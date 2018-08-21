@@ -68,6 +68,28 @@ function masterSetup()
 			return false;
 		}
 
+		/**
+		 * If the setup file was created more than 1.5 hours ago we can assume that it's stale and someone forgot to
+		 * remove it from the server. This hinders brute force attacks against the Kickstart password. Even a simple
+		 * 8 character simple alphanum (a-z, 0-9) password yields over 2.8e12. Assuming a very fast server which can
+		 * serve 100 requests to restore.php per second and an easy to attack password requiring going over just 1% of
+		 * the search space it'd still take over 282 million seconds to brute force it. Our limit is more than 4 orders
+		 * of magnitude lower than this best practical case scenario, giving us adequate protection against all but the
+		 * luckiest attacker (spoiler alert: the mathematics of probabilities say you're not gonna get lucky).
+		 *
+		 * It is still advisable to remove the restoration.php file once you are done with the extraction. This check
+		 * here is only meant as a failsafe in case of a server error during the extraction and subsequent lack of user
+		 * action to remove the restoration.php file from their server.
+		 */
+		$setupFieCreationTime = filectime($setupFile);
+
+		if (abs(time() - $setupFieCreationTime) > 5400)
+		{
+			AKFactory::set('kickstart.enabled', false);
+
+			return false;
+		}
+
 		// Load restoration.php. It creates a global variable named $restoration_setup
 		require_once $setupFile;
 
