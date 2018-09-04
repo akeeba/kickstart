@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -11,6 +11,9 @@ define('KSLANGDIR', __DIR__ . '/kslang');
 define('MINIBUILD', __DIR__ . '/minibuild');
 define('KSSELFNAME', 'kickstart_test.php');
 define('KSDEBUG', 1);
+define('VERSION', '0.0.0-dev');
+define('KICKSTARTPRO', 1);
+
 error_reporting(E_ALL | E_NOTICE | E_DEPRECATED);
 ini_set('display_errors', 1);
 

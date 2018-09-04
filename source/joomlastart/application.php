@@ -8,7 +8,7 @@
  * This tool is derived from Akeeba Kickstart, the on-line archive extraction
  * tool by Akeeba Ltd.
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     joomla
  * @subpackage  joomlastart

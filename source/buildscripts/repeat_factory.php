@@ -1,5 +1,12 @@
 <?php
 /**
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL v2 or - at your option - any later version
+ * @package     akeebabackup
+ * @subpackage  kickstart
+ */
+
+/**
  * Used to repeat a web request under an easier to debug environment
  *
  * 1. Run Charles Proxy and enable recording AND the proxy (system or Firefox)

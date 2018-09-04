@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -151,7 +151,11 @@ function echoPage()
 						<label for="kickstart.jps.password">JPS_PASSWORD</label>
 						<span class="field"><input type="password" id="kickstart.jps.password" value=""/></span>
 					</div>
-				</div>
+                    <div class="area-container">
+                        <label for="gobutton_top"></label>
+                        <span id="gobutton_top" class="button" style="padding: 0.5em 2em; margin: 0;">BTN_START</span>
+                    </div>
+                </div>
 
 				<div class="clr"></div>
 
@@ -218,29 +222,39 @@ function echoPage()
 				<div class="step3">
 					<div class="circle">3</div>
 					<h2>FINE_TUNE</h2>
-					<div style="text-align: center;">
-						<span id="showFineTune" class="button bluebutton loprofile"
-						      style="margin: 0">BTN_SHOW_FINE_TUNE</span>
-					</div>
-					<div id="fine-tune-holder" class="area-container" style="display: none">
+					<div id="fine-tune-holder" class="area-container">
 						<label for="kickstart.tuning.min_exec_time">MIN_EXEC_TIME</label>
 						<span class="field"><input type="text" id="kickstart.tuning.min_exec_time" value="1"/></span>
 						<span>SECONDS_PER_STEP</span><br/>
 						<label for="kickstart.tuning.max_exec_time">MAX_EXEC_TIME</label>
 						<span class="field"><input type="text" id="kickstart.tuning.max_exec_time" value="5"/></span>
 						<span>SECONDS_PER_STEP</span><br/>
+                        <div class="help">TIME_SETTINGS_HELP</div>
 
 						<label for="kickstart.stealth.enable">STEALTH_MODE</label>
 						<span class="field"><input type="checkbox" id="kickstart.stealth.enable"/></span><br/>
 						<label for="kickstart.stealth.url">STEALTH_URL</label>
 						<span class="field"><input type="text" id="kickstart.stealth.url" value=""/></span><br/>
+                        <div class="help">STEALTH_MODE_HELP</div>
 
-						<label for="kickstart.setup.renameback">RENAME_FILES</label>
+                        <?php if (defined('KICKSTARTPRO') && KICKSTARTPRO): ?>
+                        <label for="kickstart.setup.zapbefore">ZAPBEFORE</label>
+                        <span class="field"><input type="checkbox" id="kickstart.setup.zapbefore"/></span><br/>
+                        <div class="help">ZAPBEFORE_HELP</div>
+                        <?php endif; ?>
+
+                        <label for="kickstart.setup.renameback">RENAME_FILES</label>
 						<span class="field"><input type="checkbox" id="kickstart.setup.renameback"
 						                           checked="checked"/></span><br/>
+                        <div class="help">RENAME_FILES_HELP</div>
 
 						<label for="kickstart.setup.restoreperms">RESTORE_PERMISSIONS</label>
 						<span class="field"><input type="checkbox" id="kickstart.setup.restoreperms"/></span><br/>
+                        <div class="help">RESTORE_PERMISSIONS_HELP</div>
+
+                        <label for="kickstart.setup.extract_list">EXTRACT_LIST</label>
+                        <span class="field"><textarea id="kickstart.setup.extract_list" rows="5" cols="50"></textarea></span><br/>
+                        <div class="help">EXTRACT_LIST_HELP</div>
 					</div>
 				</div>
 

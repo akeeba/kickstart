@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -55,6 +55,7 @@ function echoHeadJavascript()
 			$('#resetFTPTempDir').click(onresetFTPTempDir);
 			$('#browseFTP').click(onbrowseFTP);
 			$('#testFTP').click(onTestFTPClick);
+			$('#gobutton_top').click(onStartExtraction);
 			$('#gobutton').click(onStartExtraction);
 			$('#runInstaller').click(onRunInstallerClick);
 			$('#runCleanup').click(onRunCleanupClick);
@@ -69,11 +70,6 @@ function echoHeadJavascript()
 				window.close();
 			});
 			$('#gotoStart').click(onGotoStartClick);
-			$('#showFineTune').click(function ()
-			{
-				$('#fine-tune-holder').show();
-				$(this).hide();
-			});
 
 			// Reset the progress bar
 			setProgressBar(0);
@@ -129,7 +125,7 @@ function echoHeadJavascript()
 				transKey = $(e).text();
 				if (array_key_exists(transKey, translation))
 				{
-					$(e).text(translation[transKey]);
+					$(e).html(translation[transKey]);
 				}
 			});
 		}
@@ -883,6 +879,13 @@ function echoHeadJavascript()
 
 			akeeba_error_callback = errorHandler;
 
+			var zapBefore = 0;
+
+			if ($('#kickstart\\.setup\\.zapbefore').length == 1)
+            {
+				zapBefore = $('#kickstart\\.setup\\.zapbefore').is(':checked');
+			}
+
 			var data = {
 				'task': 'startExtracting',
 				'json': JSON.stringify({
@@ -893,6 +896,7 @@ function echoHeadJavascript()
 					'kickstart.tuning.max_exec_time': $('#kickstart\\.tuning\\.max_exec_time').val(),
 					'kickstart.stealth.enable':       $('#kickstart\\.stealth\\.enable').is(':checked'),
 					'kickstart.stealth.url':          $('#kickstart\\.stealth\\.url').val(),
+					'kickstart.setup.zapbefore':      zapBefore,
 					'kickstart.tuning.run_time_bias': 75,
 					'kickstart.setup.restoreperms':   $('#kickstart\\.restorepermissions\\.enable').is(':checked'),
 					'kickstart.setup.dryrun':         0,
@@ -908,7 +912,8 @@ function echoHeadJavascript()
 					'kickstart.ftp.user':             $('#kickstart\\.ftp\\.user').val(),
 					'kickstart.ftp.pass':             $('#kickstart\\.ftp\\.pass').val(),
 					'kickstart.ftp.dir':              $('#kickstart\\.ftp\\.dir').val(),
-					'kickstart.ftp.tempdir':          $('#kickstart\\.ftp\\.tempdir').val()
+					'kickstart.ftp.tempdir':          $('#kickstart\\.ftp\\.tempdir').val(),
+					'kickstart.setup.extract_list':   $('#kickstart\\.setup\\.extract_list').val()
 				})
 			};
 			doAjax(data, function (ret)

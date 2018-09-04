@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -68,6 +68,28 @@ function masterSetup()
 			return false;
 		}
 
+		/**
+		 * If the setup file was created more than 1.5 hours ago we can assume that it's stale and someone forgot to
+		 * remove it from the server. This hinders brute force attacks against the Kickstart password. Even a simple
+		 * 8 character simple alphanum (a-z, 0-9) password yields over 2.8e12. Assuming a very fast server which can
+		 * serve 100 requests to restore.php per second and an easy to attack password requiring going over just 1% of
+		 * the search space it'd still take over 282 million seconds to brute force it. Our limit is more than 4 orders
+		 * of magnitude lower than this best practical case scenario, giving us adequate protection against all but the
+		 * luckiest attacker (spoiler alert: the mathematics of probabilities say you're not gonna get lucky).
+		 *
+		 * It is still advisable to remove the restoration.php file once you are done with the extraction. This check
+		 * here is only meant as a failsafe in case of a server error during the extraction and subsequent lack of user
+		 * action to remove the restoration.php file from their server.
+		 */
+		$setupFieCreationTime = filectime($setupFile);
+
+		if (abs(time() - $setupFieCreationTime) > 5400)
+		{
+			AKFactory::set('kickstart.enabled', false);
+
+			return false;
+		}
+
 		// Load restoration.php. It creates a global variable named $restoration_setup
 		require_once $setupFile;
 
@@ -110,6 +132,35 @@ function masterSetup()
 
 	// Reinitialize $ini_data
 	$ini_data = null;
+
+	/**
+	 * August 2018. Some third party developer with a dubious skill level (or complete lack thereof) wrote a piece of
+	 * code which uses restore.php with an empty password (and never deleted the restoration.php file he created).
+	 * According to his code comments he did this because he couldn't figure out how to make encrypted requests work,
+	 * DESPITE THE FACT that com_joomlaupdate (part of Joomla! itself) has working code which does EXACTLY THAT. >:-o
+	 *
+	 * As a result of his actions all sites running his software have a massive vulnerability inflicted upon them. An
+	 * attacker can absuse the (unlocked) restore.php to upload and install any arbitrary code in a ZIP archive,
+	 * possibly overwriting core code. Discovering this problem takes a few seconds and there is code which is doing
+	 * exactly that published years ago (during the active maintenance period of Joomla! 3.4, that long ago).
+	 *
+	 * This bit of code here detects an empty password and disables restore.php. His badly written software fails to
+	 * execute and, most importantly, the unlucky users of his software will no longer have a remote code upload /
+	 * remote code execution vulnerability on their sites.
+	 *
+	 * Remember, people, if you can't be bothered to take web application security seriously DO NOT SELL WEB SOFTWARE
+	 * FOR A LIVING. There are other honest jobs you can do which don't involve using a computer in a dangerous and
+	 * irresponsible manner.
+	 */
+	$password = AKFactory::get('kickstart.security.password', null);
+
+	if (empty($password) || (trim($password) == '') || (strlen(trim($password)) < 10))
+	{
+		AKFactory::set('kickstart.enabled', false);
+
+		return false;
+	}
+
 
 	// ------------------------------------------------------------
 	// 2. Explode JSON parameters into $_REQUEST scope
@@ -181,7 +232,7 @@ function masterSetup()
 	 * side cryptography does NOT protect you against an attacker (see
 	 * https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2011/august/javascript-cryptography-considered-harmful/).
 	 * Moreover, sending a plaintext password is safer than relying on client-side encryption for authentication as it
-	 * reoves the possibility of an attacker inferring the contents of the authentication key (password) in a relatively
+	 * removes the possibility of an attacker inferring the contents of the authentication key (password) in a relatively
 	 * easy and automated manner.
 	 */
 	if (!empty($password))

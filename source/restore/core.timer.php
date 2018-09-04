@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -23,7 +23,7 @@ class AKCoreTimer extends AKAbstractObject
 	/**
 	 * Public constructor, creates the timer object and calculates the execution time limits
 	 *
-	 * @return AECoreTimer
+	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -149,11 +149,13 @@ class AKCoreTimer extends AKAbstractObject
 
 		// Get current running time
 		$elapsed_time = $this->getRunningTime() * 1000;
+		$minexectime = 1000.0 * $minexectime;
 
 		// Only run a sleep delay if we haven't reached the minexectime execution time
 		if (($minexectime > $elapsed_time) && ($elapsed_time > 0))
 		{
 			$sleep_msec = $minexectime - $elapsed_time;
+
 			if (function_exists('usleep'))
 			{
 				usleep(1000 * $sleep_msec);
@@ -174,10 +176,6 @@ class AKCoreTimer extends AKAbstractObject
 				$sleep_sec = ceil($sleep_msec / 1000);
 				sleep($sleep_sec);
 			}
-		}
-		elseif ($elapsed_time > 0)
-		{
-			// No sleep required, even if user configured us to be able to do so.
 		}
 	}
 

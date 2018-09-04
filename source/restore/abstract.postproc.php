@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -22,6 +22,8 @@ abstract class AKAbstractPostproc extends AKAbstractObject
 	protected $perms = 0755;
 	/** @var string The temporary file path we gave to the unarchiver engine */
 	protected $tempFilename = null;
+	/** @var string The temporary directory where the data will be stored */
+	protected $tempDir = '';
 
 	/**
 	 * Processes the current file, e.g. moves it from temp to final location by FTP
@@ -54,5 +56,15 @@ abstract class AKAbstractPostproc extends AKAbstractObject
 	abstract public function rmdir($directory);
 
 	abstract public function rename($from, $to);
+
+	/**
+	 * Returns the configured temporary directory
+	 *
+	 * @return string
+	 */
+	public function getTempDir()
+	{
+		return $this->tempDir;
+	}
 }
 

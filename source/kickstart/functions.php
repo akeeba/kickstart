@@ -3,11 +3,36 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
  */
+
+/**
+ * Removes trailing slash or backslash from a pathname
+ *
+ * @param   string  $path  The path to treat
+ *
+ * @return  string  The path without the trailing slash/backslash
+ */
+function TrimTrailingSlash($path)
+{
+	$newpath = $path;
+
+	if (substr($path, strlen($path) - 1, 1) == '\\')
+	{
+		$newpath = substr($path, 0, strlen($path) - 1);
+	}
+
+	if (substr($path, strlen($path) - 1, 1) == '/')
+	{
+		$newpath = substr($path, 0, strlen($path) - 1);
+	}
+
+	return $newpath;
+}
+
 
 function TranslateWinPath($p_path)
 {

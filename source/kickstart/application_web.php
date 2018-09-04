@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / AkeebaBackup.com
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -144,7 +144,22 @@ function kickstart_application_web()
 					}
 				}
 
-				$engine   = AKFactory::getUnarchiver(); // Get the engine
+                /**
+                 * First try to run the filesystem zapper (remove all existing files and folders). If the Zapper is
+                 * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
+                 * which we can pass directly back to the caller.
+                 */
+                $ret = runZapper();
+
+                // If the Zapper had a step to run we stop here and return its status array to the caller.
+                if ($ret !== false)
+                {
+                	$retArray = array_merge($retArray, $ret);
+
+                    break;
+                }
+
+                $engine   = AKFactory::getUnarchiver(); // Get the engine
 				$observer = new ExtractionObserver(); // Create a new observer
 				$engine->attach($observer); // Attach the observer
 				$engine->tick();
@@ -181,7 +196,10 @@ function kickstart_application_web()
 				}
 
 				$retArray['Warnings'] = $ret['Warnings'];
-				$retArray['lastfile'] = $observer->lastFile;
+				$retArray['lastfile'] = empty($observer->lastFile) ? 'Extracting, please wait...' : $observer->lastFile;
+
+				$timer = AKFactory::getTimer();
+				$timer->enforce_min_exec_time();
 			}
 			break;
 

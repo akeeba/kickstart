@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -295,27 +295,30 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
 		}
 
 		// Get the translated path name
-		if ($this->fileHeader->type == 'file')
+		if (!$this->mustSkip())
 		{
-			$this->fileHeader->realFile = $this->postProcEngine->processFilename($this->fileHeader->file);
-		}
-		elseif ($this->fileHeader->type == 'dir')
-		{
-			$this->fileHeader->timestamp = 0;
+			if ($this->fileHeader->type == 'file')
+			{
+				$this->fileHeader->realFile = $this->postProcEngine->processFilename($this->fileHeader->file);
+			}
+			elseif ($this->fileHeader->type == 'dir')
+			{
+				$this->fileHeader->timestamp = 0;
 
-			$dir = $this->fileHeader->file;
+				$dir = $this->fileHeader->file;
 
-			$this->postProcEngine->createDirRecursive($this->fileHeader->file, 0755);
-			$this->postProcEngine->processFilename(null);
-		}
-		else
-		{
-			// Symlink; do not post-process
-			$this->fileHeader->timestamp = 0;
-			$this->postProcEngine->processFilename(null);
-		}
+				$this->postProcEngine->createDirRecursive($dir, 0755);
+				$this->postProcEngine->processFilename(null);
+			}
+			else
+			{
+				// Symlink; do not post-process
+				$this->fileHeader->timestamp = 0;
+				$this->postProcEngine->processFilename(null);
+			}
 
-		$this->createDirectory();
+			$this->createDirectory();
+		}
 
 		// Header is read
 		$this->runState = AK_STATE_HEADER;

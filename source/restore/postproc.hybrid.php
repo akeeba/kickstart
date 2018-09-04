@@ -3,7 +3,7 @@
  * Akeeba Restore
  * A JSON-powered JPA, JPS and ZIP archive extraction library
  *
- * @copyright   2008-2017 Nicholas K. Dionysopoulos / Akeeba Ltd.
+ * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -41,9 +41,6 @@ class AKPostprocHybrid extends AKAbstractPostproc
 
 	/** @var resource The FTP handle */
 	private $handle = null;
-
-	/** @var string The temporary directory where the data will be stored */
-	private $tempDir = '';
 
 	/** @var null The FTP connection handle */
 	private $_handle = null;
