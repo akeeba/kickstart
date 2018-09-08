@@ -4,6 +4,7 @@
 
 	<property name="dirs.kickstart" value="../source" />
 	<property name="dirs.translations" value="../translations" />
+	<property name="dirs.ks_test_site" value="/var/www/html" />
 
 	<!--
 	====================================================================================================
@@ -17,6 +18,12 @@
 	
 	<target name="documentation" description="Creates the documentation packages"
 		depends="doc-k-pdf">
+	</target>
+
+	<target name="localDeploy" description="Builds and locally deploys Kickstart Core and Pro"
+			depends="new-release,setup-properties,kickstart">
+		<copy file="${dirs.root}/output/kickstart_core.php" tofile="${dirs.ks_test_site}/kickstart.php" />
+		<copy file="${dirs.root}/output/kickstart_pro.php" tofile="${dirs.ks_test_site}/kspro.php" />
 	</target>
 
 	<!--
