@@ -555,7 +555,8 @@ class AKUtilsZapper extends AKAbstractPart
 		/**
 		 * Exclude Kickstart / restore.php itself. Otherwise it'd crash!
 		 */
-		$ret[] = KSROOTDIR . '/' . KSSELFNAME;
+		$myName = defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__);
+		$ret[] = KSROOTDIR . '/' . $myName;
 
 		/**
 		 * Cheat: exclude the directory used in development (see source/buildscripts/kickstart_test.php)
