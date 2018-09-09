@@ -1,5 +1,6 @@
 Kickstart 5.5.1
 ================================================================================
+# [HIGH] Untranslated strings shown when running Kickstart
 # [LOW] Fixed references to possibly undefined KSSELFNAME
 
 Kickstart 5.5.0
