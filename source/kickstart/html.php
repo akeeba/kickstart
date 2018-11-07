@@ -256,21 +256,6 @@ function echoPage()
 				<div class="clr"></div>
 
 			</div>
-
-			<div id="ftpdialog" style="display:none;">
-				<p class="instructions alert alert-info">FTPBROWSER_LBL_INSTRUCTIONS</p>
-				<div class="error alert alert-error" id="ftpBrowserErrorContainer">
-					<h3>FTPBROWSER_LBL_ERROR</h3>
-					<p id="ftpBrowserError"></p>
-				</div>
-				<ul id="ak_crumbs" class="breadcrumb"></ul>
-				<div class="row-fluid">
-					<div class="span12">
-						<table id="ftpBrowserFolderList" class="table table-striped">
-						</table>
-					</div>
-				</div>
-			</div>
 		</div>
 
 		<div id="page2">

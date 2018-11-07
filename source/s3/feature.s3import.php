@@ -181,7 +181,7 @@ function onAKS3Connect()
 			"secret": $("#s3\\\\.secret").val()
 		})
 	};
-	doAjax(data, function (ret) {
+	akeeba.System.doAjax(data, function (ret) {
 		onAKS3Connect_cb(ret);
 	});
 }
@@ -225,7 +225,7 @@ function ak_s3import_chdir(toWhere)
 			"newdir": toWhere
 		})
 	};
-	doAjax(data, function (ret) {
+	akeeba.System.doAjax(data, function (ret) {
 		ak_s3import_chdir_cb(ret);
 	});
 }
@@ -305,7 +305,7 @@ function ak_s3import_start(filename)
 
 		})
 	};
-	doAjax(data, function (ret) {
+	akeeba.System.doAjax(data, function (ret) {
 		ak_s3import_step(ret);
 	});
 }
@@ -373,7 +373,7 @@ function ak_s3import_step(data)
 	if ((doneSize < totalSize) && (percent < 100))
 	{
 		// More work to do
-		doAjax(post, function (ret) {
+		akeeba.System.doAjax(post, function (ret) {
 			ak_s3import_step(ret);
 		});
 	}

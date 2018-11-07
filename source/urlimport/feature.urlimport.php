@@ -101,7 +101,7 @@ function ak_urlimport_start()
         })
     };
 
-    doAjax(data, function(ret){
+    akeeba.System.doAjax(data, function(ret){
         ak_urlimport_step(ret);
     });
 }
@@ -153,7 +153,7 @@ function ak_urlimport_step(data)
     
     if(percent < 100) {
         // More work to do
-        doAjax(post, function(ret){
+        akeeba.System.doAjax(post, function(ret){
             ak_urlimport_step(ret);
         });
     } else {

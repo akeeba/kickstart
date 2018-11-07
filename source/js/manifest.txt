@@ -1,0 +1,17 @@
+; JavaScript manifest file
+;
+; Here we list the JavaScript files and the order in which they will be loaded by Kickstart. The Minibuild script
+; collects them in the order specified and replaces the magic //##MINIBUILD_JAVASCRIPT## macro with their contents in
+; the js.php file.
+;
+json.js
+utils.js
+system.js
+ajax.js
+modal.js
+translate.js
+initialization.js
+common_ui.js
+preextraction.js
+extraction.js
+postextraction.js
