@@ -3,7 +3,7 @@
  * Akeeba Kickstart
  * A JSON-powered archive extraction tool
  *
- * @copyright Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright   Copyright (c)2008-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL v2 or - at your option - any later version
  * @package     akeebabackup
  * @subpackage  kickstart
@@ -29,177 +29,154 @@ class AKFeatureURLImport
 	 */
 	public function onExtraHeadJavascript()
 	{
-		?>
+		echo <<< JS
+var akeeba_url_filename = null;
+    
+$(document).ready(function(){
+    $('#ak-url-showgui').click(function(e){
+        $('#ak-url-gui').show('fast');
+        $('#ak-url-progress').hide('fast');
+        $('#ak-url-complete').hide('fast');
+        $('#ak-url-error').hide('fast');
+        $('#page1-content').hide('fast');
+    });
 
-		var akeeba_url_filename = null;
+    $('#ak-url-hidegui').click(function(e){
+        $('#ak-url-gui').hide('fast');
+        $('#ak-url-progress').hide('fast');
+        $('#ak-url-complete').hide('fast');
+        $('#ak-url-error').hide('fast');
+        $('#page1-content').show('fast');
+    });
 
-		$(document).ready(function(){
-		$('#ak-url-showgui').click(function(e){
-		$('#ak-url-gui').show('fast');
-		$('#ak-url-progress').hide('fast');
-		$('#ak-url-complete').hide('fast');
-		$('#ak-url-error').hide('fast');
-		$('#page1-content').hide('fast');
-		});
-		$('#ak-url-hidegui').click(function(e){
-		$('#ak-url-gui').hide('fast');
-		$('#ak-url-progress').hide('fast');
-		$('#ak-url-complete').hide('fast');
-		$('#ak-url-error').hide('fast');
-		$('#page1-content').show('fast');
-		});
-		$('#ak-url-reload').click(function(e){
-		window.location.reload();
-		});
-		$('#ak-url-gotoStart').click(function(e){
-		$('#ak-url-gui').show('fast');
-		$('#ak-url-progress').hide('fast');
-		$('#ak-url-complete').hide('fast');
-		$('#ak-url-error').hide('fast');
-		});
-		});
+    $('#ak-url-reload').click(function(e){
+        window.location.reload();
+    });
 
-		function onAKURLImport()
-		{
-		akeeba_url_filename = $('#url\\.filename').val();
-		ak_urlimport_start();
-		}
+    $('#ak-url-gotoStart').click(function(e){
+        $('#ak-url-gui').show('fast');
+        $('#ak-url-progress').hide('fast');
+        $('#ak-url-complete').hide('fast');
+        $('#ak-url-error').hide('fast');
+    });
+});
 
-		function AKURLsetProgressBar(percent)
-		{
-		var newValue = 0;
+function onAKURLImport()
+{
+    akeeba_url_filename = $('#url\\.filename').val();
+    ak_urlimport_start();
+}
 
-		if(percent <= 1) {
-		newValue = 100 * percent;
-		} else {
-		newValue = percent;
-		}
+function AKURLsetProgressBar(percent)
+{
+    var newValue = 0;
+    
+    if(percent <= 1) {
+        newValue = 100 * percent;
+    } else {
+        newValue = percent;
+    }
 
-		$('#ak-url-progressbar-inner').css('width',percent+'%');
-		}
+    $('#ak-url-progressbar-inner').css('width',percent+'%');
+}
 
-		function ak_urlimport_start()
-		{
-		akeeba_error_callback = AKURLerrorHandler;
+function ak_urlimport_start()
+{
+    akeeba_error_callback = AKURLerrorHandler;
 
-		$('#ak-url-gui').hide('fast');
-		$('#ak-url-progress').show('fast');
-		$('#ak-url-complete').hide('fast');
-		$('#ak-url-error').hide('fast');
+    $('#ak-url-gui').hide('fast');
+    $('#ak-url-progress').show('fast');
+    $('#ak-url-complete').hide('fast');
+    $('#ak-url-error').hide('fast');
 
-		AKURLsetProgressBar(0);
-		$('#ak-url-progresstext').html('');
+    AKURLsetProgressBar(0);
+    $('#ak-url-progresstext').html('');
 
-		var data = {
-		'task' : 'urlimport',
-		'json' : JSON.stringify({
-		'file'        : akeeba_url_filename,
-		'frag'        : "-1",
-		'totalSize'    : "-1"
-		})
-		};
-		doAjax(data, function(ret){
-		ak_urlimport_step(ret);
-		});
-		}
+    var data = {
+        'task' : 'urlimport',
+        'json' : JSON.stringify({
+            'file'        : akeeba_url_filename,
+            'frag'        : "-1",
+            'totalSize'    : "-1"
+        })
+    };
 
-		function ak_urlimport_step(data)
-		{
-		// Look for errors
-		if(!data.status)
-		{
-		AKURLerrorHandler(data.error);
-		return;
-		}
+    doAjax(data, function(ret){
+        ak_urlimport_step(ret);
+    });
+}
 
-		var totalSize = 0;
-		var doneSize = 0;
-		var percent = 0;
-		var frag = -1;
+function ak_urlimport_step(data)
+{
+    // Look for errors
+    if(!data.status)
+    {
+        AKURLerrorHandler(data.error);
+        return;
+    }
+    
+    var totalSize = 0;
+    var doneSize = 0;
+    var percent = 0;
+    var frag = -1;
+    
+    // get running stats
+    if(array_key_exists('totalSize', data)) {
+        totalSize = data.totalSize;
+    }
+    
+    if(array_key_exists('doneSize', data)) {
+        doneSize = data.doneSize;
+    }
+    
+    if(array_key_exists('percent', data)) {
+        percent = data.percent;
+    }
+    
+    if(array_key_exists('frag', data)) {
+        frag = data.frag;
+    }
+    
+    // Update GUI
+    AKURLsetProgressBar(percent);
+    $('#ak-url-progresstext').text( percent+'% ('+doneSize+' bytes)' );
+    
+    post = {
+        'task'    : 'urlimport',
+        'json'    : JSON.stringify({
+            'file'        : akeeba_url_filename,
+            'frag'        : frag,
+            'totalSize'    : totalSize,
+            'doneSize'  : doneSize
+        })
+    };
+    
+    if(percent < 100) {
+        // More work to do
+        doAjax(post, function(ret){
+            ak_urlimport_step(ret);
+        });
+    } else {
+        // Done!
+        $('#ak-url-gui').hide('fast');
+        $('#ak-url-progress').hide('fast');
+        $('#ak-url-complete').show('fast');
+        $('#ak-url-error').hide('fast');
+    }
+}
 
-		// get running stats
-		if(array_key_exists('totalSize', data)) {
-		totalSize = data.totalSize;
-		}
-		if(array_key_exists('doneSize', data)) {
-		doneSize = data.doneSize;
-		}
-		if(array_key_exists('percent', data)) {
-		percent = data.percent;
-		}
-		if(array_key_exists('frag', data)) {
-		frag = data.frag;
-		}
+function AKURLerrorHandler(msg)
+{
+    $('#ak-url-gui').hide('fast');
+    $('#ak-url-progress').hide('fast');
+    $('#ak-url-complete').hide('fast');
+    $('#ak-url-error').show('fast');
+    
+    $('#ak-url-errorMessage').html(msg);
+}
 
-		// Update GUI
-		AKURLsetProgressBar(percent);
-		//$('#ak-url-progresstext').text( percent+'% ('+doneSize+' / '+totalSize+' bytes)' );
-		$('#ak-url-progresstext').text( percent+'% ('+doneSize+' bytes)' );
+JS;
 
-		post = {
-		'task'    : 'urlimport',
-		'json'    : JSON.stringify({
-		'file'        : akeeba_url_filename,
-		'frag'        : frag,
-		'totalSize'    : totalSize,
-		'doneSize'  : doneSize
-		})
-		};
-
-		if(percent < 100) {
-		// More work to do
-		doAjax(post, function(ret){
-		ak_urlimport_step(ret);
-		});
-		} else {
-		// Done!
-		$('#ak-url-gui').hide('fast');
-		$('#ak-url-progress').hide('fast');
-		$('#ak-url-complete').show('fast');
-		$('#ak-url-error').hide('fast');
-		}
-		}
-
-		function onAKURLJoomla()
-		{
-		akeeba_error_callback = AKURLerrorHandler;
-
-		var data = {
-		'task' : 'getjurl'
-		};
-
-		doAjax(data, function(ret)
-		{
-		ak_urlimport_gotjurl(ret);
-		});
-		}
-
-		function onAKURLWordpress()
-		{
-		$('#url\\.filename').val('http://wordpress.org/latest.zip');
-		}
-
-		function ak_urlimport_gotjurl(data)
-		{
-		var url = '';
-
-		if(array_key_exists('url', data)) {
-		url = data.url;
-		}
-
-		$('#url\\.filename').val(url);
-		}
-
-		function AKURLerrorHandler(msg)
-		{
-		$('#ak-url-gui').hide('fast');
-		$('#ak-url-progress').hide('fast');
-		$('#ak-url-complete').hide('fast');
-		$('#ak-url-error').show('fast');
-
-		$('#ak-url-errorMessage').html(msg);
-		}
-		<?php
 	}
 
 	/**
@@ -209,51 +186,49 @@ class AKFeatureURLImport
 	{
 
 		?>
-		<div id="ak-url-gui" style="display: none">
-			<div class="step1">
-				<div class="circle">1</div>
-				<h2>AKURL_TITLE_STEP1</h2>
-				<div class="area-container">
-					<label for="url.filename">AKURL_FILENAME</label>
-					<span class="field"><input type="text" style="width: 45%" id="url.filename" value=""/></span>
-					<a id="ak-url-joomla" class="button bluebutton loprofile" onclick="onAKURLJoomla()">AKURL_JOOMLA</a>
-					<a id="ak-url-wordpress" class="button bluebutton loprofile" onclick="onAKURLWordpress()">AKURL_WORDPRESS</a>
+        <div id="ak-url-gui" style="display: none">
+            <div class="step1">
+                <div class="circle">1</div>
+                <h2>AKURL_TITLE_STEP1</h2>
+                <div class="area-container">
+                    <label for="url.filename">AKURL_FILENAME</label>
+                    <span class="field"><input type="text" style="width: 45%" id="url.filename" value=""/></span>
 
-					<div class="clr"></div>
-					<a id="ak-url-connect" class="button" onclick="onAKURLImport()">AKURL_IMPORT</a>
-					<a id="ak-url-hidegui" class="button bluebutton">AKURL_CANCEL</a>
-				</div>
-			</div>
-			<div class="clr"></div>
-		</div>
+                    <div class="clr"></div>
+                    <a id="ak-url-connect" class="button" onclick="onAKURLImport()">AKURL_IMPORT</a>
+                    <a id="ak-url-hidegui" class="button bluebutton">AKURL_CANCEL</a>
+                </div>
+            </div>
+            <div class="clr"></div>
+        </div>
 
-		<div id="ak-url-progress" style="display: none">
-			<div class="circle">2</div>
-			<h2>AKURL_TITLE_STEP2</h2>
-			<div class="area-container">
-				<div id="ak-url-importing">
-					<div class="warn-not-close">AKURL_DO_NOT_CLOSE</div>
-					<div id="ak-url-progressbar" class="progressbar">
-						<div id="ak-url-progressbar-inner" class="progressbar-inner">&nbsp;</div>
-					</div>
-					<div id="ak-url-progresstext"></div>
-				</div>
-			</div>
-		</div>
+        <div id="ak-url-progress" style="display: none">
+            <div class="circle">2</div>
+            <h2>AKURL_TITLE_STEP2</h2>
+            <div class="area-container">
+                <div id="ak-url-importing">
+                    <div class="warn-not-close">AKURL_DO_NOT_CLOSE</div>
+                    <div id="ak-url-progressbar" class="progressbar">
+                        <div id="ak-url-progressbar-inner" class="progressbar-inner">&nbsp;</div>
+                    </div>
+                    <div id="ak-url-progresstext"></div>
+                </div>
+            </div>
+        </div>
 
-		<div id="ak-url-complete" style="display: none">
-			<div class="circle">3</div>
-			<h2>AKURL_TITLE_STEP3</h2>
-			<div class="area-container">
-				<div id="ak-url-reload" class="button">AKURL_BTN_RELOAD</div>
-			</div>
-		</div>
+        <div id="ak-url-complete" style="display: none">
+            <div class="circle">3</div>
+            <h2>AKURL_TITLE_STEP3</h2>
+            <div class="area-container">
+                <div id="ak-url-reload" class="button">AKURL_BTN_RELOAD</div>
+            </div>
+        </div>
 
-		<div id="ak-url-error" class="error" style="display: none;">
-			<h3>ERROR_OCCURED</h3>
-			<p id="ak-url-errorMessage" class="errorMessage"></p>
-			<div id="ak-url-gotoStart" class="button">BTN_GOTOSTART</div>
-		</div>
+        <div id="ak-url-error" class="error" style="display: none;">
+            <h3>ERROR_OCCURED</h3>
+            <p id="ak-url-errorMessage" class="errorMessage"></p>
+            <div id="ak-url-gotoStart" class="button">BTN_GOTOSTART</div>
+        </div>
 		<?php
 	}
 
@@ -263,7 +238,7 @@ class AKFeatureURLImport
 	public function onPage1Step1()
 	{
 		?>
-		<a id="ak-url-showgui" class="button bluebutton loprofile">AKURL_IMPORT</a>
+        <a id="ak-url-showgui" class="button bluebutton loprofile">AKURL_IMPORT</a>
 		<?php
 	}
 
@@ -304,7 +279,7 @@ class AKFeatureURLImport
 			while (($timer->getTimeLeft() > 0) && !$break)
 			{
 				// Figure out where on Earth to put that file
-				$fileparts = explode('?', $filename, 2);
+				$fileparts  = explode('?', $filename, 2);
 				$local_file = KSROOTDIR . '/' . basename($fileparts[0]);
 
 				debugMsg("- Importing from $filename");
@@ -367,7 +342,7 @@ class AKFeatureURLImport
 					{
 						$error = "cURL error $errno: $errmsg";
 					}
-					elseif ($http_status > 299)
+                    elseif ($http_status > 299)
 					{
 						$result = false;
 						$error  = "HTTP status $http_status";
@@ -455,13 +430,13 @@ class AKFeatureURLImport
 					{
 						debugMsg("-- Read more data than the requested length. I assume this file is complete.");
 						$break = true;
-						$frag  = - 1;
+						$frag  = -1;
 					}
-					elseif ($filesize < $length)
+                    elseif ($filesize < $length)
 					{
 						debugMsg("-- Read less data than the requested length. I assume this file is complete.");
 						$break = true;
-						$frag  = - 1;
+						$frag  = -1;
 					}
 					else
 					{
@@ -489,7 +464,7 @@ class AKFeatureURLImport
 			{
 				$percent = 100;
 			}
-			elseif ($doneSize <= 0)
+            elseif ($doneSize <= 0)
 			{
 				$percent = 0;
 			}
@@ -526,101 +501,6 @@ class AKFeatureURLImport
 		return $retArray;
 	}
 
-	private function getParam($key, $default = null)
-	{
-		if (array_key_exists($key, $this->params))
-		{
-			return $this->params[$key];
-		}
-		else
-		{
-			return $default;
-		}
-	}
-
-	public function getjurl($params)
-	{
-		return array(
-			"url" => $this->getLatestJoomlaURL(),
-		);
-	}
-
-	private function getLatestJoomlaURL()
-	{
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://downloads.joomla.org/latest');
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-
-		if (defined('AKEEBA_CACERT_PEM'))
-		{
-			curl_setopt($ch, CURLOPT_CAINFO, AKEEBA_CACERT_PEM);
-		}
-
-		$pageHTML    = curl_exec($ch);
-		$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-		if (($pageHTML === false) || ($http_status >= 300))
-		{
-			return '';
-		}
-
-		// Convert HTML to XML
-		$dom = new DOMDocument();
-		$dom->loadHTML($pageHTML);
-		$xml = $dom->saveXML();
-
-		// Load XML in a SimpleXMLElement
-		$doc = new SimpleXMLElement($xml);
-
-		// Find the download links for the ZIP format
-		$links = $doc->xpath("//a[contains(@href,'format=zip')]");
-		$dlLinkAttributes = $links[0]->attributes();
-
-		// Make it into an absolute URL and return it
-		return $this->resolveRedirect('https://downloads.joomla.org' . $dlLinkAttributes['href']);
-	}
-
-	private function resolveRedirect($url)
-	{
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_NOBODY, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_HEADER, 1);
-		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-
-		if (defined('AKEEBA_CACERT_PEM'))
-		{
-			curl_setopt($ch, CURLOPT_CAINFO, AKEEBA_CACERT_PEM);
-		}
-
-		$headers     = curl_exec($ch);
-		$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-		if (($http_status < 300) || ($http_status > 399))
-		{
-			return $url;
-		}
-
-		$headers = explode("\r", $headers);
-		$headers = array_map('trim', $headers);
-		$newURL = '';
-
-		foreach ($headers as $line)
-		{
-			if (strpos($line, 'Location') === false)
-			{
-				continue;
-			}
-
-			list($junk, $newURL) = explode(':', $line, 2);
-			$newURL = trim($newURL);
-		}
-
-		return $this->resolveRedirect($newURL);
-	}
-
 	public function onLoadTranslations()
 	{
 		$translation = AKText::getInstance();
@@ -636,6 +516,18 @@ class AKFeatureURLImport
 			'AKURL_TITLE_STEP3'  => "Import is complete",
 			'AKURL_BTN_RELOAD'   => "Reload Kickstart",
 		));
+	}
+
+	private function getParam($key, $default = null)
+	{
+		if (array_key_exists($key, $this->params))
+		{
+			return $this->params[$key];
+		}
+		else
+		{
+			return $default;
+		}
 	}
 }
 
