@@ -1,3 +1,7 @@
+Kickstart 6.0.0
+================================================================================
+- Removing all external Javascript dependencies (e.g. jQuery)
+
 Kickstart 5.5.1
 ================================================================================
 # [HIGH] Untranslated strings shown when running Kickstart

@@ -31,22 +31,6 @@ function echoPage()
 		<style type="text/css" media="all" rel="stylesheet">
 			<?php echoCSS();?>
 		</style>
-		<?php if (@file_exists('jquery.min.js')): ?>
-			<script type="text/javascript" src="jquery.min.js"></script>
-		<?php else: ?>
-			<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<?php endif; ?>
-		<?php if (@file_exists('json2.min.js')): ?>
-			<script type="text/javascript" src="json2.min.js"></script>
-		<?php else: ?>
-			<script type="text/javascript" src="//yandex.st/json2/2011-10-19/json2.min.js"></script>
-		<?php endif; ?>
-		<?php if (@file_exists('jquery-ui.min.js')): ?>
-			<script type="text/javascript" src="jquery-ui.min.js"></script>
-		<?php else: ?>
-			<script type="text/javascript"
-			        src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-		<?php endif; ?>
 		<?php echoHeadJavascript(); ?>
 	</head>
 	<body>
