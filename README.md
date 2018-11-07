@@ -69,13 +69,6 @@ MUST NOT be typed!
 		$ phing git
 		> phing git
 
-1. Creating Joomla! Start
-
-	This creates a distributable ZIP files with Joomla! Start, a single file which allows you to download, extract and install the latest version of the Joomla! CMS
-
-		$ phing joomlastart
-		> phing joomlastart
-
 1. Build the documentation in PDF format
 
 		$ phing documentation

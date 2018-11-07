@@ -13,7 +13,7 @@
 	-->
 
 	<target name="git" description="Makes only packages, not the documentation"
-			depends="new-release,setup-properties,kickstart,joomlastart">
+			depends="new-release,setup-properties,kickstart">
 	</target>
 	
 	<target name="documentation" description="Creates the documentation packages"
@@ -140,52 +140,6 @@
 			</fileset>
 		</delete>
 	</target>
-
-	<target name="joomlastart" depends="setup-properties">
-
-        <delete file="${dirs.release}/joomlastart*.zip" failonerror="false" />
-		<delete file="${dirs.release}/joomlastart.php" failonerror="false" />
-
-		<exec command="php joomlastart_build.php" dir="${dirs.kickstart}/buildscripts" />
-
-		<!-- Kickstart Core -->
-		<append destFile="${dirs.release}/joomlastart.php">
-			<filterchain>
-				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
-					<token key="VERSION" value="${version}" />
-				</replacetokens>
-			</filterchain>
-			<fileset dir="${dirs.root}/output">
-				<include name="joomlastart.php" />
-			</fileset>
-		</append>
-
-		<copy todir="${dirs.release}">
-			<fileset dir="${dirs.translations}/joomlastart">
-				<include name="*.joomlastart.ini" />
-			</fileset>
-		</copy>
-
-		<delete file="${dirs.release}/joomlastart-${version}.zip" failonerror="false" />
-
-        <zipme basedir="${dirs.release}" destfile="${dirs.release}/joomlastart-${version}.zip" includeemptydirs="false">
-			<fileset dir="${dirs.release}">
-				<include name="*joomlastart.ini" />
-				<include name="joomlastart.php" />
-			</fileset>
-		</zipme>
-
-		<delete file="${dirs.release}/joomlastart.php" failonerror="false" />
-        <delete>
-            <fileset dir="${dirs.release}">
-                <include name="*.joomlastart.ini" />
-                <include name="*.js" />
-                <include name="cacert.pem" />
-            </fileset>
-        </delete>
-
-    </target>
 
 	<!--
 	====================================================================================================
