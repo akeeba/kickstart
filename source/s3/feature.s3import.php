@@ -117,275 +117,285 @@ CSS;
 	public function onExtraHeadJavascript()
 	{
 		echo <<< JS
+var akeeba_s3_filename = null;
 
-		var akeeba_s3_filename = null;
-
-		$(document).ready(function(){
-		$('#ak-s3-showgui').click(function(e){
-		$('#ak-s3-gui').show('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').hide('fast');
-		$('#page1-content').hide('fast');
-		});
-		$('#ak-s3-hidegui').click(function(e){
-		$('#ak-s3-gui').hide('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').hide('fast');
-		$('#page1-content').show('fast');
-		});
-		$('#s3\\\\.bucket').change(function(e){
+$(document).ready(function () {
+	$("#ak-s3-showgui").click(function (e) {
+		$("#ak-s3-gui").show("fast");
+		$("#ak-s3-progress").hide("fast");
+		$("#ak-s3-complete").hide("fast");
+		$("#ak-s3-error").hide("fast");
+		$("#page1-content").hide("fast");
+	});
+	$("#ak-s3-hidegui").click(function (e) {
+		$("#ak-s3-gui").hide("fast");
+		$("#ak-s3-progress").hide("fast");
+		$("#ak-s3-complete").hide("fast");
+		$("#ak-s3-error").hide("fast");
+		$("#page1-content").show("fast");
+	});
+	$("#s3\\\\.bucket").change(function (e) {
 		onAKS3BucketChange();
-		});
-		$('#ak-s3-reload').click(function(e){
+	});
+	$("#ak-s3-reload").click(function (e) {
 		window.location.reload();
-		});
-		$('#ak-s3-gotoStart').click(function(e){
-		$('#ak-s3-gui').show('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').hide('fast');
-		});
-		});
+	});
+	$("#ak-s3-gotoStart").click(function (e) {
+		$("#ak-s3-gui").show("fast");
+		$("#ak-s3-progress").hide("fast");
+		$("#ak-s3-complete").hide("fast");
+		$("#ak-s3-error").hide("fast");
+	});
+});
 
-		function AKS3setProgressBar(percent)
-		{
-		var newValue = 0;
+function AKS3setProgressBar(percent)
+{
+	var newValue = 0;
 
-		if(percent <= 1) {
+	if (percent <= 1)
+	{
 		newValue = 100 * percent;
-		} else {
+	}
+	else
+	{
 		newValue = percent;
-		}
+	}
 
-		$('#ak-s3-progressbar-inner').css('width',percent+'%');
-		}
+	$("#ak-s3-progressbar-inner").css("width", percent + "%");
+}
 
-		function onAKS3Connect()
-		{
-		// Clear the bucket list
-		$('#s3\\\\.bucket').html('');
-		$('#ak-s3-bucketselect').css('display','none');
-		$('ul.breadcrumbs').hide('fast');
-		$('#ak-s3-folderlist').hide('fast');
-		$('#ak-s3-filelist').hide('fast');
+function onAKS3Connect()
+{
+	// Clear the bucket list
+	$("#s3\\\\.bucket").html("");
+	$("#ak-s3-bucketselect").css("display", "none");
+	$("ul.breadcrumbs").hide("fast");
+	$("#ak-s3-folderlist").hide("fast");
+	$("#ak-s3-filelist").hide("fast");
 
-		akeeba_error_callback = AKS3errorHandler;
-		var data = {
-		'task' : 's3connect',
-		'json' : JSON.stringify({
-		'access': $('#s3\\\\.access').val(),
-		'secret': $('#s3\\\\.secret').val(),
+	akeeba_error_callback = AKS3errorHandler;
+	var data              = {
+		"task": "s3connect",
+		"json": JSON.stringify({
+			"access": $("#s3\\\\.access").val(),
+			"secret": $("#s3\\\\.secret").val()
 		})
-		};
-		doAjax(data, function(ret){
+	};
+	doAjax(data, function (ret) {
 		onAKS3Connect_cb(ret);
-		});
-		}
+	});
+}
 
-		function onAKS3Connect_cb(data)
-		{
-		// Look for errors
-		if(!data.status)
-		{
+function onAKS3Connect_cb(data)
+{
+	// Look for errors
+	if (!data.status)
+	{
 		AKS3errorHandler(data.error);
 		return;
-		}
+	}
 
-		$.each(data.buckets, function(counter, value){
-		var option = $(document.createElement('option')).attr('value', value).html(value);
-		option.appendTo( $('#s3\\\\.bucket') );
-		});
+	$.each(data.buckets, function (counter, value) {
+		var option = $(document.createElement("option")).attr("value", value).html(value);
+		option.appendTo($("#s3\\\\.bucket"));
+	});
 
-		$('#ak-s3-bucketselect').css('display','inline-block');
-		}
+	$("#ak-s3-bucketselect").css("display", "inline-block");
+}
 
-		function onAKS3BucketChange()
-		{
-		$('#breadcrumbs').hide('fast');
-		$('#ak-s3-folderlist').html('');
-		$('#ak-s3-filelist').html('');
+function onAKS3BucketChange()
+{
+	$("#breadcrumbs").hide("fast");
+	$("#ak-s3-folderlist").html("");
+	$("#ak-s3-filelist").html("");
 
-		ak_s3import_chdir('/');
-		}
+	ak_s3import_chdir("/");
+}
 
-		function ak_s3import_chdir(toWhere)
-		{
-		akeeba_error_callback = AKS3errorHandler;
+function ak_s3import_chdir(toWhere)
+{
+	akeeba_error_callback = AKS3errorHandler;
 
-		var data = {
-		'task' : 's3list',
-		'json' : JSON.stringify({
-		'access': $('#s3\\\\.access').val(),
-		'secret': $('#s3\\\\.secret').val(),
-		'bucket': $('#s3\\\\.bucket').val(),
-		'newdir': toWhere,
+	var data = {
+		"task": "s3list",
+		"json": JSON.stringify({
+			"access": $("#s3\\\\.access").val(),
+			"secret": $("#s3\\\\.secret").val(),
+			"bucket": $("#s3\\\\.bucket").val(),
+			"newdir": toWhere
 		})
-		};
-		doAjax(data, function(ret){
+	};
+	doAjax(data, function (ret) {
 		ak_s3import_chdir_cb(ret);
-		});
-		}
+	});
+}
 
-		function ak_s3import_chdir_cb(data)
-		{
-		// Look for errors
-		if(!data.status)
-		{
+function ak_s3import_chdir_cb(data)
+{
+	// Look for errors
+	if (!data.status)
+	{
 		AKS3errorHandler(data.error);
 		return;
-		}
+	}
 
-		// Update breadcrumbs
-		$('ul.breadcrumbs').html('');
-		$.each(data.crumbs, function(label, subdir){
-		var li = $(document.createElement('li'));
-		var a = $(document.createElement('a')).html(label);
-		a.click(function(e){
-		ak_s3import_chdir(subdir);
+	// Update breadcrumbs
+	$("ul.breadcrumbs").html("");
+	$.each(data.crumbs, function (label, subdir) {
+		var li = $(document.createElement("li"));
+		var a  = $(document.createElement("a")).html(label);
+		a.click(function (e) {
+			ak_s3import_chdir(subdir);
 		});
-		a.appendTo( li );
-		li.appendTo( $('#breadcrumbs') );
+		a.appendTo(li);
+		li.appendTo($("#breadcrumbs"));
+	});
+
+	$("#breadcrumbs").show("fast");
+
+	// Update folder list
+	$("#ak-s3-folderlist").html("");
+	$.each(data.folders, function (label, subdir) {
+		var div = $(document.createElement("div")).html(label);
+		div.click(function (e) {
+			ak_s3import_chdir(subdir);
 		});
+		div.appendTo($("#ak-s3-folderlist"));
+	});
 
-		$('#breadcrumbs').show('fast');
+	$("#ak-s3-folderlist").show("fast");
 
-		// Update folder list
-		$('#ak-s3-folderlist').html('');
-		$.each(data.folders, function(label, subdir){
-		var div = $(document.createElement('div')).html(label);
-		div.click(function(e){
-		ak_s3import_chdir(subdir);
+	// Update file list
+	$("#ak-s3-filelist").html("");
+	$.each(data.files, function (label, filepath) {
+		var div = $(document.createElement("div")).html(label);
+		div.click(function (e) {
+			ak_s3import_start(filepath);
 		});
-		div.appendTo( $('#ak-s3-folderlist') );
-		});
+		div.appendTo($("#ak-s3-filelist"));
+	});
 
-		$('#ak-s3-folderlist').show('fast');
+	$("#ak-s3-filelist").show("fast");
+}
 
-		// Update file list
-		$('#ak-s3-filelist').html('');
-		$.each(data.files, function(label, filepath){
-		var div = $(document.createElement('div')).html(label);
-		div.click(function(e){
-		ak_s3import_start(filepath);
-		});
-		div.appendTo( $('#ak-s3-filelist') );
-		});
+function ak_s3import_start(filename)
+{
+	akeeba_s3_filename    = filename;
+	akeeba_error_callback = AKS3errorHandler;
 
-		$('#ak-s3-filelist').show('fast');
-		}
+	$("#ak-s3-gui").hide("fast");
+	$("#ak-s3-progress").show("fast");
+	$("#ak-s3-complete").hide("fast");
+	$("#ak-s3-error").hide("fast");
 
-		function ak_s3import_start(filename)
-		{
-		akeeba_s3_filename = filename;
-		akeeba_error_callback = AKS3errorHandler;
+	AKS3setProgressBar(0);
+	$("#ak-s3-progresstext").html("");
 
-		$('#ak-s3-gui').hide('fast');
-		$('#ak-s3-progress').show('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').hide('fast');
-
-		AKS3setProgressBar(0);
-		$('#ak-s3-progresstext').html('');
-
-		var data = {
-		'task' : 's3import',
-		'json' : JSON.stringify({
-		'access'    : $('#s3\\\\.access').val(),
-		'secret'    : $('#s3\\\\.secret').val(),
-		'bucket'    : $('#s3\\\\.bucket').val(),
-		'file'        : akeeba_s3_filename,
-		'part'        : "-1",
-		'frag'        : "-1",
-		'totalSize'    : "-1",
-		'totalParts': "-1"
+	var data = {
+		"task": "s3import",
+		"json": JSON.stringify({
+			"access": $("#s3\\\\.access").val(),
+			"secret": $("#s3\\\\.secret").val(),
+			"bucket": $("#s3\\\\.bucket").val(),
+			"file": akeeba_s3_filename,
+			"part": "-1",
+			"frag": "-1",
+			"totalSize": "-1",
+			"totalParts": "-1"
 
 		})
-		};
-		doAjax(data, function(ret){
+	};
+	doAjax(data, function (ret) {
 		ak_s3import_step(ret);
-		});
-		}
+	});
+}
 
-		function ak_s3import_step(data)
-		{
-		// Look for errors
-		if(!data.status)
-		{
+function ak_s3import_step(data)
+{
+	// Look for errors
+	if (!data.status)
+	{
 		AKS3errorHandler(data.error);
 		return;
-		}
+	}
 
-		var totalSize = 0;
-		var doneSize = 0;
-		var percent = 0;
-		var part = -1;
-		var frag = -1;
+	var totalSize = 0;
+	var doneSize  = 0;
+	var percent   = 0;
+	var part      = -1;
+	var frag      = -1;
 
-		// get running stats
-		if(array_key_exists('totalSize', data)) {
+	// get running stats
+	if (array_key_exists("totalSize", data))
+	{
 		totalSize = data.totalSize;
-		}
-		if(array_key_exists('totalParts', data)) {
+	}
+	if (array_key_exists("totalParts", data))
+	{
 		totalParts = data.totalParts;
-		}
-		if(array_key_exists('doneSize', data)) {
+	}
+	if (array_key_exists("doneSize", data))
+	{
 		doneSize = data.doneSize;
-		}
-		if(array_key_exists('percent', data)) {
+	}
+	if (array_key_exists("percent", data))
+	{
 		percent = data.percent;
-		}
-		if(array_key_exists('part', data)) {
+	}
+	if (array_key_exists("part", data))
+	{
 		part = data.part;
-		}
-		if(array_key_exists('frag', data)) {
+	}
+	if (array_key_exists("frag", data))
+	{
 		frag = data.frag;
-		}
+	}
 
-		// Update GUI
-		AKS3setProgressBar(percent);
-		$('#ak-s3-progresstext').text( percent+'% ('+doneSize+' / '+totalSize+' bytes)' );
+	// Update GUI
+	AKS3setProgressBar(percent);
+	$("#ak-s3-progresstext").text(percent + "% (" + doneSize + " / " + totalSize + " bytes)");
 
-		post = {
-		'task'    : 's3import',
-		'json'    : JSON.stringify({
-		'access'    : $('#s3\\\\.access').val(),
-		'secret'    : $('#s3\\\\.secret').val(),
-		'bucket'    : $('#s3\\\\.bucket').val(),
-		'file'        : akeeba_s3_filename,
-		'part'        : part,
-		'frag'        : frag,
-		'totalSize'    : totalSize,
-		'totalParts': totalParts,
-		'doneSize'  : doneSize
+	post = {
+		"task": "s3import",
+		"json": JSON.stringify({
+			"access": $("#s3\\\\.access").val(),
+			"secret": $("#s3\\\\.secret").val(),
+			"bucket": $("#s3\\\\.bucket").val(),
+			"file": akeeba_s3_filename,
+			"part": part,
+			"frag": frag,
+			"totalSize": totalSize,
+			"totalParts": totalParts,
+			"doneSize": doneSize
 		})
-		};
+	};
 
-		if((doneSize < totalSize) && (percent < 100)) {
+	if ((doneSize < totalSize) && (percent < 100))
+	{
 		// More work to do
-		doAjax(post, function(ret){
-		ak_s3import_step(ret);
+		doAjax(post, function (ret) {
+			ak_s3import_step(ret);
 		});
-		} else {
+	}
+	else
+	{
 		// Done!
-		$('#ak-s3-gui').hide('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').show('fast');
-		$('#ak-s3-error').hide('fast');
-		}
-		}
+		$("#ak-s3-gui").hide("fast");
+		$("#ak-s3-progress").hide("fast");
+		$("#ak-s3-complete").show("fast");
+		$("#ak-s3-error").hide("fast");
+	}
+}
 
-		function AKS3errorHandler(msg)
-		{
-		$('#ak-s3-gui').hide('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').show('fast');
+function AKS3errorHandler(msg)
+{
+	$("#ak-s3-gui").hide("fast");
+	$("#ak-s3-progress").hide("fast");
+	$("#ak-s3-complete").hide("fast");
+	$("#ak-s3-error").show("fast");
 
-		$('#ak-s3-errorMessage').html(msg);
-		}
-		
+	$("#ak-s3-errorMessage").html(msg);
+}
 JS;
 
 	}
