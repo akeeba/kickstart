@@ -13,6 +13,7 @@ var akeeba_restoration_stat_outbytes = 0;
 var akeeba_restoration_stat_files    = 0;
 var akeeba_restoration_stat_total    = 0;
 var akeeba_factory                   = null;
+var akeeba_next_step_post            = null;
 
 var akeeba_ftpbrowser_modal     = null;
 var akeeba_ftpbrowser_host      = null;
@@ -50,6 +51,7 @@ akeeba.System.documentReady(function () {
 	akeeba.System.addEventListener(document.getElementById("gobutton"), "click", onStartExtraction);
 	akeeba.System.addEventListener(document.getElementById("gobutton"), "click", onStartExtraction);
 	akeeba.System.addEventListener(document.getElementById("runCleanup"), "click", onRunCleanupClick);
+	akeeba.System.addEventListener(document.getElementById("runInstaller"), "click", onRunInstallerClick);
 	akeeba.System.addEventListener(document.getElementById("gotoStart"), "click", onGotoStartClick);
 
 	akeeba.System.addEventListener(document.getElementById("gotoSite"), "click", function (event)
@@ -69,17 +71,17 @@ akeeba.System.documentReady(function () {
 
 	// Show IE warning
 	var msieVersion = getInternetExplorerVersion();
-	if ((msieVersion != -1) && (msieVersion <= 8.99))
+	if ((msieVersion !== -1) && (msieVersion < 10))
 	{
-		document.getElementById('ie7Warning').style.display = 'block';
+		document.getElementById("ie7Warning").style.display = "block";
 	}
 
 	if (!akeeba_debug)
 	{
-		document.getElementById('preextraction').style.display = 'block';
-		document.getElementById('fade').style.display = 'block';
+		document.getElementById("preextraction").style.display = "block";
+		document.getElementById("fade").style.display          = "block";
 	}
 
 	// Trigger change, so we avoid problems if the user refreshes the page
-	akeeba.System.triggerEvent(document.getElementById('kickstart.procengine', 'change'));
+	akeeba.System.triggerEvent(document.getElementById("kickstart.procengine", "change"));
 });

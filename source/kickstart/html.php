@@ -248,10 +248,10 @@ function echoPage()
 					<div class="circle">4</div>
 					<h2>EXTRACT_FILES</h2>
 					<div class="area-container">
-						<span></span>
+                        <label for="gobutton"></label>
 						<span id="gobutton" class="button">BTN_START</span>
 					</div>
-				</div>
+                </div>
 
 				<div class="clr"></div>
 
