@@ -32,67 +32,67 @@ class AKFeatureURLImport
 		echo <<< JS
 var akeeba_url_filename = null;
     
-$(document).ready(function(){
-    $('#ak-url-showgui').click(function(e){
-        $('#ak-url-gui').show('fast');
-        $('#ak-url-progress').hide('fast');
-        $('#ak-url-complete').hide('fast');
-        $('#ak-url-error').hide('fast');
-        $('#page1-content').hide('fast');
+akeeba.System.documentReady(function() {
+	akeeba.System.addEventListener('ak-url-showgui', 'click', function(e) {
+        document.getElementById('ak-url-gui').style.display = 'block';
+        document.getElementById('ak-url-progress').style.display = 'none';
+        document.getElementById('ak-url-complete').style.display = 'none';
+        document.getElementById('ak-url-error').style.display = 'none';
+        document.getElementById('page1-content').style.display = 'none';
+	});
+
+    akeeba.System.addEventListener('ak-url-hidegui', 'click', function(e) {
+        document.getElementById('ak-url-gui').style.display = 'none';
+        document.getElementById('ak-url-progress').style.display = 'none';
+        document.getElementById('ak-url-complete').style.display = 'none';
+        document.getElementById('ak-url-error').style.display = 'none';
+        document.getElementById('page1-content').style.display = 'block';
     });
 
-    $('#ak-url-hidegui').click(function(e){
-        $('#ak-url-gui').hide('fast');
-        $('#ak-url-progress').hide('fast');
-        $('#ak-url-complete').hide('fast');
-        $('#ak-url-error').hide('fast');
-        $('#page1-content').show('fast');
-    });
-
-    $('#ak-url-reload').click(function(e){
+    akeeba.System.addEventListener('ak-url-reload', 'click', function(e) {
         window.location.reload();
     });
 
-    $('#ak-url-gotoStart').click(function(e){
-        $('#ak-url-gui').show('fast');
-        $('#ak-url-progress').hide('fast');
-        $('#ak-url-complete').hide('fast');
-        $('#ak-url-error').hide('fast');
+    akeeba.System.addEventListener('ak-url-gotoStart', 'click', function(e) {
+        document.getElementById('ak-url-gui').style.display = 'block';
+        document.getElementById('ak-url-progress').style.display = 'none';
+        document.getElementById('ak-url-complete').style.display = 'none';
+        document.getElementById('ak-url-error').style.display = 'none';
     });
 });
 
 function onAKURLImport()
 {
-    akeeba_url_filename = $('#url\\.filename').val();
+    akeeba_url_filename = document.getElementById('url.filename').value;
     ak_urlimport_start();
 }
 
 function AKURLsetProgressBar(percent)
 {
-    var newValue = 0;
-    
-    if(percent <= 1) {
-        newValue = 100 * percent;
-    } else {
-        newValue = percent;
-    }
+    var newValue = percent;
 
-    $('#ak-url-progressbar-inner').css('width',percent+'%');
+	if (percent <= 1)
+	{
+		newValue = 100 * percent;
+	}
+
+    document.getElementById('ak-url-progressbar-inner').style.width = percent + '%';
 }
 
 function ak_urlimport_start()
 {
     akeeba_error_callback = AKURLerrorHandler;
 
-    $('#ak-url-gui').hide('fast');
-    $('#ak-url-progress').show('fast');
-    $('#ak-url-complete').hide('fast');
-    $('#ak-url-error').hide('fast');
+    document.getElementById('ak-url-gui').style.display = 'none';
+    document.getElementById('ak-url-progress').style.display = 'block';
+    document.getElementById('ak-url-complete').style.display = 'none';
+    document.getElementById('ak-url-error').style.display = 'none';
 
     AKURLsetProgressBar(0);
-    $('#ak-url-progresstext').html('');
-
-    var data = {
+    
+    document.getElementById('ak-url-progresstext').innerHTML = '';
+    
+    akeeba_next_step_post = {
         'task' : 'urlimport',
         'json' : JSON.stringify({
             'file'        : akeeba_url_filename,
@@ -101,7 +101,12 @@ function ak_urlimport_start()
         })
     };
 
-    akeeba.System.doAjax(data, function(ret){
+    setTimeout(ak_urlimport_doStep, 10);
+}
+
+function ak_urlimport_doStep()
+{
+    akeeba.System.doAjax(akeeba_next_step_post, function(ret){
         ak_urlimport_step(ret);
     });
 }
@@ -109,9 +114,10 @@ function ak_urlimport_start()
 function ak_urlimport_step(data)
 {
     // Look for errors
-    if(!data.status)
+    if (!data.status)
     {
         AKURLerrorHandler(data.error);
+        
         return;
     }
     
@@ -121,58 +127,62 @@ function ak_urlimport_step(data)
     var frag = -1;
     
     // get running stats
-    if(array_key_exists('totalSize', data)) {
+    if (array_key_exists('totalSize', data))
+    {
         totalSize = data.totalSize;
     }
     
-    if(array_key_exists('doneSize', data)) {
+    if (array_key_exists('doneSize', data))
+    {
         doneSize = data.doneSize;
     }
     
-    if(array_key_exists('percent', data)) {
+    if (array_key_exists('percent', data))
+    {
         percent = data.percent;
     }
     
-    if(array_key_exists('frag', data)) {
+    if (array_key_exists('frag', data))
+    {
         frag = data.frag;
     }
     
     // Update GUI
     AKURLsetProgressBar(percent);
-    $('#ak-url-progresstext').text( percent+'% ('+doneSize+' bytes)' );
+    document.getElementById('ak-url-progresstext').innerText =  percent + '% (' + doneSize + ' bytes)';
     
-    post = {
-        'task'    : 'urlimport',
-        'json'    : JSON.stringify({
-            'file'        : akeeba_url_filename,
-            'frag'        : frag,
-            'totalSize'    : totalSize,
-            'doneSize'  : doneSize
-        })
-    };
     
-    if(percent < 100) {
-        // More work to do
-        akeeba.System.doAjax(post, function(ret){
-            ak_urlimport_step(ret);
-        });
-    } else {
-        // Done!
-        $('#ak-url-gui').hide('fast');
-        $('#ak-url-progress').hide('fast');
-        $('#ak-url-complete').show('fast');
-        $('#ak-url-error').hide('fast');
+    if (percent < 100) {
+        akeeba_next_step_post = {
+            'task'    : 'urlimport',
+            'json'    : JSON.stringify({
+                'file'        : akeeba_url_filename,
+                'frag'        : frag,
+                'totalSize'    : totalSize,
+                'doneSize'  : doneSize
+            })
+        };
+        
+        setTimeout(ak_urlimport_doStep, 10);
+        
+        return;
     }
+    
+    // Done!
+    document.getElementById('ak-url-gui').style.display = 'none';
+    document.getElementById('ak-url-progress').style.display = 'none';
+    document.getElementById('ak-url-complete').style.display = 'block';
+    document.getElementById('ak-url-error').style.display = 'none';
 }
 
 function AKURLerrorHandler(msg)
 {
-    $('#ak-url-gui').hide('fast');
-    $('#ak-url-progress').hide('fast');
-    $('#ak-url-complete').hide('fast');
-    $('#ak-url-error').show('fast');
-    
-    $('#ak-url-errorMessage').html(msg);
+    document.getElementById('ak-url-gui').style.display = 'none';
+    document.getElementById('ak-url-progress').style.display = 'none';
+    document.getElementById('ak-url-complete').style.display = 'none';
+    document.getElementById('ak-url-error').style.display = 'block';
+
+    document.getElementById('ak-url-errorMessage').innerHTML = msg;
 }
 
 JS;
