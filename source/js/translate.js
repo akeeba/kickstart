@@ -15,12 +15,12 @@ function translateGUI()
 	{
 		var e = allElements[i];
 
-		if (typeof e.innerText === "undefined")
+		if (typeof e.innerHTML === "undefined")
 		{
 			continue;
 		}
 
-		transKey = e.innerText;
+		transKey = e.innerHTML;
 
 		if (!array_key_exists(transKey, translation))
 		{
