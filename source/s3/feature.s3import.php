@@ -372,12 +372,14 @@ function ak_s3import_start(filename)
 		})
 	};
 	
-	setTimeout(ak_s3import_doStep, 10);
+	setTimeout(
+	    (function(next_step){ ak_s3import_doStep(next_step)})(akeeba_next_step_post), 
+    10);
 }
 
-function ak_s3import_doStep()
+function ak_s3import_doStep(next_step)
 {
-	akeeba.System.doAjax(akeeba_next_step_post, function (ret) {
+	akeeba.System.doAjax(next_step, function (ret) {
 		ak_s3import_step(ret);
 	});
 }
@@ -450,8 +452,10 @@ function ak_s3import_step(data)
             })
         };
     
-		setTimeout(ak_s3import_doStep, 10);
-		
+        setTimeout(
+	        (function(next_step){ ak_s3import_doStep(next_step)})(akeeba_next_step_post), 
+        10);
+	
 		return;
 	}
 
