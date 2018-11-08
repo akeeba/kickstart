@@ -51,7 +51,7 @@ function closeLightbox(event)
 	{
 		closeMe = true;
 	}
-	else if (event.keyCode === "27")
+	else if (event.keyCode == "27")
 	{
 		closeMe = true;
 	}
