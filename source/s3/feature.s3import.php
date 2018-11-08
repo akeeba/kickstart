@@ -200,7 +200,7 @@ function onAKS3Connect_cb(data)
 
 	var elBucket = document.getElementById('s3.bucket');
 	
-	for (var counter = 0; counter < data.buckets; counter++)
+	for (var counter = 0; counter < data.buckets.length; counter++)
     {
         var value = data.buckets[counter];
 		var option = document.createElement('option');
