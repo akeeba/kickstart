@@ -19,12 +19,11 @@ akeeba.System.notification = {
 };
 akeeba.System.params       = {
 	AjaxURL:               '',
-	errorCallback:         akeeba.System.modalErrorHandler,
+	errorCallback:         onGenericError,
 	password:              '',
 	errorDialogId:         'errorDialog',
 	errorDialogMessageId:  'errorDialogPre'
 };
-akeeba.System.modalDialog  = null;
 
 /**
  * An extremely simple error handler, dumping error messages to screen
@@ -36,31 +35,7 @@ akeeba.System.defaultErrorHandler = function (error)
 	alert("An error has occurred\n" + error);
 };
 
-/**
- * An error handler based on Bootstrap modal. It requires you to set up a modal dialog div with id errorDialog
- *
- * @param  error  The error message string
- */
-akeeba.System.modalErrorHandler = function (error)
-{
-	var dialog_element =
-			document.getElementById(akeeba.System.params.errorDialogId);
-
-	var errorContent = 'error';
-
-	if (dialog_element != null)
-	{
-		document.getElementById(akeeba.System.params.errorDialogMessageId).innerHTML = error;
-		errorContent                                                                 = dialog_element.innerHTML;
-	}
-
-	akeeba.Modal.open({
-		content: errorContent,
-		width:   '80%'
-	});
-};
-
-akeeba.System.params.errorCallback = akeeba.System.modalErrorHandler;
+akeeba.System.params.errorCallback = onGenericError;
 
 /**
  * Performs an AJAX request and returns the parsed JSON output.

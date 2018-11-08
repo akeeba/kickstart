@@ -8,7 +8,6 @@ json.js
 utils.js
 system.js
 ajax.js
-modal.js
 translate.js
 initialization.js
 common_ui.js
