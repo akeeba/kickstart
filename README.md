@@ -73,3 +73,11 @@ MUST NOT be typed!
 
 		$ phing documentation
 		> phing documentation
+
+## How to test
+
+```
+cd /var/www/your_site
+ln -s /path/to/kickstart/source minibuild
+ln /path/to/kickstart/source/buildscripts/kickstart_test.php
+```
