@@ -990,7 +990,7 @@ HTML;
 			}
 			else
 			{
-				$percent = 100 * ($doneSize / $totalSize);
+				$percent = round(100 * ($doneSize / $totalSize), 2);
 			}
 
 			// Update $retArray
