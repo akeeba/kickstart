@@ -273,10 +273,14 @@ function ak_s3import_chdir_cb(data)
 		
 		a.innerHTML = label;
 		
-		akeeba.System.addEventListener(a, 'click', function (e) {
-			ak_s3import_chdir(subdir);
-		});
-		
+		// We have to bind current value to a function, otherwise we're going to always use the same value
+        // (mutable variable in closure): https://stackoverflow.com/a/8909792/485241
+        (function (current_dir){
+            akeeba.System.addEventListener(a, 'click', function (e) {
+                ak_s3import_chdir(current_dir);
+            });            
+        })(subdir);
+        
 		li.appendChild(a);
 		document.getElementById('breadcrumbs').appendChild(li);
     }
@@ -297,19 +301,20 @@ function ak_s3import_chdir_cb(data)
         
         div = document.createElement("div");
         div.innerHTML = label;
-        
-        akeeba.System.addEventListener(div, 'click', function (e) {
-			ak_s3import_chdir(subdir);
-		});
+
+        // We have to bind current value to a function, otherwise we're going to always use the same value
+        // (mutable variable in closure): https://stackoverflow.com/a/8909792/485241
+        (function (current_dir){
+            akeeba.System.addEventListener(div, 'click', function (e) {
+                ak_s3import_chdir(current_dir);
+            });            
+        })(subdir);        
 
         document.getElementById('ak-s3-folderlist').appendChild(div);
     }
     
     document.getElementById('ak-s3-folderlist').style.display = 'block';
-
     
-    
-
 	// Update file list
 	document.getElementById("ak-s3-filelist").innerHTML = '';
 
@@ -325,10 +330,14 @@ function ak_s3import_chdir_cb(data)
         div = document.createElement("div");
         div.innerHTML = label;
         
-        akeeba.System.addEventListener(div, 'click', function (e) {
-			ak_s3import_start(filepath);
-		});
-
+        // We have to bind current value to a function, otherwise we're going to always use the same value
+        // (mutable variable in closure): https://stackoverflow.com/a/8909792/485241
+        (function (current_dir){
+            akeeba.System.addEventListener(div, 'click', function (e) {
+                ak_s3import_start(filepath);
+            });            
+        })(subdir);
+        
         document.getElementById('ak-s3-filelist').appendChild(div);
     }
     
