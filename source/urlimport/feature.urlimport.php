@@ -76,7 +76,7 @@ function AKURLsetProgressBar(percent)
 		newValue = 100 * percent;
 	}
 
-    document.getElementById('ak-url-progressbar-inner').style.width = percent + '%';
+    document.getElementById('ak-url-progressbar-inner').style.width = newValue + '%';
 }
 
 function ak_urlimport_start()

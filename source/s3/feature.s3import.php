@@ -161,7 +161,7 @@ function AKS3setProgressBar(percent)
 		newValue = 100 * percent;
 	}
 
-	document.getElementById("ak-s3-progressbar-inner").style.width = percent + "%";
+	document.getElementById("ak-s3-progressbar-inner").style.width = newValue + "%";
 }
 
 function onAKS3Connect()

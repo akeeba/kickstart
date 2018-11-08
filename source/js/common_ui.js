@@ -35,7 +35,7 @@ function setProgressBar(percent)
 		newValue = 100 * percent;
 	}
 
-	document.getElementById("progressbar-inner").style.width = percent + "%";
+	document.getElementById("progressbar-inner").style.width = newValue + "%";
 }
 
 /**
