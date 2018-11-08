@@ -355,14 +355,14 @@ function ak_s3import_start(filename)
 	document.getElementById("ak-s3-error").style.display = 'none';
 
 	AKS3setProgressBar(0);
-	document.getElementById("#ak-s3-progresstext").innerHTML = '';
+	document.getElementById("ak-s3-progresstext").innerHTML = '';
 
 	var akeeba_next_step_post = {
 		"task": "s3import",
 		"json": JSON.stringify({
-			"access": document.getElementById("#s3.access").value,
-			"secret": document.getElementById("#s3.secret").value,
-			"bucket": document.getElementById("#s3.bucket").value,
+			"access": document.getElementById("s3.access").value,
+			"secret": document.getElementById("s3.secret").value,
+			"bucket": document.getElementById("s3.bucket").value,
 			"file": akeeba_s3_filename,
 			"part": "-1",
 			"frag": "-1",
@@ -438,9 +438,9 @@ function ak_s3import_step(data)
         akeeba_next_step_post = {
             "task": "s3import",
             "json": JSON.stringify({
-                "access": document.getElementById("#s3.access").value,
-                "secret": document.getElementById("#s3.secret").value,
-                "bucket": document.getElementById("#s3.bucket").value,
+                "access": document.getElementById("s3.access").value,
+                "secret": document.getElementById("s3.secret").value,
+                "bucket": document.getElementById("s3.bucket").value,
                 "file": akeeba_s3_filename,
                 "part": part,
                 "frag": frag,
