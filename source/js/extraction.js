@@ -132,7 +132,7 @@ function processRestorationStep(data)
 		{
 			akeeba_restoration_stat_total = 0;
 
-			for (var j = 0; j < data.filelist.left; j++)
+			for (var j = 0; j < data.filelist.length; j++)
 			{
 				var statItem = data.filelist[j];
 				akeeba_restoration_stat_total += statItem[1];
