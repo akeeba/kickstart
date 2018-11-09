@@ -357,7 +357,7 @@ function ak_s3import_start(filename)
 	AKS3setProgressBar(0);
 	document.getElementById("ak-s3-progresstext").innerHTML = '';
 
-	var akeeba_next_step_post = {
+	akeeba_next_step_post = {
 		"task": "s3import",
 		"json": JSON.stringify({
 			"access": document.getElementById("s3.access").value,
@@ -372,14 +372,12 @@ function ak_s3import_start(filename)
 		})
 	};
 	
-	setTimeout(
-	    (function(next_step){ ak_s3import_doStep(next_step)})(akeeba_next_step_post), 
-    10);
+	setTimeout(ak_s3import_doStep, 10);
 }
 
-function ak_s3import_doStep(next_step)
+function ak_s3import_doStep()
 {
-	akeeba.System.doAjax(next_step, function (ret) {
+	akeeba.System.doAjax(akeeba_next_step_post, function (ret) {
 		ak_s3import_step(ret);
 	});
 }
@@ -465,9 +463,7 @@ function ak_s3import_step(data)
             })
         };
     
-        setTimeout(
-	        (function(next_step){ ak_s3import_doStep(next_step)})(akeeba_next_step_post), 
-        10);
+        setTimeout(ak_s3import_doStep, 10);
 	
 		return;
 	}
