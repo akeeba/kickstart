@@ -430,10 +430,23 @@ function ak_s3import_step(data)
 	{
 		frag = data.frag;
 	}
-
+	
+	var humanTotalSize = totalSize;
+	var humanDoneSize  = doneSize;
+	
+	if (array_key_exists("humanTotalSize", data))
+    {
+        humanTotalSize = data.humanTotalSize;
+    }
+    
+    if (array_key_exists("humanDoneSize", data))
+    {
+        humanDoneSize = data.humanDoneSize;
+    }
+	
 	// Update GUI
 	AKS3setProgressBar(percent);
-	document.getElementById("ak-s3-progresstext").innerText = percent + "% (" + doneSize + " / " + totalSize + " bytes)";
+	document.getElementById("ak-s3-progresstext").innerText = percent + "% (" + humanDoneSize + " / " + humanTotalSize + ")";
 
 	if ((doneSize < totalSize) && (percent < 100))
 	{
@@ -729,6 +742,8 @@ HTML;
 			"totalParts" => $totalParts,
 			"doneSize"   => $doneSize,
 			"percent"    => 0,
+            "humanTotalSize" => $this->formatByteSize($totalSize),
+            "humanDoneSize"  => $this->formatByteSize($doneSize)
 		);
 
 		try
@@ -780,6 +795,8 @@ HTML;
 				$retArray['totalParts'] = $totalParts;
 				$retArray['totalSize']  = $totalSize;
 				$retArray['doneSize']   = $doneSize;
+				$retArray['humanTotalSize']  = $this->formatByteSize($totalSize);
+				$retArray['humanDoneSize']   = $this->formatByteSize($doneSize);
 
 				debugMsg('- Updating information:');
 				debugMsg("    totalParts: " . $totalParts);
@@ -995,14 +1012,16 @@ HTML;
 
 			// Update $retArray
 			$retArray = array(
-				"status"     => true,
-				"error"      => '',
-				"part"       => $part,
-				"frag"       => $frag,
-				"totalSize"  => $totalSize,
-				"totalParts" => $totalParts,
-				"doneSize"   => $doneSize,
-				"percent"    => $percent,
+				'status'     => true,
+				'error'      => '',
+				'part'       => $part,
+				'frag'       => $frag,
+				'totalSize'  => $totalSize,
+				'totalParts' => $totalParts,
+				'doneSize'   => $doneSize,
+				'percent'    => $percent,
+				'humanTotalSize'  => $this->formatByteSize($totalSize),
+			    'humanDoneSize'   => $this->formatByteSize($doneSize),
 			);
 		}
 		catch (Exception $e)
@@ -1077,6 +1096,19 @@ HTML;
 		}
 
 		return $region;
+	}
+
+	/**
+	 * Formats a number of bytes in human readable format
+	 *
+	 * @param   int  $size  The size in bytes to format, e.g. 8254862
+	 *
+	 * @return  string  The human-readable representation of the byte size, e.g. "7.87 Mb"
+	 */
+	protected function formatByteSize($size)
+	{
+		$unit	 = array('b', 'KB', 'MB', 'GB', 'TB', 'PB');
+		return @round($size / pow(1024, ($i	= floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
 	}
 
 	/**
