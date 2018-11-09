@@ -147,9 +147,16 @@ function ak_urlimport_step(data)
         frag = data.frag;
     }
     
+    var humanDoneSize = doneSize;
+    
+    if (array_key_exists('humanDoneSize', data))
+    {
+        humanDoneSize = data.humanDoneSize;
+    }
+    
     // Update GUI
     AKURLsetProgressBar(percent);
-    document.getElementById('ak-url-progresstext').innerText =  percent + '% (' + doneSize + ' bytes)';
+    document.getElementById('ak-url-progresstext').innerText =  percent + '% (' + humanDoneSize  + ')';
     
     
     if (percent < 100) {
@@ -276,6 +283,7 @@ JS;
 			"totalSize" => $totalSize,
 			"doneSize"  => $doneSize,
 			"percent"   => 0,
+            'humanDoneSize'  => $this->formatByteSize($doneSize)
 		);
 
 		try
@@ -498,6 +506,7 @@ JS;
 				"totalSize" => $totalSize,
 				"doneSize"  => $doneSize,
 				"percent"   => $percent,
+                'humanDoneSize'  => $this->formatByteSize($doneSize)
 			);
 		}
 		catch (Exception $e)
@@ -526,6 +535,19 @@ JS;
 			'AKURL_TITLE_STEP3'  => "Import is complete",
 			'AKURL_BTN_RELOAD'   => "Reload Kickstart",
 		));
+	}
+
+	/**
+	 * Formats a number of bytes in human readable format
+	 *
+	 * @param   int  $size  The size in bytes to format, e.g. 8254862
+	 *
+	 * @return  string  The human-readable representation of the byte size, e.g. "7.87 Mb"
+	 */
+	protected function formatByteSize($size)
+	{
+		$unit	 = array('b', 'KB', 'MB', 'GB', 'TB', 'PB');
+		return @round($size / pow(1024, ($i	= floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
 	}
 
 	private function getParam($key, $default = null)
