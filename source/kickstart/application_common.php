@@ -52,10 +52,6 @@ function removeKickstartFiles(AKAbstractPostproc $postProc)
 
 	// Delete cacert.pem
 	$postProc->unlink('cacert.pem');
-
-	// Delete jquery.min.js and json2.min.js
-	$postProc->unlink('jquery.min.js');
-	$postProc->unlink('json2.min.js');
 }
 
 /**

@@ -241,14 +241,6 @@
       server you have to ensure that all folders and files are writable. If
       not, Kickstart will fail and leave your site in a possibly broken
       state.</para>
-
-      <para>Finally, if your server doesn't support base64 decoding (e.g. the
-      base64_decode function is disabled) you need an Internet connection.
-      Normally, the required jQuery library is fetched from a base64 encoded
-      resource inside the kickstart.php file. If the decoding is not possible,
-      Kickstart will fall back to loading it from Google's AJAX API Library
-      CDN, which requires an Internet connection and access to Google's CDN
-      not be restricted by your firewall or Internet security suite.</para>
     </section>
   </chapter>
 

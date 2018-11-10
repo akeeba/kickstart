@@ -117,275 +117,373 @@ CSS;
 	public function onExtraHeadJavascript()
 	{
 		echo <<< JS
+var akeeba_s3_filename = null;
 
-		var akeeba_s3_filename = null;
+akeeba.System.documentReady(function() {
+	akeeba.System.addEventListener('ak-s3-showgui', 'click', function(e) {
+        document.getElementById('ak-s3-gui').style.display = 'block';
+        document.getElementById('ak-s3-progress').style.display = 'none';
+        document.getElementById('ak-s3-complete').style.display = 'none';
+        document.getElementById('ak-s3-error').style.display = 'none';
+        document.getElementById('page1-content').style.display = 'none';
+	});
 
-		$(document).ready(function(){
-		$('#ak-s3-showgui').click(function(e){
-		$('#ak-s3-gui').show('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').hide('fast');
-		$('#page1-content').hide('fast');
-		});
-		$('#ak-s3-hidegui').click(function(e){
-		$('#ak-s3-gui').hide('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').hide('fast');
-		$('#page1-content').show('fast');
-		});
-		$('#s3\\\\.bucket').change(function(e){
-		onAKS3BucketChange();
-		});
-		$('#ak-s3-reload').click(function(e){
-		window.location.reload();
-		});
-		$('#ak-s3-gotoStart').click(function(e){
-		$('#ak-s3-gui').show('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').hide('fast');
-		});
-		});
+    akeeba.System.addEventListener('ak-s3-hidegui', 'click', function(e) {
+        document.getElementById('ak-s3-gui').style.display = 'none';
+        document.getElementById('ak-s3-progress').style.display = 'none';
+        document.getElementById('ak-s3-complete').style.display = 'none';
+        document.getElementById('ak-s3-error').style.display = 'none';
+        document.getElementById('page1-content').style.display = 'block';
+    });
 
-		function AKS3setProgressBar(percent)
-		{
-		var newValue = 0;
+    akeeba.System.addEventListener('ak-s3-reload', 'click', function(e) {
+        window.location.reload();
+    });
 
-		if(percent <= 1) {
+    akeeba.System.addEventListener('s3.bucket', 'change', function(e) {
+        onAKS3BucketChange();
+    });
+
+    akeeba.System.addEventListener('ak-s3-gotoStart', 'click', function(e) {
+        document.getElementById('ak-s3-gui').style.display = 'block';
+        document.getElementById('ak-s3-progress').style.display = 'none';
+        document.getElementById('ak-s3-complete').style.display = 'none';
+        document.getElementById('ak-s3-error').style.display = 'none';
+    });
+});
+
+function AKS3setProgressBar(percent)
+{
+	var newValue = percent;
+
+	if (percent <= 1)
+	{
 		newValue = 100 * percent;
-		} else {
-		newValue = percent;
-		}
+	}
 
-		$('#ak-s3-progressbar-inner').css('width',percent+'%');
-		}
+	document.getElementById("ak-s3-progressbar-inner").style.width = newValue + "%";
+}
 
-		function onAKS3Connect()
-		{
-		// Clear the bucket list
-		$('#s3\\\\.bucket').html('');
-		$('#ak-s3-bucketselect').css('display','none');
-		$('ul.breadcrumbs').hide('fast');
-		$('#ak-s3-folderlist').hide('fast');
-		$('#ak-s3-filelist').hide('fast');
+function onAKS3Connect()
+{
+	// Clear the bucket list
+	var elBreadcrumbs = document.querySelectorAll("ul.breadcrumbs");
+	document.getElementById("s3.bucket").innerHTML = "";
+	document.getElementById("ak-s3-bucketselect").style.display = "none";
+	elBreadcrumbs[0].style.display = "none";
+	document.getElementById("ak-s3-folderlist").style.display = "none";
+	document.getElementById("ak-s3-filelist").style.display = "none";
 
-		akeeba_error_callback = AKS3errorHandler;
-		var data = {
-		'task' : 's3connect',
-		'json' : JSON.stringify({
-		'access': $('#s3\\\\.access').val(),
-		'secret': $('#s3\\\\.secret').val(),
+	akeeba_error_callback = AKS3errorHandler;
+
+	var data              = {
+		"task": "s3connect",
+		"json": JSON.stringify({
+			"access": document.getElementById("s3.access").value,
+			"secret": document.getElementById("s3.secret").value
 		})
-		};
-		doAjax(data, function(ret){
+	};
+	akeeba.System.doAjax(data, function (ret) {
 		onAKS3Connect_cb(ret);
-		});
-		}
+	});
+}
 
-		function onAKS3Connect_cb(data)
-		{
-		// Look for errors
-		if(!data.status)
-		{
+function onAKS3Connect_cb(data)
+{
+	// Look for errors
+	if (!data.status)
+	{
 		AKS3errorHandler(data.error);
-		return;
-		}
-
-		$.each(data.buckets, function(counter, value){
-		var option = $(document.createElement('option')).attr('value', value).html(value);
-		option.appendTo( $('#s3\\\\.bucket') );
-		});
-
-		$('#ak-s3-bucketselect').css('display','inline-block');
-		}
-
-		function onAKS3BucketChange()
-		{
-		$('#breadcrumbs').hide('fast');
-		$('#ak-s3-folderlist').html('');
-		$('#ak-s3-filelist').html('');
-
-		ak_s3import_chdir('/');
-		}
-
-		function ak_s3import_chdir(toWhere)
-		{
-		akeeba_error_callback = AKS3errorHandler;
-
-		var data = {
-		'task' : 's3list',
-		'json' : JSON.stringify({
-		'access': $('#s3\\\\.access').val(),
-		'secret': $('#s3\\\\.secret').val(),
-		'bucket': $('#s3\\\\.bucket').val(),
-		'newdir': toWhere,
-		})
-		};
-		doAjax(data, function(ret){
-		ak_s3import_chdir_cb(ret);
-		});
-		}
-
-		function ak_s3import_chdir_cb(data)
-		{
-		// Look for errors
-		if(!data.status)
-		{
-		AKS3errorHandler(data.error);
-		return;
-		}
-
-		// Update breadcrumbs
-		$('ul.breadcrumbs').html('');
-		$.each(data.crumbs, function(label, subdir){
-		var li = $(document.createElement('li'));
-		var a = $(document.createElement('a')).html(label);
-		a.click(function(e){
-		ak_s3import_chdir(subdir);
-		});
-		a.appendTo( li );
-		li.appendTo( $('#breadcrumbs') );
-		});
-
-		$('#breadcrumbs').show('fast');
-
-		// Update folder list
-		$('#ak-s3-folderlist').html('');
-		$.each(data.folders, function(label, subdir){
-		var div = $(document.createElement('div')).html(label);
-		div.click(function(e){
-		ak_s3import_chdir(subdir);
-		});
-		div.appendTo( $('#ak-s3-folderlist') );
-		});
-
-		$('#ak-s3-folderlist').show('fast');
-
-		// Update file list
-		$('#ak-s3-filelist').html('');
-		$.each(data.files, function(label, filepath){
-		var div = $(document.createElement('div')).html(label);
-		div.click(function(e){
-		ak_s3import_start(filepath);
-		});
-		div.appendTo( $('#ak-s3-filelist') );
-		});
-
-		$('#ak-s3-filelist').show('fast');
-		}
-
-		function ak_s3import_start(filename)
-		{
-		akeeba_s3_filename = filename;
-		akeeba_error_callback = AKS3errorHandler;
-
-		$('#ak-s3-gui').hide('fast');
-		$('#ak-s3-progress').show('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').hide('fast');
-
-		AKS3setProgressBar(0);
-		$('#ak-s3-progresstext').html('');
-
-		var data = {
-		'task' : 's3import',
-		'json' : JSON.stringify({
-		'access'    : $('#s3\\\\.access').val(),
-		'secret'    : $('#s3\\\\.secret').val(),
-		'bucket'    : $('#s3\\\\.bucket').val(),
-		'file'        : akeeba_s3_filename,
-		'part'        : "-1",
-		'frag'        : "-1",
-		'totalSize'    : "-1",
-		'totalParts': "-1"
-
-		})
-		};
-		doAjax(data, function(ret){
-		ak_s3import_step(ret);
-		});
-		}
-
-		function ak_s3import_step(data)
-		{
-		// Look for errors
-		if(!data.status)
-		{
-		AKS3errorHandler(data.error);
-		return;
-		}
-
-		var totalSize = 0;
-		var doneSize = 0;
-		var percent = 0;
-		var part = -1;
-		var frag = -1;
-
-		// get running stats
-		if(array_key_exists('totalSize', data)) {
-		totalSize = data.totalSize;
-		}
-		if(array_key_exists('totalParts', data)) {
-		totalParts = data.totalParts;
-		}
-		if(array_key_exists('doneSize', data)) {
-		doneSize = data.doneSize;
-		}
-		if(array_key_exists('percent', data)) {
-		percent = data.percent;
-		}
-		if(array_key_exists('part', data)) {
-		part = data.part;
-		}
-		if(array_key_exists('frag', data)) {
-		frag = data.frag;
-		}
-
-		// Update GUI
-		AKS3setProgressBar(percent);
-		$('#ak-s3-progresstext').text( percent+'% ('+doneSize+' / '+totalSize+' bytes)' );
-
-		post = {
-		'task'    : 's3import',
-		'json'    : JSON.stringify({
-		'access'    : $('#s3\\\\.access').val(),
-		'secret'    : $('#s3\\\\.secret').val(),
-		'bucket'    : $('#s3\\\\.bucket').val(),
-		'file'        : akeeba_s3_filename,
-		'part'        : part,
-		'frag'        : frag,
-		'totalSize'    : totalSize,
-		'totalParts': totalParts,
-		'doneSize'  : doneSize
-		})
-		};
-
-		if((doneSize < totalSize) && (percent < 100)) {
-		// More work to do
-		doAjax(post, function(ret){
-		ak_s3import_step(ret);
-		});
-		} else {
-		// Done!
-		$('#ak-s3-gui').hide('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').show('fast');
-		$('#ak-s3-error').hide('fast');
-		}
-		}
-
-		function AKS3errorHandler(msg)
-		{
-		$('#ak-s3-gui').hide('fast');
-		$('#ak-s3-progress').hide('fast');
-		$('#ak-s3-complete').hide('fast');
-		$('#ak-s3-error').show('fast');
-
-		$('#ak-s3-errorMessage').html(msg);
-		}
 		
+		return;
+	}
+
+	var elBucket = document.getElementById('s3.bucket');
+	
+	for (var counter = 0; counter < data.buckets.length; counter++)
+    {
+        var value = data.buckets[counter];
+		var option = document.createElement('option');
+		option.innerHTML = value;
+		option.value = value;
+		elBucket.appendChild(option);
+    }
+
+	document.getElementById("ak-s3-bucketselect").style.display = "inline-block";
+}
+
+function onAKS3BucketChange()
+{
+	document.getElementById("breadcrumbs").style.display = 'none';
+	document.getElementById("ak-s3-folderlist").innerHTML = '';
+	document.getElementById("ak-s3-filelist").innerHTML = '';
+
+	ak_s3import_chdir("/");
+}
+
+function ak_s3import_chdir(toWhere)
+{
+	akeeba_error_callback = AKS3errorHandler;
+
+	var data = {
+		"task": "s3list",
+		"json": JSON.stringify({
+			"access": document.getElementById("s3.access").value,
+			"secret": document.getElementById("s3.secret").value,
+			"bucket": document.getElementById("s3.bucket").value,
+			"newdir": toWhere
+		})
+	};
+	akeeba.System.doAjax(data, function (ret) {
+		ak_s3import_chdir_cb(ret);
+	});
+}
+
+function ak_s3import_chdir_cb(data)
+{
+	// Look for errors
+	if (!data.status)
+	{
+		AKS3errorHandler(data.error);
+		
+		return;
+	}
+
+	// Update breadcrumbs
+	var elAllBreadCrumbs = document.querySelectorAll("ul.breadcrumbs");
+	var elBreadCrumbs = elAllBreadCrumbs[0];
+	
+	elBreadCrumbs.innerHTML = '';
+	
+	var label = null;
+	var subdir = null;
+	var filepath = null;
+	var div = null;
+	
+	for (label in data.crumbs)
+    {
+        if (!data.crumbs.hasOwnProperty(label))
+        {
+        	continue;
+        }
+        
+        subdir = data.crumbs[label];
+		var li = document.createElement("li");
+		var a  = document.createElement("a");
+		
+		a.innerHTML = label;
+		
+		// We have to bind current value to a function, otherwise we're going to always use the same value
+        // (mutable variable in closure): https://stackoverflow.com/a/8909792/485241
+        (function (current_dir){
+            akeeba.System.addEventListener(a, 'click', function (e) {
+                ak_s3import_chdir(current_dir);
+            });            
+        })(subdir);
+        
+		li.appendChild(a);
+		document.getElementById('breadcrumbs').appendChild(li);
+    }
+	
+    document.getElementById('breadcrumbs').style.display = 'inline-block';
+
+	// Update folder list
+	document.getElementById("ak-s3-folderlist").innerHTML = '';
+
+    for (label in data.folders)
+    {
+        if (!data.folders.hasOwnProperty(label))
+        {
+        	continue;
+        }
+        
+        subdir = data.folders[label];
+        
+        div = document.createElement("div");
+        div.innerHTML = label;
+
+        // We have to bind current value to a function, otherwise we're going to always use the same value
+        // (mutable variable in closure): https://stackoverflow.com/a/8909792/485241
+        (function (current_dir){
+            akeeba.System.addEventListener(div, 'click', function (e) {
+                ak_s3import_chdir(current_dir);
+            });            
+        })(subdir);        
+
+        document.getElementById('ak-s3-folderlist').appendChild(div);
+    }
+    
+    document.getElementById('ak-s3-folderlist').style.display = 'block';
+    
+	// Update file list
+	document.getElementById("ak-s3-filelist").innerHTML = '';
+
+    for (label in data.files)
+    {
+        if (!data.files.hasOwnProperty(label))
+        {
+        	continue;
+        }
+        
+        filepath = data.files[label];
+        
+        div = document.createElement("div");
+        div.innerHTML = label;
+        
+        // We have to bind current value to a function, otherwise we're going to always use the same value
+        // (mutable variable in closure): https://stackoverflow.com/a/8909792/485241
+        (function (current_dir){
+            akeeba.System.addEventListener(div, 'click', function (e) {
+                ak_s3import_start(filepath);
+            });            
+        })(subdir);
+        
+        document.getElementById('ak-s3-filelist').appendChild(div);
+    }
+    
+    document.getElementById('ak-s3-filelist').style.display = 'block';
+}
+
+function ak_s3import_start(filename)
+{
+	akeeba_s3_filename    = filename;
+	akeeba_error_callback = AKS3errorHandler;
+
+	document.getElementById("ak-s3-gui").style.display = 'none';
+	document.getElementById("ak-s3-progress").style.display = 'block';
+	document.getElementById("ak-s3-complete").style.display = 'none';
+	document.getElementById("ak-s3-error").style.display = 'none';
+
+	AKS3setProgressBar(0);
+	document.getElementById("ak-s3-progresstext").innerHTML = '';
+
+	akeeba_next_step_post = {
+		"task": "s3import",
+		"json": JSON.stringify({
+			"access": document.getElementById("s3.access").value,
+			"secret": document.getElementById("s3.secret").value,
+			"bucket": document.getElementById("s3.bucket").value,
+			"file": akeeba_s3_filename,
+			"part": "-1",
+			"frag": "-1",
+			"totalSize": "-1",
+			"totalParts": "-1"
+
+		})
+	};
+	
+	setTimeout(ak_s3import_doStep, 10);
+}
+
+function ak_s3import_doStep()
+{
+	akeeba.System.doAjax(akeeba_next_step_post, function (ret) {
+		ak_s3import_step(ret);
+	});
+}
+
+function ak_s3import_step(data)
+{
+	// Look for errors
+	if (!data.status)
+	{
+		AKS3errorHandler(data.error);
+
+		return;
+	}
+
+	var totalSize = 0;
+	var doneSize  = 0;
+	var percent   = 0;
+	var part      = -1;
+	var frag      = -1;
+
+	// get running stats
+	if (array_key_exists("totalSize", data))
+	{
+		totalSize = data.totalSize;
+	}
+
+	if (array_key_exists("totalParts", data))
+	{
+		totalParts = data.totalParts;
+	}
+
+	if (array_key_exists("doneSize", data))
+	{
+		doneSize = data.doneSize;
+	}
+
+	if (array_key_exists("percent", data))
+	{
+		percent = data.percent;
+	}
+
+	if (array_key_exists("part", data))
+	{
+		part = data.part;
+	}
+
+	if (array_key_exists("frag", data))
+	{
+		frag = data.frag;
+	}
+	
+	var humanTotalSize = totalSize;
+	var humanDoneSize  = doneSize;
+	
+	if (array_key_exists("humanTotalSize", data))
+    {
+        humanTotalSize = data.humanTotalSize;
+    }
+    
+    if (array_key_exists("humanDoneSize", data))
+    {
+        humanDoneSize = data.humanDoneSize;
+    }
+	
+	// Update GUI
+	AKS3setProgressBar(percent);
+	document.getElementById("ak-s3-progresstext").innerText = percent + "% (" + humanDoneSize + " / " + humanTotalSize + ")";
+
+	if ((doneSize < totalSize) && (percent < 100))
+	{
+        akeeba_next_step_post = {
+            "task": "s3import",
+            "json": JSON.stringify({
+                "access": document.getElementById("s3.access").value,
+                "secret": document.getElementById("s3.secret").value,
+                "bucket": document.getElementById("s3.bucket").value,
+                "file": akeeba_s3_filename,
+                "part": part,
+                "frag": frag,
+                "totalSize": totalSize,
+                "totalParts": totalParts,
+                "doneSize": doneSize
+            })
+        };
+    
+        setTimeout(ak_s3import_doStep, 10);
+	
+		return;
+	}
+
+    // Done!
+    document.getElementById('ak-s3-gui').style.display = 'none';
+    document.getElementById('ak-s3-progress').style.display = 'none';
+    document.getElementById('ak-s3-complete').style.display = 'block';
+    document.getElementById('ak-s3-error').style.display = 'none';
+}
+
+function AKS3errorHandler(msg)
+{
+    document.getElementById('ak-s3-gui').style.display = 'none';
+    document.getElementById('ak-s3-progress').style.display = 'none';
+    document.getElementById('ak-s3-complete').style.display = 'none';
+    document.getElementById('ak-s3-error').style.display = 'block';
+
+    document.getElementById('ak-s3-errorMessage').innerHTML = msg;
+}
 JS;
 
 	}
@@ -640,6 +738,8 @@ HTML;
 			"totalParts" => $totalParts,
 			"doneSize"   => $doneSize,
 			"percent"    => 0,
+            "humanTotalSize" => $this->formatByteSize($totalSize),
+            "humanDoneSize"  => $this->formatByteSize($doneSize)
 		);
 
 		try
@@ -691,6 +791,8 @@ HTML;
 				$retArray['totalParts'] = $totalParts;
 				$retArray['totalSize']  = $totalSize;
 				$retArray['doneSize']   = $doneSize;
+				$retArray['humanTotalSize']  = $this->formatByteSize($totalSize);
+				$retArray['humanDoneSize']   = $this->formatByteSize($doneSize);
 
 				debugMsg('- Updating information:');
 				debugMsg("    totalParts: " . $totalParts);
@@ -901,19 +1003,21 @@ HTML;
 			}
 			else
 			{
-				$percent = 100 * ($doneSize / $totalSize);
+				$percent = round(100 * ($doneSize / $totalSize), 2);
 			}
 
 			// Update $retArray
 			$retArray = array(
-				"status"     => true,
-				"error"      => '',
-				"part"       => $part,
-				"frag"       => $frag,
-				"totalSize"  => $totalSize,
-				"totalParts" => $totalParts,
-				"doneSize"   => $doneSize,
-				"percent"    => $percent,
+				'status'     => true,
+				'error'      => '',
+				'part'       => $part,
+				'frag'       => $frag,
+				'totalSize'  => $totalSize,
+				'totalParts' => $totalParts,
+				'doneSize'   => $doneSize,
+				'percent'    => $percent,
+				'humanTotalSize'  => $this->formatByteSize($totalSize),
+			    'humanDoneSize'   => $this->formatByteSize($doneSize),
 			);
 		}
 		catch (Exception $e)
@@ -988,6 +1092,19 @@ HTML;
 		}
 
 		return $region;
+	}
+
+	/**
+	 * Formats a number of bytes in human readable format
+	 *
+	 * @param   int  $size  The size in bytes to format, e.g. 8254862
+	 *
+	 * @return  string  The human-readable representation of the byte size, e.g. "7.87 Mb"
+	 */
+	protected function formatByteSize($size)
+	{
+		$unit	 = array('b', 'KB', 'MB', 'GB', 'TB', 'PB');
+		return @round($size / pow(1024, ($i	= floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
 	}
 
 	/**

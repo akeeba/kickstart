@@ -331,7 +331,7 @@ abstract class AKAbstractPart extends AKAbstractObject
 	 */
 	function detach(AKAbstractPartObserver $obs)
 	{
-		delete($this->observers["$obs"]);
+		unset($this->observers["$obs"]);
 	}
 
 	/**

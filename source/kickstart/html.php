@@ -31,22 +31,6 @@ function echoPage()
 		<style type="text/css" media="all" rel="stylesheet">
 			<?php echoCSS();?>
 		</style>
-		<?php if (@file_exists('jquery.min.js')): ?>
-			<script type="text/javascript" src="jquery.min.js"></script>
-		<?php else: ?>
-			<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<?php endif; ?>
-		<?php if (@file_exists('json2.min.js')): ?>
-			<script type="text/javascript" src="json2.min.js"></script>
-		<?php else: ?>
-			<script type="text/javascript" src="//yandex.st/json2/2011-10-19/json2.min.js"></script>
-		<?php endif; ?>
-		<?php if (@file_exists('jquery-ui.min.js')): ?>
-			<script type="text/javascript" src="jquery-ui.min.js"></script>
-		<?php else: ?>
-			<script type="text/javascript"
-			        src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-		<?php endif; ?>
 		<?php echoHeadJavascript(); ?>
 	</head>
 	<body>
@@ -264,28 +248,13 @@ function echoPage()
 					<div class="circle">4</div>
 					<h2>EXTRACT_FILES</h2>
 					<div class="area-container">
-						<span></span>
+                        <label for="gobutton"></label>
 						<span id="gobutton" class="button">BTN_START</span>
 					</div>
-				</div>
+                </div>
 
 				<div class="clr"></div>
 
-			</div>
-
-			<div id="ftpdialog" style="display:none;">
-				<p class="instructions alert alert-info">FTPBROWSER_LBL_INSTRUCTIONS</p>
-				<div class="error alert alert-error" id="ftpBrowserErrorContainer">
-					<h3>FTPBROWSER_LBL_ERROR</h3>
-					<p id="ftpBrowserError"></p>
-				</div>
-				<ul id="ak_crumbs" class="breadcrumb"></ul>
-				<div class="row-fluid">
-					<div class="span12">
-						<table id="ftpBrowserFolderList" class="table table-striped">
-						</table>
-					</div>
-				</div>
 			</div>
 		</div>
 

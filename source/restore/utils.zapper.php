@@ -555,7 +555,8 @@ class AKUtilsZapper extends AKAbstractPart
 		/**
 		 * Exclude Kickstart / restore.php itself. Otherwise it'd crash!
 		 */
-		$ret[] = KSROOTDIR . '/' . KSSELFNAME;
+		$myName = defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__);
+		$ret[] = KSROOTDIR . '/' . $myName;
 
 		/**
 		 * Cheat: exclude the directory used in development (see source/buildscripts/kickstart_test.php)
@@ -610,13 +611,11 @@ class AKUtilsZapper extends AKAbstractPart
 		}
 
 		/**
-		 * Exclude Kickstart resources (cacert.pem, jquery.min.js, json2.min.js). Only applies in Kickstart mode.
+		 * Exclude Kickstart resources (cacert.pem). Only applies in Kickstart mode.
 		 */
 		if (defined('KICKSTART'))
 		{
 			$ret[] = TranslateWinPath(KSROOTDIR . '/cacert.pem');
-			$ret[] = TranslateWinPath(KSROOTDIR . '/jquery.min.js');
-			$ret[] = TranslateWinPath(KSROOTDIR . '/json2.min.js');
 		}
 
 		// Exclude the Kickstart temporary directory, if one is used by the post-processing engine

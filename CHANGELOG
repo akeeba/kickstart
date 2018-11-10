@@ -1,3 +1,12 @@
+Kickstart 6.0.0
+================================================================================
+- Removing all external Javascript dependencies (e.g. jQuery)
+
+Kickstart 5.5.1
+================================================================================
+# [HIGH] Untranslated strings shown when running Kickstart
+# [LOW] Fixed references to possibly undefined KSSELFNAME
+
 Kickstart 5.5.0
 ================================================================================
 + Option to delete all files / folders before extraction. DANGEROUS. For advanced users only. Available only in the Pro version.
