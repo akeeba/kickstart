@@ -78,20 +78,20 @@ if (!defined('KICKSTART'))
 			 */
 			case 'startRestore':
 			case 'stepRestore':
-                /**
-                 * First try to run the filesystem zapper (remove all existing files and folders). If the Zapper is
-                 * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
-                 * which we can pass directly back to the caller.
-                 */
-			    $ret = runZapper();
+				/**
+				 * First try to run the filesystem zapper (remove all existing files and folders). If the Zapper is
+				 * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
+				 * which we can pass directly back to the caller.
+				 */
+				$ret = runZapper();
 
-			    // If the Zapper had a step to run we stop here and return its status array to the caller.
-			    if ($ret !== false)
-                {
-	                $retArray = array_merge($retArray, $ret);
+				// If the Zapper had a step to run we stop here and return its status array to the caller.
+				if ($ret !== false)
+				{
+					$retArray = array_merge($retArray, $ret);
 
-                    break;
-                }
+					break;
+				}
 
 				$engine   = AKFactory::getUnarchiver(); // Get the engine
 				$observer = new RestorationObserver(); // Create a new observer
@@ -125,7 +125,7 @@ if (!defined('KICKSTART'))
 
 				$timer = AKFactory::getTimer();
 				$timer->enforce_min_exec_time();
-			break;
+				break;
 
 			case 'finalizeRestore':
 				$root = AKFactory::get('kickstart.setup.destdir');
@@ -186,7 +186,7 @@ if (!defined('KICKSTART'))
 					}
 					if (function_exists('wincache_refresh_if_changed'))
 					{
-						wincache_refresh_if_changed(array($filename));
+						wincache_refresh_if_changed([$filename]);
 					}
 					if (function_exists('xcache_asm'))
 					{

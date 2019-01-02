@@ -417,7 +417,10 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 						$this->notify($message);
 					}
 					$this->runState = AK_STATE_NOFILE;
-					continue;
+
+					continue 2;
+
+					break;
 			}
 		}
 
