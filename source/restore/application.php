@@ -186,7 +186,7 @@ if (!defined('KICKSTART'))
 					}
 					if (function_exists('wincache_refresh_if_changed'))
 					{
-						wincache_refresh_if_changed([$filename]);
+						wincache_refresh_if_changed(array($filename));
 					}
 					if (function_exists('xcache_asm'))
 					{
