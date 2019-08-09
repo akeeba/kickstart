@@ -1,6 +1,7 @@
 Kickstart 6.0.2
 ================================================================================
 ~ PHP 7.4 support
+# [LOW] Fixed selecting the correct file while importing from Amazon S3
 
 Kickstart 6.0.1
 ================================================================================
