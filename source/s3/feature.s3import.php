@@ -331,11 +331,11 @@ function ak_s3import_chdir_cb(data)
         
         // We have to bind current value to a function, otherwise we're going to always use the same value
         // (mutable variable in closure): https://stackoverflow.com/a/8909792/485241
-        (function (current_dir){
+        (function (current_path){
             akeeba.System.addEventListener(div, 'click', function (e) {
-                ak_s3import_start(filepath);
+                ak_s3import_start(current_path);
             });            
-        })(subdir);
+        })(filepath);
         
         document.getElementById('ak-s3-filelist').appendChild(div);
     }

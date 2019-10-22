@@ -597,7 +597,7 @@ class AKS3Request
                 break;
 
             case 'ETag':
-                $this->response->setHeader('hash', $value{0} == '"' ? substr($value, 1, -1) : $value);
+                $this->response->setHeader('hash', $value[0] == '"' ? substr($value, 1, -1) : $value);
                 break;
 
             default:
