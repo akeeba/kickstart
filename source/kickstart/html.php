@@ -309,7 +309,7 @@ function echoPage()
 					Dionysopoulos / Akeeba Backup</a>. All legal rights reserved.<br/>
 
 				This program is free software: you can redistribute it and/or modify it under the terms of
-				the <a href="http://www.gnu.org/gpl-3.htmlhttp://www.gnu.org/copyleft/gpl.html">GNU General
+				the <a href="http://www.gnu.org/gpl-3.html">GNU General
 					Public License</a> as published by the Free Software Foundation, either version 3 of the License,
 				or (at your option) any later version.<br/>
 				Design credits: <a href="http://internet-inspired.com/">Internet Inspired</a>, heavily modified by
