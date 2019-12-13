@@ -1,10 +1,10 @@
 /*
  * Akeeba Kickstart
- * A JSON-powered archive extraction tool
+ * An AJAX-powered archive extraction tool
  *
- * @copyright   Copyright (c)2008-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL v2 or - at your option - any later version
- * @package     kickstart
+ * @package   kickstart
+ * @copyright Copyright (c)2008-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 3, or later
  */
 
 /**

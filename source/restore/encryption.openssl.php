@@ -1,11 +1,11 @@
 <?php
 /**
  * Akeeba Restore
- * A JSON-powered JPA, JPS and ZIP archive extraction library
+ * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
- * @copyright   Copyright (c)2008-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL v2 or - at your option - any later version
- * @package     kickstart
+ * @package   restore
+ * @copyright Copyright (c)2008-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 3, or later
  */
 
 class OpenSSL extends AKEncryptionAESAdapterAbstract implements AKEncryptionAESAdapterInterface
