@@ -19,7 +19,6 @@ class AKText extends AKAbstractObject
 	 * @var array
 	 */
 	private $default_translation = array(
-		'AUTOMODEON'                      => 'Auto-mode enabled',
 		'ERR_NOT_A_JPA_FILE'              => 'The file is not a JPA archive',
 		'ERR_CORRUPT_ARCHIVE'             => 'The archive file is corrupt, truncated or archive parts are missing',
 		'ERR_INVALID_LOGIN'               => 'Invalid login',
@@ -115,10 +114,6 @@ class AKText extends AKAbstractObject
 		'CANTGETITTOWORK'                 => 'Can\'t get it to work? Click me!',
 		'NOARCHIVESCLICKHERE'             => 'No archives detected. Click here for troubleshooting instructions.',
 		'POSTRESTORATIONTROUBLESHOOTING'  => 'Something not working after the restoration? Click here for troubleshooting instructions.',
-		'UPDATE_HEADER'                   => 'An updated version of Akeeba Kickstart (<span id="update-version">unknown</span>) is available!',
-		'UPDATE_NOTICE'                   => 'You are advised to always use the latest version of Akeeba Kickstart available. Older versions may be subject to bugs and will not be supported.',
-		'UPDATE_DLNOW'                    => 'Download now',
-		'UPDATE_MOREINFO'                 => 'More information',
 		'IGNORE_MOST_ERRORS'              => 'Ignore most errors',
 		'WRONG_FTP_PATH2'                 => 'Wrong FTP initial directory - the directory doesn\'t correspond to your site\'s web root',
 		'ARCHIVE_DIRECTORY'               => 'Archive directory:',

@@ -34,30 +34,11 @@ function echoPage()
 	</head>
 	<body>
 
-	<div id="automode" style="display:none;">
-		AUTOMODEON
-	</div>
-
 	<div id="fade" class="black_overlay"></div>
 
 	<div id="page-container">
 
 		<div id="preextraction" class="white_content">
-			<div id="ie7Warning" style="display:none;">
-				<h2>Deprecated Internet Explorer version</h2>
-				<p>
-					This script is not guaranteed to work properly on Internet Explorer 8
-					or earlier versions, or on Internet Explorer 9 and higher running
-					in compatibility mode.
-				</p>
-				<p>
-					Please use Internet Explorer 9 or later in native mode (the
-					&quot;broken page&quot; icon next to the address bar should not be
-					enabled). Alternatively, you may use the latest versions of Firefox,
-					Safari, Google Chrome or Opera.
-				</p>
-			</div>
-
 			<h2>THINGS_HEADER</h2>
 			<ol>
 				<li>THINGS_01</li>
@@ -79,18 +60,9 @@ function echoPage()
 
 		<div id="header">
 			<div class="title">
-				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAACXBIWXMAAAHFAAABxQG6eNsrAAAA/0lEQVRIx+WVUQ2DMBCGv01B5wAHYw4qARxMwiQgYQ6YAyRMAjgAB+CgezmSSwOjZfRplzSXNE2/3t1/V/hXuwMjkKcC5ICTNQImBaRVEAfUKdLkFlaWMorDo8lUHXIvsvEoyEMubFai21TaOQByVeqaFWVUPewRkEz5FqjEa+Aus3KpAfqVojsvjXYtdacVSA8MAgqRaSd+AMrYzt6zgmriv3zaeNS08MhNiD5UArcvoA64AE+1FySEYiF0I939Fj/3iFVFd6F9g1KU33yNGiX+JDYCbmIkXHm1sd6YX/pT7pKF3VYrSB87fc8RZyfgJX5I8WEVsfn+5fs1/LV9AHnjYQzAbyUrAAAAAElFTkSuQmCC" alt="Akeeba Kickstart logo">
+				<span id="logo" alt="Akeeba Kickstart logo"></span>
 				Akeeba Kickstart <?php echo $edition ?> ##VERSION##
 			</div>
-		</div>
-
-		<div id="update-notification" style="display: none">
-			<p class="update-notify">UPDATE_HEADER</p>
-			<p class="update-whyupdate">UPDATE_NOTICE</p>
-			<p class="update-links">
-				<a href="#" id="update-dlnow">UPDATE_DLNOW</a>
-				<a href="#" id="update-whatsnew" target="_blank">UPDATE_MOREINFO</a>
-			</p>
 		</div>
 
 		<div id="page1">
@@ -312,8 +284,6 @@ function echoPage()
 				the <a href="http://www.gnu.org/gpl-3.html">GNU General
 					Public License</a> as published by the Free Software Foundation, either version 3 of the License,
 				or (at your option) any later version.<br/>
-				Design credits: <a href="http://internet-inspired.com/">Internet Inspired</a>, heavily modified by
-				AkeebaBackup.com
 			</div>
 		</div>
 

@@ -69,13 +69,6 @@ akeeba.System.documentReady(function () {
 	// Reset the progress bar
 	setProgressBar(0);
 
-	// Show IE warning
-	var msieVersion = getInternetExplorerVersion();
-	if ((msieVersion !== -1) && (msieVersion < 10))
-	{
-		document.getElementById("ie7Warning").style.display = "block";
-	}
-
 	if (!akeeba_debug)
 	{
 		document.getElementById("preextraction").style.display = "block";

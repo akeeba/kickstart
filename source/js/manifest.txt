@@ -14,4 +14,3 @@ common_ui.js
 preextraction.js
 extraction.js
 postextraction.js
-;update.js
