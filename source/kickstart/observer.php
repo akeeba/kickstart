@@ -5,7 +5,7 @@
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 class ExtractionObserver extends AKAbstractPartObserver
