@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
+<!--
+  ~ Akeeba Kickstart
+  ~ An AJAX-powered archive extraction tool
+  ~
+  ~ @package   kickstart
+  ~ @copyright Copyright (c)2008-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+
 <project name="Kickstart" description="Akeeba Kickstart" default="all" >
 	<import file="${phing.dir}/../../buildfiles/phing/common.xml" />
 

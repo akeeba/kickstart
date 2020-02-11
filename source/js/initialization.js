@@ -1,10 +1,10 @@
 /*
  * Akeeba Kickstart
- * A JSON-powered archive extraction tool
+ * An AJAX-powered archive extraction tool
  *
- * @copyright   Copyright (c)2008-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license     GNU GPL v2 or - at your option - any later version
- * @package     kickstart
+ * @package   kickstart
+ * @copyright Copyright (c)2008-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 3, or later
  */
 
 var akeeba_error_callback            = onGenericError;
@@ -68,13 +68,6 @@ akeeba.System.documentReady(function () {
 
 	// Reset the progress bar
 	setProgressBar(0);
-
-	// Show IE warning
-	var msieVersion = getInternetExplorerVersion();
-	if ((msieVersion !== -1) && (msieVersion < 10))
-	{
-		document.getElementById("ie7Warning").style.display = "block";
-	}
 
 	if (!akeeba_debug)
 	{
