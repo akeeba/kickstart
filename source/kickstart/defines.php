@@ -16,6 +16,9 @@
 // =====================================================================================================================
 define('KICKSTART', 1);
 
+define('KICKSTART_MIN_PHP', '5.6.0');
+define('KICKSTART_RECOMMENDED_PHP', '7.3.0');
+
 if (!defined('VERSION'))
 {
 	define('VERSION', '##VERSION##');

@@ -249,6 +249,20 @@ license. See http://www.gnu.org/licenses/gpl-3.0.html for details.
 BANNER;
 	}
 
+	$phpCheckConfig = array(
+		'minPHPVersion'         => defined('KICKSTART_MIN_PHP') ? KICKSTART_MIN_PHP : "5.6.0",
+		'recommendedPHPVersion' => defined('KICKSTART_RECOMMENDED_PHP') ? KICKSTART_RECOMMENDED_PHP : '7.3',
+		'softwareName'          => "Akeeba Kickstart",
+		'silentResults'         => true
+	);
+
+	if (!akeeba_common_wrongphp($phpCheckConfig))
+	{
+		echo sprintf("%s requires PHP %s or later to function. Your current PHP version is %s which is older than the minimum requirement.", $phpCheckConfig['softwareName'], $phpCheckConfig['minPHPVersion'], PHP_VERSION);
+
+		die;
+	}
+
 	$paths = AKCliParams::getOption('', array(), true);
 
 	if (empty($paths))

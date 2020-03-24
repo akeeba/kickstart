@@ -13,6 +13,14 @@
  */
 function kickstart_application_web()
 {
+	if (!akeeba_common_wrongphp(array(
+		'minPHPVersion'         => defined('KICKSTART_MIN_PHP') ? KICKSTART_MIN_PHP : "5.6.0",
+		'recommendedPHPVersion' => defined('KICKSTART_RECOMMENDED_PHP') ? KICKSTART_RECOMMENDED_PHP : '7.3',
+		'softwareName'          => "Akeeba Kickstart",
+	))) {
+		die;
+	}
+
 	$retArray = array(
 		'status'  => true,
 		'message' => null

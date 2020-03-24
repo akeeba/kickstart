@@ -118,10 +118,30 @@ body {
     text-align: center;
 }
 
-#error h3, .error h3 {
+#error h3, .error h3, .warning h3, .notice h3 {
     margin: 0;
     padding: 0;
     font-size: 12pt;
+}
+
+.warning {
+    border: solid var(--orange-dark);
+    border-width: 4px 0;
+    background: var(--orange-light);
+    color: var(--grey-dark);
+    padding: 1em 2em;
+    margin-bottom: 1.15em;
+    text-align: center;
+}
+
+.notice {
+    border: solid var(--teal-dark);
+    border-width: 4px 0;
+    background: var(--teal-light);
+    color: var(--grey-dark);
+    padding: 1em 2em;
+    margin-bottom: 1.15em;
+    text-align: center;
 }
 
 .clr {

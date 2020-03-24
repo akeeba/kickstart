@@ -66,6 +66,18 @@ function echoPage()
 		</div>
 
 		<div id="page1">
+			<?php
+			akeeba_common_phpversion_warning(array(
+				'minPHPVersion'          => defined('KICKSTART_MIN_PHP') ? KICKSTART_MIN_PHP : "5.6.0",
+				'recommendedPHPVersion'  => defined('KICKSTART_RECOMMENDED_PHP') ? KICKSTART_RECOMMENDED_PHP : '7.3',
+				'softwareName'           => "Akeeba Kickstart",
+				'class_priority_high'    => 'error',
+				'class_priority_medium'  => 'warning',
+				'class_priority_low'     => 'notice',
+				'warn_about_maintenance' => false,
+			));
+			?>
+
 			<?php callExtraFeature('onPage1'); ?>
 
 			<div id="page1-content">

@@ -1,3 +1,8 @@
+Kickstart 7.0.1
+================================================================================
++ Informative error message when your PHP version is too old for this version of Kickstart
++ Print a warning when your PHP version is End of Life
+
 Kickstart 7.0.0
 ================================================================================
 + Dark Mode
