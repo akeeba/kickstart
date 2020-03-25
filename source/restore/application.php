@@ -125,6 +125,7 @@ if (!defined('KICKSTART'))
 
 				$timer = AKFactory::getTimer();
 				$timer->enforce_min_exec_time();
+
 				break;
 
 			case 'finalizeRestore':
@@ -148,6 +149,7 @@ if (!defined('KICKSTART'))
 						{
 							$postproc->unlink($root . '/.htaccess');
 						}
+
 						$postproc->rename($root . '/htaccess.bak', $root . '/.htaccess');
 					}
 
@@ -158,6 +160,7 @@ if (!defined('KICKSTART'))
 						{
 							$postproc->unlink($root . '/web.config');
 						}
+
 						$postproc->rename($root . '/web.config.bak', $root . '/web.config');
 					}
 				}
@@ -165,14 +168,17 @@ if (!defined('KICKSTART'))
 				// Remove restoration.php
 				$basepath = KSROOTDIR;
 				$basepath = rtrim(str_replace('\\', '/', $basepath), '/');
+
 				if (!empty($basepath))
 				{
 					$basepath .= '/';
 				}
+
 				$postproc->unlink($basepath . 'restoration.php');
 
 				// Import a custom finalisation file
 				$filename = dirname(__FILE__) . '/restore_finalisation.php';
+
 				if (file_exists($filename))
 				{
 					// opcode cache busting before including the filename
@@ -180,18 +186,22 @@ if (!defined('KICKSTART'))
 					{
 						opcache_invalidate($filename);
 					}
+
 					if (function_exists('apc_compile_file'))
 					{
 						apc_compile_file($filename);
 					}
+
 					if (function_exists('wincache_refresh_if_changed'))
 					{
 						wincache_refresh_if_changed([$filename]);
 					}
+
 					if (function_exists('xcache_asm'))
 					{
 						xcache_asm($filename);
 					}
+
 					include_once $filename;
 				}
 
@@ -200,6 +210,7 @@ if (!defined('KICKSTART'))
 				{
 					finalizeRestore($root, $basepath);
 				}
+
 				break;
 
 			default:
@@ -238,6 +249,7 @@ function recursive_remove_directory($directory)
 	{
 		$directory = substr($directory, 0, -1);
 	}
+
 	// if the path is not valid or is not a directory ...
 	if (!file_exists($directory) || !is_dir($directory))
 	{
@@ -256,15 +268,18 @@ function recursive_remove_directory($directory)
 		// we open the directory
 		$handle   = opendir($directory);
 		$postproc = AKFactory::getPostProc();
+
 		// and scan through the items inside
 		while (false !== ($item = readdir($handle)))
 		{
 			// if the filepointer is not the current directory
 			// or the parent directory
+
 			if ($item != '.' && $item != '..')
 			{
 				// we build the new path to delete
 				$path = $directory . '/' . $item;
+
 				// if the new path is a directory
 				if (is_dir($path))
 				{
@@ -279,8 +294,10 @@ function recursive_remove_directory($directory)
 				}
 			}
 		}
+
 		// close the directory
 		closedir($handle);
+
 		// try to delete the now empty directory
 		if (!$postproc->rmdir($directory))
 		{
