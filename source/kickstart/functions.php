@@ -41,6 +41,7 @@ function TranslateWinPath($p_path)
 	{
 		// Is this a UNC path?
 		$is_unc = (substr($p_path, 0, 2) == '\\\\') || (substr($p_path, 0, 2) == '//');
+
 		// Change potential windows directory separator
 		if ((strpos($p_path, '\\') > 0) || (substr($p_path, 0, 1) == '\\'))
 		{
@@ -79,6 +80,7 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 	{
 		$copy_of_parts = $parts;
 		array_pop($copy_of_parts);
+
 		if (!empty($copy_of_parts))
 		{
 			$parent_directory = '/' . implode('/', $copy_of_parts);
@@ -102,6 +104,7 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 	{
 		$con = @ftp_connect($host, $port);
 	}
+
 	if ($con === false)
 	{
 		return array(
@@ -111,6 +114,7 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 
 	// Login
 	$result = @ftp_login($con, $username, $password);
+
 	if ($result === false)
 	{
 		return array(
@@ -125,6 +129,7 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 	if (!empty($dir))
 	{
 		$result = @ftp_chdir($con, $dir);
+
 		if ($result === false)
 		{
 			return array(
@@ -167,13 +172,16 @@ function getListing($directory, $host, $port, $username, $password, $passive, $s
 function parse_rawlist($list)
 {
 	$folders = array();
+
 	foreach ($list as $v)
 	{
 		$info  = array();
 		$vinfo = preg_split("/[\s]+/", $v, 9);
+
 		if ($vinfo[0] !== "total")
 		{
 			$perms = $vinfo[0];
+
 			if (substr($perms, 0, 1) == 'd')
 			{
 				$folders[] = $vinfo[8];
@@ -200,6 +208,7 @@ function getSftpListing($directory, $host, $port, $username, $password)
 	{
 		$copy_of_parts = $parts;
 		array_pop($copy_of_parts);
+
 		if (!empty($copy_of_parts))
 		{
 			$parent_directory = '/' . implode('/', $copy_of_parts);
@@ -334,17 +343,20 @@ function resolvePath($filename)
 	$filename = str_replace('//', '/', $filename);
 	$parts    = explode('/', $filename);
 	$out      = array();
+
 	foreach ($parts as $part)
 	{
 		if ($part == '.')
 		{
 			continue;
 		}
+
 		if ($part == '..')
 		{
 			array_pop($out);
 			continue;
 		}
+
 		$out[] = $part;
 	}
 
@@ -354,13 +366,16 @@ function resolvePath($filename)
 function createStealthURL()
 {
 	$filename = AKFactory::get('kickstart.stealth.url', '');
+
 	// We need an HTML file!
 	if (empty($filename))
 	{
 		return;
 	}
+
 	// Make sure it ends in .html or .htm
 	$filename = basename($filename);
+
 	if ((strtolower(substr($filename, -5)) != '.html') && (strtolower(substr($filename, -4)) != '.htm'))
 	{
 		return;
