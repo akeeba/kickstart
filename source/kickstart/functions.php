@@ -399,10 +399,90 @@ RewriteRule (.*)				$filename	[R=307,L]
 
 ENDHTACCESS;
 
+	$customHandlers = portPhpHandlers();
+
+	// Port any custom handlers in the stealth file
+	if ($customHandlers)
+	{
+		$stealthHtaccess .= "\n".$customHandlers."\n";
+	}
+
 	// Write the new .htaccess, removing the old one first
 	$postproc = AKFactory::getpostProc();
 	$postproc->unlink('.htaccess');
 	$tempfile = $postproc->processFilename('.htaccess');
 	@file_put_contents($tempfile, $stealthHtaccess);
+	$postproc->process();
+}
+
+/**
+ * Checks if there is an .htaccess file and has any AddHandler or SetHandler directive in it.
+ * In that case, we return the affected lines so they could be stored for later use
+ *
+ * @return  array
+ */
+function getPhpHandlers()
+{
+	$root       = AKKickstartUtils::getPath();
+	$htaccess   = $root.'/.htaccess';
+	$directives = array();
+
+	if (!file_exists($htaccess))
+	{
+		return $directives;
+	}
+
+	$contents = file_get_contents($htaccess);
+	$lines    = explode("\n", $contents);
+
+	foreach ($lines as $line)
+	{
+		$line = trim($line);
+
+		// Got a directive? Let's store it
+		if (strpos($line, 'AddHandler') !== false || (strpos($line, 'SetHandler') !== false))
+		{
+			$directives[] = $line;
+		}
+	}
+
+	return $directives;
+}
+
+/**
+ * Fetches any stored php handler directive stored inside the factory and creates a string with the correct markers
+ *
+ * @return string
+ */
+function portPhpHandlers()
+{
+	$phpHandlers = AKFactory::get('kickstart.setup.phphandlers', array());
+
+	if (!$phpHandlers)
+	{
+		return '';
+	}
+
+	$customHandler  = "### AKEEBA_KICKSTART_PHP_HANDLER_BEGIN ###\n";
+	$customHandler .= implode("\n", $phpHandlers)."\n";
+	$customHandler .= "### AKEEBA_KICKSTART_PHP_HANDLER_END ###\n";
+
+	return $customHandler;
+}
+
+function writePhpHandlers()
+{
+	$contents = portPhpHandlers();
+
+	if (!$contents)
+	{
+		return;
+	}
+
+	// Write the new .htaccess, removing the old one first
+	$postproc = AKFactory::getpostProc();
+	$postproc->unlink('.htaccess');
+	$tempfile = $postproc->processFilename('.htaccess');
+	@file_put_contents($tempfile, $contents);
 	$postproc->process();
 }
