@@ -57,6 +57,7 @@ class AKKickstartUtils
 	{
 		$path = KSROOTDIR;
 		$path = rtrim(str_replace('\\', '/', $path), '/');
+
 		if (!empty($path))
 		{
 			$path .= '/';

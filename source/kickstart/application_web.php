@@ -144,10 +144,19 @@ function kickstart_application_web()
 
 				if ($task == 'startExtracting')
 				{
+					// Before starting, read and save any custom Set/AddHandler directive
+					$phpHandlers = getPhpHandlers();
+					AKFactory::set('kickstart.setup.phphandlers', $phpHandlers);
+
 					// If the Stealth Mode is enabled, create the .htaccess file
 					if (AKFactory::get('kickstart.stealth.enable', false))
 					{
 						createStealthURL();
+					}
+					// No stealth mode, but we have custom handler directives, must write our own file
+					elseif ($phpHandlers)
+					{
+						writePhpHandlers();
 					}
 				}
 
