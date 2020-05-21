@@ -416,7 +416,7 @@ ENDHTACCESS;
 }
 
 /**
- * Checks if there is an .htaccess file and has any AddHandler or SetHandler directive in it.
+ * Checks if there is an .htaccess file and has any AddHandler directive in it.
  * In that case, we return the affected lines so they could be stored for later use
  *
  * @return  array
@@ -440,7 +440,7 @@ function getPhpHandlers()
 		$line = trim($line);
 
 		// Got a directive? Let's store it
-		if (strpos($line, 'AddHandler') !== false || (strpos($line, 'SetHandler') !== false))
+		if (strpos($line, 'AddHandler') !== false)
 		{
 			$directives[] = $line;
 		}

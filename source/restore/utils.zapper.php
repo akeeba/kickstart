@@ -666,7 +666,7 @@ class AKUtilsZapper extends AKAbstractPart
 
 		/**
 		 * Exclude .htaccess if the stealth feature is enabled. Otherwise we'd unset the stealth mode.
-		 * Exclude it even if we have any AddHandler/SetHandler directive, otherwise the site will be borked if the user
+		 * Exclude it even if we have any AddHandler directive, otherwise the site will be borked if the user
 		 * chooses not to rename the .htaccess file
 		 */
 		if (AKFactory::get('kickstart.stealth.enable') || AKFactory::get('kickstart.setup.phphandlers', array()))

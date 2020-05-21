@@ -144,7 +144,7 @@ function kickstart_application_web()
 
 				if ($task == 'startExtracting')
 				{
-					// Before starting, read and save any custom Set/AddHandler directive
+					// Before starting, read and save any custom AddHandler directive
 					$phpHandlers = getPhpHandlers();
 					AKFactory::set('kickstart.setup.phphandlers', $phpHandlers);
 
