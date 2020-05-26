@@ -432,19 +432,9 @@ function getPhpHandlers()
 		return $directives;
 	}
 
-	$contents = file_get_contents($htaccess);
-	$lines    = explode("\n", $contents);
-
-	foreach ($lines as $line)
-	{
-		$line = trim($line);
-
-		// Got a directive? Let's store it
-		if (strpos($line, 'AddHandler') !== false)
-		{
-			$directives[] = $line;
-		}
-	}
+	$contents   = file_get_contents($htaccess);
+	$directives = AKKickstartUtils::extractHandler($contents);
+	$directives = explode("\n", $directives);
 
 	return $directives;
 }
