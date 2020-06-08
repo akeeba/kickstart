@@ -42,7 +42,6 @@ function echoPage()
 			<h2>THINGS_HEADER</h2>
 			<ol>
 				<li>THINGS_01</li>
-				<li>THINGS_02</li>
 				<li>THINGS_03</li>
 				<li>THINGS_04</li>
 				<li>THINGS_05</li>

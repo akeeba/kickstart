@@ -7,7 +7,6 @@
   ~ @copyright Copyright (c)2008-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
   ~ @license   GNU General Public License version 3, or later
   -->
-
 <book version="5.0" xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -216,7 +215,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>PHP 5.3.3 or later. We recommend using PHP 7.0 or 7.1.</para>
+          <para>PHP 5.6.0 or later. We recommend using PHP 7.3.</para>
         </listitem>
 
         <listitem>
@@ -376,12 +375,6 @@
             <para>Kickstart is not an installer. It is an archive extraction
             tool. The actual installer was put inside the archive file at
             backup time.</para>
-          </listitem>
-
-          <listitem>
-            <para>Kickstart is not the only way to extract the backup archive.
-            You can use Akeeba eXtract Wizard and upload the extracted files
-            using FTP instead.</para>
           </listitem>
 
           <listitem>
@@ -1023,190 +1016,6 @@
         <para>At this point you can simply close Kickstart's window.
         Alternatively, you click on either button (or both!) to open the
         respective area of your site to a new browser window/tab.</para>
-
-        <section xml:id="troubleshooting">
-          <title>Troubleshooting</title>
-
-          <para><emphasis role="bold">Kickstart tells me that this is not a
-          valid archive?</emphasis></para>
-
-          <para>First, ensure that you have downloaded and uploaded the backup
-          archive using FTP in Binary transfer mode. If not, do it now. This
-          is the most common cause of issues. Then, make sure that you have
-          tried both the Direct and Hybrid file writing modes. The next step
-          would be lowering the <guilabel>Maximum execution time</guilabel>
-          setting to 2 or 3 seconds and setting the <guilabel>Minimum
-          execution time</guilabel> to 1 second.</para>
-
-          <para>If you are still getting this error message and you are a
-          subscriber you can file a support ticket. Please take a screenshot
-          of the entire message (<emphasis>do not downscale it</emphasis>,
-          we'll need to be able to read it) and attach it to your ticket.
-          Please include as much information as you can regarding the error
-          condition, how you took your backup, which
-          <emphasis>EXACT</emphasis> version of Akeeba Backup you were using
-          ("latest" doesn't help since we may have released an update in the
-          meantime, or you may be using a dev release and so one), which EXACT
-          version of Kickstart you were using (displayed in very large type at
-          the top of the Kickstart page) and the PHP version of your host.
-          Remember that the less information you give us, the more time it
-          will take us to figure out what's going wrong and the less happy
-          you'll feel about our support. We need you to help us help
-          you.</para>
-
-          <para><emphasis role="bold">I am getting "Can't open xyz for
-          writing" or "Can't create directory xyz" error
-          messages</emphasis></para>
-
-          <para>The first thing you have to check, even though it sounds
-          silly, is that you have enough free disk space. Most probably you
-          have an account quota limit. Since you are extracting an archive,
-          you must have at least as much as 2-3 times free space as your
-          backup archive. This means that if you have a backup archive
-          weighing 100Mb, you need another 150-200Mb to extract it. In total,
-          you'd need 250-300Mb of free disk space before you begin uploading
-          files and extracting the archive with Kickstart.</para>
-
-          <important>
-            <para>Some hosts claim "unlimited" disk space. Sadly, this is
-            never the case. Most hosts have "hidden" limits, such as the
-            amount of files you can host under one account. If you go over
-            that limit, you'll get extraction errors. Another thing is that
-            you "unlimited" host is physically bound to the size of their hard
-            drives. If their hard drive was close to completely filling up,
-            trying to extract your site will also lead to a restoration
-            failure. Moreover, we have seen hosts with "unlimited" space which
-            actually give you a finite and small amount of space (e.g. 1GB)
-            and you have to explain why you need more to get another chunk of
-            free space (if you successfully convince them). If nothing else
-            helps with this kind of errors, do contact your host and ask them
-            if you are hitting a file count limitation or their hard drive is
-            full.</para>
-          </important>
-
-          <para>Moreover, some hosts have a limitation on the maximum file
-          size PHP can create. For example, Strato allows PHP to create files
-          of only up to 10Mb. Trying to extract bigger files from the archive
-          will lead to such an error. Do note that you might be able to upload
-          large files, such as your site's backup archive, through FTP.
-          However, if you try to extract a large file from the archive (e.g. a
-          large non-split database dump, a large video or music file, etc) it
-          will fail. Your ONLY way to perform the restoration is to extract
-          the archive on your local PC, e.g. using Akeeba eXtract, and
-          uploading all the extracted files by FTP. All you'll have to do next
-          is visiting the restoration URL which is in the form of
-          <uri>http://www.yoursite.com/installation/index.php</uri>. Please
-          refer to Akeeba Backup's documentation (the chapter on restoring
-          your site) for more information.</para>
-
-          <para>Finally, it may be a classic case of wrong or mixed file and
-          directory permissions (a "permissions hell" situation). This is very
-          easy to happen if you are restoring to a host with an existing
-          installation of Joomla! or WordPress which doesn't use per-account
-          web server process ownership through FastCGI or suPHP, i.e. the
-          majority of cheap shared hosting. You might want to try using the
-          FTP or Hybrid file writing mode. If this still doesn't work for you,
-          try removing all existing files and directories from your server
-          before restoring the backup archive. It's very easy to mix up
-          ownerships and permissions on a shared host, effectively entering
-          into a "permissions hell" which is virtually impossible to work
-          around unless you have root privileges on an SSH console or, more
-          easily, removing all files from the account. Do note that removing
-          files might require using both an FTP program and your host's
-          control panel, or raising a ticket with your host.</para>
-
-          <para><emphasis role="bold">I am getting AJAX errors with some weird
-          403, 500, 502 or 503 code</emphasis></para>
-
-          <para>This is actually a server issue. Kickstart works by having
-          your browser visit the same URL repeatedly through AJAX to perform
-          each extraction step. This is necessary since the extraction would
-          otherwise take too long to complete which would cause your server to
-          abort it, or simply run out of memory, reporting an error. By
-          separating the work in smaller chunks we can perform the time, disk
-          and memory intensive process of extracting a backup archive over a
-          web interface. However, this may cause different issues on some
-          servers.</para>
-
-          <para>First of all, some servers impose limits on the amount of
-          resources (CPU, disk, memory) your hosting account can use in a
-          specific period of time. These limits are there to protect the
-          server against abuse by malicious tenants or scripts with coding
-          mistakes which result in very high resource usage. By its very
-          nature, Kickstart needs to do “heavy work”. It has to read a rather
-          big backup archive, decompress the data in memory and write it into
-          the thousands of files which make up your site. This requires a lot
-          of disk and CPU activity to take place and do take up a substantial
-          amount of memory. This may indeed trip the server protection. Tech
-          talk (for IT pros): this is usually implemented either with Linux
-          ulimit settings or through configuration of the virtualization
-          environment (e.g. CloudLinux) under which your hosting account
-          runs.</para>
-
-          <para>Second, some servers may have a built in Denial of Service
-          protection. They keep track of which IP address is visiting which
-          URL. If the same IP address tries to repeatedly access the same URL
-          they treat is as a potential Denial of Service and may either simply
-          reject the request or ban the IP address for a while. If this
-          happens you will probably be unable to connect to your site for
-          anywhere between a few seconds to a few hours. Unfortunately there
-          is no way to know that in advance because, for security reasons, do
-          not publicize this information. Tech talk (for IT pros): this is
-          usually implemented on Apache using mod_evasive.</para>
-
-          <para>Finally, some servers may be filtering requests based on what
-          kind of information is being sent. If they think that the data being
-          sent to the server looks dissimilar to typical web traffic they
-          might either just reject the request or ban the IP address for a
-          while. PHP, the language Kickstart and your site's software is
-          written in, is stateless. This means that it doesn't remember what
-          happened between two successive requests. Extracting a backup
-          archive requires a way to remember state, for example to track of
-          how much of the archive we have already extracted, where to extract
-          it and other options you made in Kickstart. To this end, Kickstart
-          sends its state in an encoded form to your browser after an
-          extraction step is complete. Your browser will then send it back to
-          Kickstart when it asks it to run the next extraction step. The state
-          is a rather long bit of encoded data which does indeed look
-          dissimilar to regular web traffic. This may trip up the server
-          protection discussed above. Tech talk (for IT pros): this is usually
-          implemented on Apache using mod_security2.</para>
-
-          <para>The first two issues can be worked around using the first two
-          options (time settings) in the Fine Tuning section of Kickstart's
-          interface. You can set the minimum execution time to 5 and the
-          maximum to 1. This is not a typo! It creates a 20% duty cycle:
-          Kickstart extracts files for 1 second and then waits, doing nothing,
-          for another 4 seconds so that the time between requests is the
-          configured maximum, 5 seconds. Some servers might not like the
-          predictability of the requests' timing. If this is the case try
-          setting a minimum of 5 and a maximum of 10. This means that
-          Kickstart will work for 5 to 10 seconds before telling your browser
-          to run the next extraction step. This uses more resources, makes the
-          extraction faster and introduces some variance in the time it takes
-          each extraction step to run. If none of these settings work for you
-          the server may be configured with very tight settings. In this case
-          you can extract the backup archive on your computer, using either
-          Akeeba Kickstart or Akeeba eXtract Wizard, and upload all extracted
-          files to your site. Then you can complete the restoration by
-          visiting the /installation/index.php on your site.</para>
-
-          <para>The last issue cannot be worked around by you. You can try
-          asking your host for a temporary way to disable that server
-          protection. It's possible that your host may be unable to help you
-          if you are not on a VPS or dedicated server. In this case you can
-          extract the backup archive on your computer, exactly as described in
-          the previous paragraph.</para>
-
-          <para><emphasis role="bold">I am getting an error restoring my
-          database / after my site was restored</emphasis></para>
-
-          <para>This is NOT a Kickstart issue. Kickstart only extracts the
-          archive. It does not handle the restoration of your database or your
-          site configuration. Please read the chapter about what Kickstart
-          does and does not do you saw earlier in this documentation if you're
-          in doubt.</para>
-        </section>
       </section>
     </section>
   </chapter>
@@ -1754,6 +1563,476 @@
       have a different SSL certificate for each site they serve, there's
       absolutely no excuse whatsoever to use plain old HTTP. Upgrade to HTTPS
       today and mitigate half of the most common security pitfalls!</para>
+    </section>
+  </chapter>
+
+  <chapter xml:id="troubleshooting">
+    <title>Troubleshooting</title>
+
+    <para>Please refer to this chapter if you have trouble using Akeeba
+    Kickstart. If you are requesting support please indicate whether you have
+    read and followed these instructions.</para>
+
+    <section xml:id="kswontrunatall">
+      <title>Akeeba Kickstart won't run at all or throws a Parse Error</title>
+
+      <para>First make sure that your hosting environment complies with the
+      minimum requirements for Kickstart. If your host is using an older
+      version of PHP as the default (which might be different than the one
+      reported in your hosting control panel) you need to contact your host to
+      find out how to upgrade PHP on your server.</para>
+
+      <para>If the extraction process does not start, i.e. you click on the
+      button and nothing happens, please go through the client-side
+      troubleshooting steps before doing anything else. Most likely it's an
+      issue with your PC configuration or ISP. We won't be able to help you if
+      you don't go through these steps.</para>
+
+      <para>If nothing of the above works, you may want to try downloading the
+      latest version of Kickstart, extract the ZIP file locally and re-upload
+      kickstart.php to your site.</para>
+    </section>
+
+    <section xml:id="ksphperrors">
+      <title>I get PHP Warning, Norice or Deprecated errors when trying to run
+      Akeeba Kickstart</title>
+
+      <para>If you get any other kind of Notice, Warning, Strict Standards, or
+      Deprecated message please be advised that it is not a grave error and
+      the extraction should be able to continue normally. If it doesn't, first
+      ask your host how you can disable PHP error output to the browser or how
+      you can set PHP's error reporting level to E_ERROR. We can't help you
+      with that, as the process may be completely different on each
+      host.</para>
+    </section>
+
+    <section xml:id="ksnoarchives">
+      <title>Akeeba Kickstart starts but it does not list my archive
+      files</title>
+
+      <para>This usually means that the permissions of your site's root do not
+      allow file listings. Please change the permissions of your site's root
+      to 0755 or higher. If unsure how to do that, please ask your host; we
+      don't know how each and every host works. You may also ask your host to
+      give read and file listing permissions to your web root. They will
+      either do that for you or tell you exactly how to do that.</para>
+
+      <para>On some hosts, we saw that it was necessary (on top of the above)
+      to give 0755 permissions to the backup archive and all of its parts if
+      any exist, e.g. file.jpa, file.j01, file.j02 etc. I know, this doesn't
+      make any sense (0644 permissions on the file should work!) but it looks
+      as if some hosts are grossly misconfigured. So, try setting your site's
+      root directory permissions to 0755 and the permissions of your backup
+      archive to 0755 as well. Kickstart should be left with 0644 permissions
+      or you risk getting a 500 Internal Server Error.</para>
+    </section>
+
+    <section xml:id="kscantextract">
+      <title>Akeeba Kickstart starts, but can't extract the archive, throws an
+      AJAX Error, Invalid Archive Header or other error</title>
+
+      <bridgehead renderas="sect4">Server protection</bridgehead>
+
+      <para>If you get a 502 Bad Gateway error or the extraction halts
+      mysteriously after a very short while (about 10 seconds or less) you may
+      be hitting a server limitation. Hosts using the Apache web server
+      usually have installed and configured mod_evasive, a tool which blocks
+      similar requests coming too fast from the same remote client. While this
+      is a good protection against Denial of Service attacks it can get in the
+      way of extracting a backup archive: Kickstart is hitting a similar URL
+      for each of its extractions steps. Moreover, some hosts may go a step
+      further and apply CPU usage limits. If a script, like Kickstart, uses
+      too much CPU they will block your requests and / or your IP address for
+      a while. Again that's very good for preventing Denial of Service attacks
+      but not very good for extracting backup archives, something which is by
+      its nature a CPU-intensive process.</para>
+
+      <para>There is a workaround for that but the exact values depend on your
+      server. On Kickstart's main page, under advanced settings, set the
+      minimum execution time to 7 seconds and the maximum to 10. If that still
+      fails, try setting the minimum time to 7 seconds and the maximum to 3
+      (yes, the maximum is less than the minimum, that's on purpose). These
+      settings modify the amount of time Kickstart will be spending on each
+      request and its duty cycle (how much work it will do and how much time
+      it will sit around doing nothing). These tricks work around the
+      protections of your server. If all else fails you can always extract the
+      backup archive manually on your computer, using either Kickstart or
+      Akeeba eXtract Wizard, and upload everything to your server. This is
+      much slower but it always works.</para>
+
+      <bridgehead renderas="sect4">Free space</bridgehead>
+
+      <para>The most common issue of all is, surprisingly, not having enough
+      disk space. In order to restore a backup archive you need to have at
+      least as much space as kickstart.php, your backup archive and
+      <emphasis>all of the extracted files</emphasis> occupy. As a rule of
+      thumb, you need about 2.5 times as much disk space as your backup
+      archive. In other words, if you have a 100Mb archive file, make sure
+      your site has at least 250Mb of free space before uploading Kickstart
+      and the backup archive to it.</para>
+
+      <important>
+        <para>Some hosts claim "unlimited" disk space. Sadly, this is never
+        the case. Most hosts have "hidden" limits, such as the amount of files
+        you can host under one account. If you go over that limit, you'll get
+        extraction errors. Another thing is that you "unlimited" host is
+        physically bound to the size of their hard drives. If their hard drive
+        was close to completely filling up, trying to extract your site will
+        also lead to a restoration failure. Moreover, we have seen hosts with
+        "unlimited" space which actually give you a finite and small amount of
+        space (e.g. 1GB) and you have to explain why you need more to get
+        another chunk of free space (if you successfully convince them). If
+        nothing else helps with this kind of errors, do contact your host and
+        ask them if you are hitting a file count limitation or their hard
+        drive is full.</para>
+      </important>
+
+      <para>Moreover, some hosts have a limitation on the maximum file size
+      PHP can create. For example, Strato allows PHP to create files of only
+      up to 10MB. Trying to extract bigger files from the archive will lead to
+      such an error. Do note that you might be able to upload large files,
+      such as your site's backup archive, through FTP. However, if you try to
+      extract a large file from the archive (e.g. a large non-split database
+      dump, a large video or music file, etc) it will fail. Your ONLY way to
+      perform the restoration is to extract the archive on your local computer
+      and upload all the extracted files by SFTP / FTP. All you'll have to do
+      next is visiting the restoration URL which is in the form of
+      <uri>http://www.example.com/installation/index.php</uri>. Please refer
+      to Akeeba Backup's documentation (the chapter on restoring your site)
+      for more information.</para>
+
+      <bridgehead renderas="sect4">Missing or corrupt backup archive
+      parts</bridgehead>
+
+      <para>If you have a multi-part archive (files named .jpa, .j01, .j02,
+      etc or .zip, .z01, .z02 etc) remember to upload all of the archive
+      parts, otherwise the extraction will, of course, fail. More
+      specifically, the extraction might continue up to the point where
+      Kickstart determines that a part file is missing. Then, it will tell you
+      that the archive is invalid, corrupt or archive parts are missing (older
+      versions will just show INVALID_HEADER without further information).
+      Moreover, make sure that all backup archives have been downloaded from a
+      live server and/or uploaded to a live server using FTP in Binary
+      transfer mode. Any other way to transfer them will most likely corrupt
+      them, making restoration impossible. We suggest using FileZilla to do
+      that. As soon as you connect to your site and right before
+      downloading/uploading any files click on the
+      <guimenu>Transfer</guimenu>, <guisubmenu>Transfer Type</guisubmenu>,
+      <guimenuitem>Binary</guimenuitem> menu item.</para>
+
+      <bridgehead>Mixed ownership</bridgehead>
+
+      <para>You may end up with wrong or mixed file and directory permissions
+      (this situation is also known as "mixed onwership" or "permissions
+      hell"). This is very easy to happen if you are restoring to a host with
+      an existing installation of Joomla! which doesn't use per-account web
+      server process ownership through FastCGI or suPHP, i.e. the majority of
+      cheap shared hosting. You might want to try using the FTP or Hybrid file
+      writing mode. </para>
+
+      <para>If this still doesn't work for you, try removing all existing
+      files and directories from your server before restoring the backup
+      archive. It's very easy to mix up ownerships and permissions on a shared
+      host, effectively entering into a mixed ownership situation which is
+      virtually impossible to work around unless you have root privileges on
+      an SSH console or, more easily, removing all files from the account. Do
+      note that removing files might require using both an FTP program and
+      your host's control panel, or raising a ticket with your host.</para>
+
+      <bridgehead renderas="sect4">File and folder permissions</bridgehead>
+
+      <para>If you are restoring on a Windows server or local WAMP/XAMPP/other
+      local server solution and you receive an error message like "Could not
+      create test/info/N:/ folder", take a good look at the error message. If
+      the file name contains a colon (:), slash (/), question mark (?),
+      asterisk (*), vertical bar (|), quotation mark ("), less than (&lt;) or
+      greater than (&gt;) then you can not use Kickstart to extract the
+      archive. The reason is that these characters are valid for files stored
+      on a Linux, Mac OS X, *BSD, Solaris or other UNIX-based operating
+      system, but not on Windows. The only workaround is to use our free
+      Akeeba eXtract Wizard desktop application to extract the archive, as it
+      knows about this problem and will <emphasis>skip extracting</emphasis>
+      those files. Then, move your file's to the new site's root and access
+      the restoration script as, say,
+      http://localhost/mysite/installation/index.php in order to continue the
+      restoration.</para>
+
+      <para>If that doesn't work, please indicate the type of server you are
+      restoring to</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><link linkend="kstslocal">A local server</link>, for example
+          XAMPP, MAMP, WAMPServer, Zend Server CE, Uniform Server, etc.</para>
+        </listitem>
+
+        <listitem>
+          <para><link linkend="kstslive">A live server</link>, e.g. a shared
+          host, dedicated box, cloud host, VPS or any other server directly
+          accessible from the Internet</para>
+        </listitem>
+      </itemizedlist>
+
+      <section xml:id="kstslocal">
+        <title>Troubleshooting on a local server</title>
+
+        <para>If you are on a local host, be advised that permissions or
+        Windows ACL may be interfering with Kickstart's operation.</para>
+
+        <para>If you are on a <emphasis role="bold">Linux machine</emphasis>,
+        change the permissions of the root of your to-be-restored website to
+        0777. For example, if you're trying to restore to
+        <filename>/var/www/mysite</filename> you have to issue a command like
+        <command>chmod -Rf 0777 /var/www/mysite</command> after you have put
+        Kickstart and the archive in there, but <emphasis>before</emphasis>
+        launching Kickstart</para>
+
+        <para>If you are on a <emphasis role="bold">Mac OS X
+        machine</emphasis>, use the Finder to find your site's root.
+        Right-click or Control-click on it and select <guimenuitem>Get
+        Info</guimenuitem>. Scroll down to the <guilabel>Sharing &amp;
+        Permissions</guilabel> slider and expand it if it's not already
+        expanded. Find the row where the <guilabel>Name</guilabel> column
+        reads <option>everyone</option> and set the
+        <guilabel>Privilege</guilabel> to <option>Read &amp;
+        Write</option>.</para>
+
+        <para>If you are on a <emphasis role="bold">Windows XP Home
+        machine</emphasis>, use Windows explorer to find your site's root.
+        Right click on it, select <guimenuitem>Properties</guimenuitem> and
+        clear (unselect - it must be blank, not gray!) the <guilabel>Read
+        Only</guilabel> checkbox. Click OK and, if prompted, tell Windows to
+        apply this to all files and subdirectories.</para>
+
+        <para>If you are on a <emphasis role="bold">Windows XP Professional,
+        Vista (all versions) or 7 (all versions) machine</emphasis>, use
+        Windows explorer to find your site's root. Right click on it, select
+        <guimenuitem>Properties</guimenuitem> and click on the
+        <guilabel>Security</guilabel> tab. Click on the
+        <guibutton>Edit...</guibutton> button. If you can't see a user named
+        Everyone, you will have to click on the <guibutton>Add...</guibutton>
+        button, type Everyone in the big text box and click
+        <guibutton>OK</guibutton>. Now click on the Everyone user and then
+        take a look at the list of checkboxes below. Click the
+        <guilabel>Accept</guilabel> checkbox on the <guilabel>Full
+        Control</guilabel> row (the topmost one). Click on
+        <guibutton>OK</guibutton>, then again on
+        <guibutton>OK</guibutton>.</para>
+
+        <important>
+          <para>If you are restoring a backup taken on Linux / Mac OS X on a
+          Windows machnie there is another possibility. You may have a
+          filename which is valid under Linux / Mac OS X but not on Windows
+          such as "index.php?something". In this example the question mark is
+          an allowed filename character on Linux but not on Windows. In such
+          cases you can extract the backup archive using Akeeba eXtract Wizard
+          or Akeeba Kickstart as long as you check the <guilabel>Ignore most
+          errors</guilabel> checkbox. This will tell eXtract or Kickstart to
+          ignore files which cannot be opened for writing. But beware! This
+          will also skip files with legitimate filenames which are attempted
+          to be extracted on unwritable directories. So, our suggestion is to
+          first try adjusting the Security privileges and only if all else
+          fails should you resort to using the Ignore most errors
+          checkbox.</para>
+        </important>
+      </section>
+
+      <section xml:id="kstslive">
+        <title>Troubleshooting on a live server</title>
+
+        <para>If you are on a live server which doesn't use suPHP (most hosts;
+        if in doubt, your host is most likely one of them) you will have to
+        use Kickstart's FTP mode.</para>
+
+        <important>
+          <para>DO NOT SET YOUR SITE ROOT'S PERMISSIONS TO 0777. This will
+          most likely work, but it is a terribly unsafe setting. Use
+          Kickstart's FTP mode as outlined below instead.</para>
+        </important>
+
+        <para>First, upload kickstart.php and the archive file(s) to your
+        server. Before starting Kickstart, you will have to do some
+        preparatory work. Using your FTP client application, create a
+        directory named <filename>kicktemp</filename> inside the same
+        directory <filename>kickstart.php</filename> is in. For example, if
+        <filename>kickstart.php</filename> is in
+        <filename>public_html</filename> directory you have to create the
+        <filename>kicktemp</filename> directory inside the
+        <filename>public_html</filename> directory. Using your FTP client
+        application give that directory 0777 permissions (read, write and
+        browse/execute to owner, group and others). Don't worry, we will get
+        rid of that directory later.</para>
+
+        <para>When Kickstart starts, set the <guilabel>Write to
+        files</guilabel> option to <option>Use FTP</option>. In the fields
+        which appear below you have to supply your FTP host name (usually it's
+        localhost, 127.0.0.1 or the FTP hostname provided to you by your
+        host), the FTP username and password provided by your host and the FTP
+        directory.</para>
+
+        <para>In order to determine the proper FTP directory, do this. Connect
+        to your site using FileZilla. Navigate inside the folder Joomla! is
+        installed in. Usually it's a directory named
+        <filename>public_html</filename>, <filename>htdocs</filename>,
+        <filename>www</filename> or something similar. If unsure don't ask us,
+        ask your host. Now, on the right-hand pane you will find the FTP path.
+        Most likely it will look something like
+        <filename>/public_html</filename>. Copy this and paste it into the FTP
+        Directory text box in Kickstart.</para>
+
+        <para>In the <guilabel>Temporary Directory</guilabel> box you see that
+        there is already something written in it. Append (do not replace!)
+        <filename>/kicktemp</filename> to it. For example, if it was reading
+        <filename>/home/users/myuser/public_html</filename> it should now read
+        <filename>/home/users/myuser/public_html/kicktemp</filename>. Click on
+        the <guibutton>Check</guibutton> button next to it. It should tell you
+        that the directory is readable. If not, retry the above procedure and
+        don't skip any steps. Then click on the <guibutton>Test FTP
+        Connection</guibutton> button. It should tell you that the FTP
+        connection was established. If not, ask your host if they do support
+        sites writing to themselves using FTP. If they don't you'll have to
+        manually extract the archive locally (e.g. using Akeeba eXtract
+        Wizard) and upload the files manually. In this case, please consult
+        the <link
+        xlink:href="https://www.akeebabackup.com/documentation/quick-start-guide.html">Quick
+        Start Guide</link> for further instructions.</para>
+
+        <warning>
+          <para>Some hosts do not allow you to upload files named
+          <filename>.htaccess</filename> or <filename>php.ini</filename>. This
+          can cause an extraction issue despite following the advice above. To
+          test that, try uploading a file named .htaccess from your PC to your
+          server. Alternatively, upload a plain text file (create one in
+          Notepad, gEdit, TextEdit, etc) and try renaming it to
+          <filename>.htaccess</filename> through your favourite FTP program.
+          Try the same thing with a file named <filename>php.ini</filename>
+          for good measure. If that fails, you can't use Kickstart on that
+          server. Moreover, restoring a site on that server would be insecure.
+          In this case, we strongly advise you to switch to a decent host. We
+          regret to inform you that we can not provide support on this kind of
+          broken, restrictive hosts.</para>
+        </warning>
+      </section>
+    </section>
+
+    <section xml:id="ajax-error-weird-code">
+      <title>I am getting AJAX errors with some weird 403, 500, 502 or 503
+      code</title>
+
+      <para>This is actually a server issue. Kickstart works by having your
+      browser visit the same URL repeatedly through AJAX to perform each
+      extraction step. This is necessary since the extraction would otherwise
+      take too long to complete which would cause your server to abort it, or
+      simply run out of memory, reporting an error. By separating the work in
+      smaller chunks we can perform the time, disk and memory intensive
+      process of extracting a backup archive over a web interface. However,
+      this may cause different issues on some servers.</para>
+
+      <para>First of all, some servers impose limits on the amount of
+      resources (CPU, disk, memory) your hosting account can use in a specific
+      period of time. These limits are there to protect the server against
+      abuse by malicious tenants or scripts with coding mistakes which result
+      in very high resource usage. By its very nature, Kickstart needs to do
+      “heavy work”. It has to read a rather big backup archive, decompress the
+      data in memory and write it into the thousands of files which make up
+      your site. This requires a lot of disk and CPU activity to take place
+      and do take up a substantial amount of memory. This may indeed trip the
+      server protection. Tech talk (for IT pros): this is usually implemented
+      either with Linux ulimit settings or through configuration of the
+      virtualization environment (e.g. CloudLinux) under which your hosting
+      account runs.</para>
+
+      <para>Second, some servers may have a built in Denial of Service
+      protection. They keep track of which IP address is visiting which URL.
+      If the same IP address tries to repeatedly access the same URL they
+      treat is as a potential Denial of Service and may either simply reject
+      the request or ban the IP address for a while. If this happens you will
+      probably be unable to connect to your site for anywhere between a few
+      seconds to a few hours. Unfortunately there is no way to know that in
+      advance because, for security reasons, do not publicize this
+      information. Tech talk (for IT pros): this is usually implemented on
+      Apache using mod_evasive.</para>
+
+      <para>Finally, some servers may be filtering requests based on what kind
+      of information is being sent. If they think that the data being sent to
+      the server looks dissimilar to typical web traffic they might either
+      just reject the request or ban the IP address for a while. PHP, the
+      language Kickstart and your site's software is written in, is stateless.
+      This means that it doesn't remember what happened between two successive
+      requests. Extracting a backup archive requires a way to remember state,
+      for example to track of how much of the archive we have already
+      extracted, where to extract it and other options you made in Kickstart.
+      To this end, Kickstart sends its state in an encoded form to your
+      browser after an extraction step is complete. Your browser will then
+      send it back to Kickstart when it asks it to run the next extraction
+      step. The state is a rather long bit of encoded data which does indeed
+      look dissimilar to regular web traffic. This may trip up the server
+      protection discussed above. Tech talk (for IT pros): this is usually
+      implemented on Apache using mod_security2.</para>
+
+      <para>The first two issues can be worked around using the first two
+      options (time settings) in the Fine Tuning section of Kickstart's
+      interface. You can set the minimum execution time to 5 and the maximum
+      to 1. This is not a typo! It creates a 20% duty cycle: Kickstart
+      extracts files for 1 second and then waits, doing nothing, for another 4
+      seconds so that the time between requests is the configured maximum, 5
+      seconds. Some servers might not like the predictability of the requests'
+      timing. If this is the case try setting a minimum of 5 and a maximum of
+      10. This means that Kickstart will work for 5 to 10 seconds before
+      telling your browser to run the next extraction step. This uses more
+      resources, makes the extraction faster and introduces some variance in
+      the time it takes each extraction step to run. If none of these settings
+      work for you the server may be configured with very tight settings. In
+      this case you can extract the backup archive on your computer, using
+      Akeeba Kickstart, and upload all extracted files to your site. Then you
+      can complete the restoration by visiting the /installation/index.php on
+      your site.</para>
+
+      <para>The last issue cannot be worked around by you. You can try asking
+      your host for a temporary way to disable that server protection. It's
+      possible that your host may be unable to help you if you are not on a
+      VPS or dedicated server. In this case you can extract the backup archive
+      on your computer, exactly as described in the previous paragraph.</para>
+    </section>
+
+    <section xml:id="stuck-on-windows">
+      <title>Extraction stuck on Windows</title>
+
+      <para>If you are using XAMPP or WAMPserver on Windows you might find
+      that your archive extraction suddenly stops. Unfortunately, this is a
+      bug in how XAMPP and WAMPserver are set up. Their developers are using
+      the non-thread-safe version of PHP as an Apache module. Unfortunately,
+      Apache requires thread safe (ZTS) builds of PHP or it will corrupt its
+      memory, killing the PHP process. This happens when there are numerous
+      requests in quick succession such as when building a complex site,
+      taking a backup or restoring a backup archive. The same thing happens
+      when you try to restore a large database (SQL) file with phpMyAdmin
+      using the automatic continue method.</para>
+
+      <para>Please note that we DO NOT have any control over this. If
+      anything, these people should know better than to ship XAMPP and
+      WAMPserver broken like that on account of this information being printed
+      on the PHP download page for Windows on the official PHP site.</para>
+
+      <para>There are two things you can possibly do.</para>
+
+      <para>The best solution is to use a different local server. You can use
+      MAMP Pro or <link
+      xlink:href="https://www.dionysopoulos.me/iis-development-server-for-php-on-windows-10.html">build
+      your own server</link> using Windows 10's IIS, MySQL and PHP.
+      Understandably this is not the easiest solution.</para>
+
+      <para>As a compromise, you can try to change the time settings of Akeeba
+      Kickstart at the bottom of its first page and before clicking on the
+      Start button. Recommended values are a Maximum execution time of 10
+      seconds and a Minimum Execution Time of 20 seconds. Yes, the minimum is
+      higher than the maximum to allow for a "dead time" which allows Apache
+      to spin down previous PHP processes, avoiding the pitfalls of using the
+      non-threaded version of PHP as a module.</para>
+
+      <para>Again, this situation is beyond our control and there's not much
+      else we can do about it. Please ask the developers of XAMPP and
+      WAMPserver to fix their software.</para>
     </section>
   </chapter>
 

@@ -33,7 +33,6 @@ class AKText extends AKAbstractObject
 		'FTP_COULDNT_UPLOAD'              => 'Could not upload %s',
 		'THINGS_HEADER'                   => 'Things you should know about Akeeba Kickstart',
 		'THINGS_01'                       => 'Kickstart is not an installer. It is an archive extraction tool. The actual installer was put inside the archive file at backup time.',
-		'THINGS_02'                       => 'Kickstart is not the only way to extract the backup archive. You can use Akeeba eXtract Wizard and upload the extracted files using FTP instead.',
 		'THINGS_03'                       => 'Kickstart is bound by your server\'s configuration. As such, it may not work at all.',
 		'THINGS_04'                       => 'You should download and upload your archive files using FTP in Binary transfer mode. Any other method could lead to a corrupt backup archive and restoration failure.',
 		'THINGS_05'                       => 'Post-restoration site load errors are usually caused by .htaccess or php.ini directives. You should understand that blank pages, 404 and 500 errors can usually be worked around by editing the aforementioned files. It is not our job to mess with your configuration files, because this could be dangerous for your site.',
