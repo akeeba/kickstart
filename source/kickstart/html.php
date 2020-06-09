@@ -83,7 +83,7 @@ function echoPage()
 
 				<div class="helpme">
 					<span>NEEDSOMEHELPKS</span> <a
-						href="https://www.akeebabackup.com/documentation/quick-start-guide/using-kickstart.html"
+						href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/using-kickstart.html"
 						target="_blank">QUICKSTART</a>
 				</div>
 
@@ -109,7 +109,7 @@ function echoPage()
 						<?php echo $filelist; ?>
 					</select>
 				<?php else: ?>
-					<a href="https://www.akeebabackup.com/documentation/troubleshooter/ksnoarchives.html"
+					<a href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/ksnoarchives.html"
 					   target="_blank">NOARCHIVESCLICKHERE</a>
 				<?php endif; ?>
 			</span>
@@ -175,7 +175,7 @@ function echoPage()
 							<label></label>
 							<span class="button" id="testFTP">BTN_TESTFTPCON</span>
 							<a id="notWorking" class="button"
-							   href="https://www.akeebabackup.com/documentation/troubleshooter/kscantextract.html"
+							   href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/kscantextract.html"
 							   target="_blank">CANTGETITTOWORK</a>
 							<br/>
 						</div>
@@ -261,7 +261,7 @@ function echoPage()
 				<div id="gotoSite" class="button" style="display:none">BTN_SITEFE</div>
 				<div id="gotoAdministrator" class="button" style="display:none">BTN_SITEBE</div>
 				<div id="gotoPostRestorationRroubleshooting" style="display:none">
-					<a href="https://www.akeebabackup.com/documentation/troubleshooter/post-restoration.html"
+					<a href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/post-restoration.html"
 					   target="_blank">POSTRESTORATIONTROUBLESHOOTING</a>
 				</div>
 			</div>
@@ -280,7 +280,7 @@ function echoPage()
 				<p id="errorMessage"></p>
 				<div id="gotoStart" class="button">BTN_GOTOSTART</div>
 				<div>
-					<a href="https://www.akeebabackup.com/documentation/troubleshooter/kscantextract.html"
+					<a href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/kscantextract.html"
 					   target="_blank">CANTGETITTOWORK</a>
 				</div>
 			</div>

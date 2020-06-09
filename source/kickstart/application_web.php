@@ -303,7 +303,7 @@ function kickstart_application_web()
 			if (empty($filelist))
 			{
 				$retArray =
-					'<a href="https://www.akeebabackup.com/documentation/troubleshooter/ksnoarchives.html" target="_blank">' .
+					'<a href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/ksnoarchives.html" target="_blank">' .
 					AKText::_('NOARCHIVESCLICKHERE')
 					. '</a>';
 			}
