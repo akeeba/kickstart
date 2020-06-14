@@ -1,12 +1,26 @@
 <h3>Release highlights</h3>
 <p>
-    <strong>New theme</strong>. Kickstart was long overdue for a new lick of paint. We changed our previous theme to a more flat design with the same color scheme we use in all of our other software.
+    <strong>Informative error message when your PHP version is too old for this version of Kickstart</strong>.
+    Previously you would get a straight up failure. Please note that this will still NOT work when yor PHP
+    version is older than 5.3.0 due to the way PHP works under the hood.
 </p>
 <p>
-    <strong>Dark Mode</strong>. Embrace the dark side! When your browser is signalling that you're using a dark theme on a compatible operating system (macOS, Windows 10, Linux / GTK3, iOS, Android) Kickstart will automatically change its theme to vibrant color on a dark background. If you're a night own like us your eyes will thank you for the switch.
+    <strong>Print a warning when your PHP version is End of Life</strong>.
+    We've found that the primary reason the majority of users are on an end of life PHP version (which no
+    longer receives security updates) is ignorance of the fact that it's end of life. We think it's our duty
+    and responsibility as developers to notify users so they have a chance to upgrade to a modern, secure
+    PHP version.
+</p>
+<p>
+    <strong>Changed the documentation URLs following documentation refactoring on our site.</strong>.
 </p>
 
-<h3>PHP 5.3.04+ is required</h3>
+<h3>PHP 5.6 or later is required</h3>
 <p>
-    Akeeba Kickstart requires PHP 5.3.04+, 5.4, 5.5, 5.6, 7.0, 7.1, 7.2, 7.3 and 7.4. It won't run on hosts running PHP 5.3.03 (usually written as 5.3.3) or earlier, including PHP 5.2, 5.1, 5.0 and all 4.x versions.
+    Akeeba Kickstart requires PHP 5.6, 7.0, 7.1, 7.2, 7.3 or 7.4. It won't run on hosts running PHP versions 5.5, 5.4, 5.3, 5.2, 5.1, 5.0 or any 4.x versions.
+</p>
+<p>
+    Please note that we <strong>do not</strong> test Kickstart on End of Life versions of PHP. For a
+    definition of End of Life (EOL) and a list of EOL PHP versions please consult the official PHP site at
+    php.net/eol.php.
 </p>
