@@ -83,7 +83,7 @@ function echoPage()
 
 				<div class="helpme">
 					<span>NEEDSOMEHELPKS</span> <a
-						href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/using-kickstart.html"
+						href="https://www.akeeba.com/documentation/akeeba-kickstart-documentation/using-kickstart.html"
 						target="_blank">QUICKSTART</a>
 				</div>
 
@@ -109,7 +109,7 @@ function echoPage()
 						<?php echo $filelist; ?>
 					</select>
 				<?php else: ?>
-					<a href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/ksnoarchives.html"
+					<a href="https://www.akeeba.com/documentation/akeeba-kickstart-documentation/ksnoarchives.html"
 					   target="_blank">NOARCHIVESCLICKHERE</a>
 				<?php endif; ?>
 			</span>
@@ -175,7 +175,7 @@ function echoPage()
 							<label></label>
 							<span class="button" id="testFTP">BTN_TESTFTPCON</span>
 							<a id="notWorking" class="button"
-							   href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/kscantextract.html"
+							   href="https://www.akeeba.com/documentation/akeeba-kickstart-documentation/kscantextract.html"
 							   target="_blank">CANTGETITTOWORK</a>
 							<br/>
 						</div>
@@ -261,7 +261,7 @@ function echoPage()
 				<div id="gotoSite" class="button" style="display:none">BTN_SITEFE</div>
 				<div id="gotoAdministrator" class="button" style="display:none">BTN_SITEBE</div>
 				<div id="gotoPostRestorationRroubleshooting" style="display:none">
-					<a href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/post-restoration.html"
+					<a href="https://www.akeeba.com/documentation/akeeba-kickstart-documentation/post-restoration.html"
 					   target="_blank">POSTRESTORATIONTROUBLESHOOTING</a>
 				</div>
 			</div>
@@ -280,7 +280,7 @@ function echoPage()
 				<p id="errorMessage"></p>
 				<div id="gotoStart" class="button">BTN_GOTOSTART</div>
 				<div>
-					<a href="https://www.akeebabackup.com/documentation/akeeba-kickstart-documentation/kscantextract.html"
+					<a href="https://www.akeeba.com/documentation/akeeba-kickstart-documentation/kscantextract.html"
 					   target="_blank">CANTGETITTOWORK</a>
 				</div>
 			</div>
@@ -288,8 +288,8 @@ function echoPage()
 
 		<div id="footer">
 			<div class="copyright">Copyright &copy; 2008&ndash;<?php echo date('Y'); ?> <a
-					href="http://www.akeebabackup.com">Nicholas K.
-					Dionysopoulos / Akeeba Backup</a>. All legal rights reserved.<br/>
+					href="https://www.akeeba.com">Nicholas K.
+					Dionysopoulos / Akeeba Ltd</a>. All legal rights reserved.<br/>
 
 				This program is free software: you can redistribute it and/or modify it under the terms of
 				the <a href="http://www.gnu.org/gpl-3.html">GNU General

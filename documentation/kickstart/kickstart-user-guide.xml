@@ -21,7 +21,7 @@
       <personname><firstname>Nicholas</firstname><othername>K.</othername><surname>Dionysopoulos</surname></personname>
 
       <affiliation>
-        <orgname>AkeebaBackup.com</orgname>
+        <orgname>Akeeba Ltd</orgname>
       </affiliation>
     </author>
 
@@ -188,7 +188,7 @@
       <title>Getting Kickstart</title>
 
       <para>Kickstart can be downloaded from our site, <uri
-      xlink:href="http://www.akeebabackup.com">https://www.akeebabackup.com/download</uri>.
+      xlink:href="https://www.akeeba.com/download">https://www.akeeba.com/download</uri>.
       The ZIP package you download is named
       <filename>kickstart-<replaceable>VERSION</replaceable>-core.zip</filename>
       or
@@ -260,7 +260,7 @@
 
       <para>The first step is to download the latest release of Kickstart. It
       can be always retrieved by visiting <link
-      xlink:href="https://www.akeebabackup.com/download.html">https://www.akeebabackup.com/download.html</link>.
+      xlink:href="https://www.akeeba.com/download.html">https://www.akeeba.com/download.html</link>.
       It comes as a ZIP package. <emphasis>Do not</emphasis> try to install it
       in Joomla!, WordPress, Drupal etc. Instead you'll have to unzip it
       first. The extracted files are <filename>kickstart.php</filename> and a
@@ -1894,7 +1894,7 @@
         manually extract the archive locally (e.g. using Akeeba eXtract
         Wizard) and upload the files manually. In this case, please consult
         the <link
-        xlink:href="https://www.akeebabackup.com/documentation/quick-start-guide.html">Quick
+        xlink:href="https://www.akeeba.com/documentation/quick-start-guide.html">Quick
         Start Guide</link> for further instructions.</para>
 
         <warning>
