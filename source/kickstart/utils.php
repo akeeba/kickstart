@@ -314,10 +314,14 @@ class AKKickstartUtils
 		$htaccess = str_replace("\r", "\n", $htaccess);
 
 		// Return only non-comment, non-empty lines
-		return implode("\n", array_filter(explode("\n", $htaccess), function ($line) {
+		$isNonEmptyNonComment = function ($line) {
 			$line = trim($line);
 
 			return !empty($line) && (substr($line, 0, 1) !== '#');
-		}));
+		};
+
+		$lines = array_map('trim', explode("\n", $htaccess));
+
+		return implode("\n", array_filter($lines, $isNonEmptyNonComment));
 	}
 }
