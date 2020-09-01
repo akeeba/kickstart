@@ -1,26 +1,38 @@
 <h3>Release highlights</h3>
 <p>
-    <strong>Informative error message when your PHP version is too old for this version of Kickstart</strong>.
-    Previously you would get a straight up failure. Please note that this will still NOT work when yor PHP
-    version is older than 5.3.0 due to the way PHP works under the hood.
+    <strong>Update URLs to point to akeeba.com instead of akeebabackup.com</strong>.
+    This updates Kickstart following our site's domain name change in June 2020.
 </p>
 <p>
-    <strong>Print a warning when your PHP version is End of Life</strong>.
-    We've found that the primary reason the majority of users are on an end of life PHP version (which no
-    longer receives security updates) is ignorance of the fact that it's end of life. We think it's our duty
-    and responsibility as developers to notify users so they have a chance to upgrade to a modern, secure
-    PHP version.
+    <strong>The PHP version warning can now handle "too new" versions</strong>.
+    Before this change any version of PHP not known to Kickstart would be reported as "out of date", even if it was
+    newer than the maximum version known to it. Now you will be properly notified that it's newer than what is supported
+    by your installed version of Kickstart.
 </p>
 <p>
-    <strong>Changed the documentation URLs following documentation refactoring on our site.</strong>.
+    <strong>Improved the custom PHP detection code during restoration</strong>. Starting with Kickstart 7.0.1 and Akeeba
+    Backup / Akeeba Solo 7.2.0 we are detecting when you are applying a custom (non-default) PHP version through a
+    .htaccess file at the beginning of a restoration and carry it over throughout the restoration. This code had a few
+    issues, e.g. when the AddHandler/SetHandler code in the .htaccess had leading spaces. This could cause the
+    restoration to fail if your host's default PHP version is too old (5.5 or earlier) and you absolutely need the
+    .htaccess code to apply a newer PHP version. This has now been resolved and tested on a number of local and live
+    server setups.
 </p>
+
 
 <h3>PHP 5.6 or later is required</h3>
 <p>
-    Akeeba Kickstart requires PHP 5.6, 7.0, 7.1, 7.2, 7.3 or 7.4. It won't run on hosts running PHP versions 5.5, 5.4, 5.3, 5.2, 5.1, 5.0 or any 4.x versions.
+    Akeeba Kickstart requires PHP 5.6, 7.0, 7.1, 7.2, 7.3 or 7.4.
+    It won't run on hosts running PHP versions 5.5, 5.4, 5.3, 5.2, 5.1, 5.0 or any 4.x versions.
 </p>
 <p>
-    Please note that we <strong>do not</strong> test Kickstart on End of Life versions of PHP. For a
+    At the time of this writing we have only done some preliminary PHP 8 compatibility testing and found no issue.
+    However, at the time of this writing PHP 8 is still in alpha. Should PHP 8 stable bring additional changes which
+    require changes in our code we expect to be able to do so 2-4 weeks after PHP 8's scheduled stable release on
+    November 26th.
+</p>
+<p>
+    Please note that we <strong>do not</strong> test Kickstart on End of Life versions of PHP anymore. For a
     definition of End of Life (EOL) and a list of EOL PHP versions please consult the official PHP site at
     php.net/eol.php.
 </p>

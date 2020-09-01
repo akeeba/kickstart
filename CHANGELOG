@@ -1,9 +1,14 @@
+Kickstart 7.0.2
+================================================================================
+~ Update URLs to point to akeeba.com instead of akeebabackup.com
+~ The PHP version warning can now handle "too new" versions
+# [HIGH] Inheriting AddHandler/SetHandler fails when the line has leading whitespace (gh-20)
+
 Kickstart 7.0.1
 ================================================================================
 + Informative error message when your PHP version is too old for this version of Kickstart
 + Print a warning when your PHP version is End of Life
 ~ Changed the documentation URLs following documentation refactoring on our site.
-# [HIGH] Inheriting AddHandler/SetHandler fails when the line has leading whitespace (gh-20)
 
 Kickstart 7.0.0
 ================================================================================
