@@ -71,6 +71,7 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 		if ($this->currentPartNumber >= 0)
 		{
 			$this->fp = @fopen($this->archiveList[$this->currentPartNumber], 'rb');
+
 			if ((is_resource($this->fp)) && ($this->currentPartOffset > 0))
 			{
 				@fseek($this->fp, $this->currentPartOffset);
@@ -423,11 +424,16 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 		}
 
 		$error = $this->getError();
+
 		if (!$status && ($this->runState == AK_STATE_NOFILE) && empty($error))
 		{
 			debugMsg(__CLASS__ . '::_run() - Just finished');
 			// We just finished
 			$this->setState('postrun');
+
+			// Reset internal state, prevents __wakeup from trying to open a non-existent file
+			$this->currentPartNumber = -1;
+			$this->archiveList = [];
 		}
 		elseif (!empty($error))
 		{

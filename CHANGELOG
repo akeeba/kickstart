@@ -1,3 +1,7 @@
+Kickstart 7.0.3
+================================================================================
+# [LOW] PHP 8: error shown at the end of the extraction due to missing finalization of the unarchiver
+
 Kickstart 7.0.2
 ================================================================================
 ~ Update URLs to point to akeeba.com instead of akeebabackup.com
