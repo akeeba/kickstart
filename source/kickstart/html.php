@@ -60,7 +60,7 @@ function echoPage()
 		<div id="header">
 			<div class="title">
 				<span id="logo" alt="Akeeba Kickstart logo"></span>
-				Akeeba Kickstart <?php echo $edition ?> ##VERSION##
+				Akeeba Kickstart <?php echo $edition ?> <?php echo defined('VERSION') ? VERSION : '##VERSION##' ?>
 			</div>
 		</div>
 

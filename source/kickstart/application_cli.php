@@ -235,8 +235,9 @@ function kickstart_application_cli()
 
 	if (!$silent)
 	{
+		$version = defined('VERSION') ? VERSION : '##VERSION##';
 		echo <<< BANNER
-Akeeba Kickstart CLI ##VERSION##
+Akeeba Kickstart CLI $version
 Copyright (c) 2008-$year Akeeba Ltd / Nicholas K. Dionysopoulos
 -------------------------------------------------------------------------------
 Akeeba Kickstart is Free Software, distributed under the terms of the GNU General

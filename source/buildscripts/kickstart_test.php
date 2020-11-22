@@ -8,9 +8,9 @@
  * @license   GNU General Public License version 3, or later
  */
 
-define('KSROOTDIR', __DIR__);
-define('KSLANGDIR', __DIR__ . '/kslang');
-define('MINIBUILD', __DIR__ . '/minibuild');
+define('KSROOTDIR', getcwd());
+define('KSLANGDIR', KSROOTDIR . '/kslang');
+define('MINIBUILD', KSROOTDIR . '/minibuild');
 define('KSSELFNAME', 'kickstart_test.php');
 define('KSDEBUG', 1);
 define('VERSION', '0.0.0-dev');
