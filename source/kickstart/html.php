@@ -279,6 +279,7 @@ function echoPage()
 				<h3>ERROR_OCCURED</h3>
 				<p id="errorMessage"></p>
 				<div id="gotoStart" class="button">BTN_GOTOSTART</div>
+				<div id="retry" class="button bluebutton">BTN_RETRY</div>
 				<div>
 					<a href="https://www.akeeba.com/documentation/akeeba-kickstart-documentation/kscantextract.html"
 					   target="_blank">CANTGETITTOWORK</a>

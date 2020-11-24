@@ -85,6 +85,7 @@ class AKText extends AKAbstractObject
 		'BTN_TESTFTPCON'                  => 'Test FTP connection',
 		'BTN_TESTSFTPCON'                 => 'Test SFTP connection',
 		'BTN_GOTOSTART'                   => 'Start over',
+		'BTN_RETRY'                       => 'Retry',
 		'FINE_TUNE'                       => 'Fine tune',
 		'MIN_EXEC_TIME'                   => 'Minimum execution time:',
 		'MAX_EXEC_TIME'                   => 'Maximum execution time:',
