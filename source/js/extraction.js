@@ -87,10 +87,13 @@ function onStartExtraction()
  */
 function runNextExtractionStep()
 {
-	akeeba.System.doAjax(akeeba_next_step_post, function (ret)
-	{
-		processRestorationStep(ret);
-	});
+	akeeba.System.doAjax(akeeba_next_step_post,
+		function (ret){
+			processRestorationStep(ret);
+		},
+		function (){
+			errorHandler("An unexpected error occurred");
+		});
 }
 
 /**
