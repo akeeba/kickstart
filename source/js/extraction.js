@@ -18,6 +18,13 @@ function errorHandler(msg)
 	document.getElementById("error").style.display    = "block";
 }
 
+function onRetryClick(){
+	document.getElementById("errorMessage").innerHTML = "";
+	document.getElementById("error").style.display    = "none";
+
+	setTimeout(runNextExtractionStep, 10);
+}
+
 /**
  * Initialize the archive extraction
  */

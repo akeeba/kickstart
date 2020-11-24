@@ -53,6 +53,7 @@ akeeba.System.documentReady(function () {
 	akeeba.System.addEventListener(document.getElementById("runCleanup"), "click", onRunCleanupClick);
 	akeeba.System.addEventListener(document.getElementById("runInstaller"), "click", onRunInstallerClick);
 	akeeba.System.addEventListener(document.getElementById("gotoStart"), "click", onGotoStartClick);
+	akeeba.System.addEventListener(document.getElementById("retry"), "click", onRetryClick);
 
 	akeeba.System.addEventListener(document.getElementById("gotoSite"), "click", function (event)
 	{
