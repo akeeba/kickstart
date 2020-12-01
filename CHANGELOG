@@ -1,5 +1,6 @@
 Kickstart 7.0.3
 ================================================================================
++ You can now try to resume the extraction on error
 # [LOW] PHP 8: error shown at the end of the extraction due to missing finalization of the unarchiver
 
 Kickstart 7.0.2
