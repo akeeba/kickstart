@@ -68,7 +68,7 @@ function echoPage()
 			<?php
 			akeeba_common_phpversion_warning(array(
 				'minPHPVersion'          => defined('KICKSTART_MIN_PHP') ? KICKSTART_MIN_PHP : "5.6.0",
-				'recommendedPHPVersion'  => defined('KICKSTART_RECOMMENDED_PHP') ? KICKSTART_RECOMMENDED_PHP : '7.3',
+				'recommendedPHPVersion'  => defined('KICKSTART_RECOMMENDED_PHP') ? KICKSTART_RECOMMENDED_PHP : '7.4',
 				'softwareName'           => "Akeeba Kickstart",
 				'class_priority_high'    => 'error',
 				'class_priority_medium'  => 'warning',

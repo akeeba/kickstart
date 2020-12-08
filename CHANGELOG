@@ -1,6 +1,7 @@
 Kickstart 7.0.3
 ================================================================================
 + You can now try to resume the extraction on error
+~ Add PHP 8.0 in the list of known PHP versions, recommend PHP 7.4 or later
 # [LOW] PHP 8: error shown at the end of the extraction due to missing finalization of the unarchiver
 
 Kickstart 7.0.2
