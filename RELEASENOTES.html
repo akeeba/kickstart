@@ -1,38 +1,26 @@
 <h3>Release highlights</h3>
 <p>
-    <strong>Update URLs to point to akeeba.com instead of akeebabackup.com</strong>.
-    This updates Kickstart following our site's domain name change in June 2020.
+    <strong>You can now try to resume the extraction on error</strong>.
+    In many cases the extraction may fail because of a temporary network or server issue such as losing your Internet connection, the device going to sleep while the extraction is in progress or the server applying a request rate limit. In all of those cases it's now possible to resume the extraction by clicking a button instead of letting it be considered fail. This will save you a lot of frustration when working with fairly large backup on slow and / or resource limited servers.
 </p>
 <p>
-    <strong>The PHP version warning can now handle "too new" versions</strong>.
-    Before this change any version of PHP not known to Kickstart would be reported as "out of date", even if it was
-    newer than the maximum version known to it. Now you will be properly notified that it's newer than what is supported
-    by your installed version of Kickstart.
+    <strong>PHP 8.0 support</strong>.
+    PHP 8.0 was released in the end of November. We now full support it in Kickstart, having addressed the remaining small issues with this newer PHP version.
 </p>
-<p>
-    <strong>Improved the custom PHP detection code during restoration</strong>. Starting with Kickstart 7.0.1 and Akeeba
-    Backup / Akeeba Solo 7.2.0 we are detecting when you are applying a custom (non-default) PHP version through a
-    .htaccess file at the beginning of a restoration and carry it over throughout the restoration. This code had a few
-    issues, e.g. when the AddHandler/SetHandler code in the .htaccess had leading spaces. This could cause the
-    restoration to fail if your host's default PHP version is too old (5.5 or earlier) and you absolutely need the
-    .htaccess code to apply a newer PHP version. This has now been resolved and tested on a number of local and live
-    server setups.
-</p>
-
 
 <h3>PHP 5.6 or later is required</h3>
 <p>
-    Akeeba Kickstart requires PHP 5.6, 7.0, 7.1, 7.2, 7.3 or 7.4.
-    It won't run on hosts running PHP versions 5.5, 5.4, 5.3, 5.2, 5.1, 5.0 or any 4.x versions.
+    We only officially support using our software with PHP 5.6, 7.0, 7.1, 7.2, 7.3, 7.4 or 8.0.
 </p>
 <p>
-    At the time of this writing we have only done some preliminary PHP 8 compatibility testing and found no issue.
-    However, at the time of this writing PHP 8 is still in alpha. Should PHP 8 stable bring additional changes which
-    require changes in our code we expect to be able to do so 2-4 weeks after PHP 8's scheduled stable release on
-    November 26th.
+    While our software still runs on PHP 5.6, 7.0, 7.1 and 7.2, these versions of PHP are declared End of Life by the PHP project and no longer receive any security updates. We are no longer testing our software with these PHP versions and we strongly advise you to not use them on production sites.
 </p>
 <p>
-    Please note that we <strong>do not</strong> test Kickstart on End of Life versions of PHP anymore. For a
-    definition of End of Life (EOL) and a list of EOL PHP versions please consult the official PHP site at
-    php.net/eol.php.
+    We strongly advise you to run either of the two latest available version branches of PHP on a branch currently maintained by the PHP project for security and performance reasons. Older versions of PHP have known major security issues which are being actively exploited to hack sites and they have stopped receiving security updates, leaving you exposed to these issues. Moreover, they are slower, therefore consuming more server resources to perform the same tasks.
+</p>
+<p>
+    Finally, please bear in mind that earlier PHP versions including but not limited to all PHP 4.x and all 5.0 to 5.5 versions inclusive are no longer supported. Our software no longer works on these old, unsupported versions of PHP. All of these versions of PHP have been end of life for several years. We <em>VERY STRONGLY</em> recommend upgrading to a version of PHP that's currently supported by the PHP project.
+</p>
+<p>
+    Our policy with regards to PHP version support is to officially support the PHP versions that the PHP project itself considers a <a href="https://www.php.net/supported-versions">Currently Supported version</a>, i.e. all versions of PHP in the Active Support and Security Support phase. We will show you a warning when we detect a PHP version that has entered Security Support so you have the chance to plan and implement a PHP version update. After a PHP versions becomes <a href="https://www.php.net/eol.php">End of Life (EOL)</a> we will only support it for a further 6 to 9 months. If we detect such a version we will show you a message so you can urgently plan and implement a PHP version update. After 6 to 9 months after a PHP version becomes EOL we may stop providing support for it without any prior notice. We also track the development of new versions of PHP. New versions of PHP will be unofficially supported sometime during their Release Candidate phase and fully supported about 4 to 8 weeks after the first stable version of that branch is officially released by the PHP project. Your site's participation in the opt-out usage statistics helps us collect anonymous information about the use of PHP versions on your sites and decide when to withdraw support for EOL versions of PHP.
 </p>
