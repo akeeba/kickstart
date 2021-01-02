@@ -4,7 +4,7 @@
   ~ An AJAX-powered archive extraction tool
   ~
   ~ @package   kickstart
-  ~ @copyright Copyright (c)2008-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @copyright Copyright (c)2008-2021 Nicholas K. Dionysopoulos / Akeeba Ltd
   ~ @license   GNU General Public License version 3, or later
   -->
 <book version="5.0" xmlns="http://docbook.org/ns/docbook"
@@ -25,10 +25,10 @@
       </affiliation>
     </author>
 
-    <pubdate>October 2017</pubdate>
+    <pubdate>January 2021</pubdate>
 
     <copyright>
-      <year>2008-2019</year>
+      <year>2008-2021</year>
 
       <holder>Akeeba Ltd</holder>
     </copyright>

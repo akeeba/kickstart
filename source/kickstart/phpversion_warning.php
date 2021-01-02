@@ -1,8 +1,10 @@
 <?php
 /**
- * Old PHP version notification
+ * Akeeba Kickstart
+ * An AJAX-powered archive extraction tool
  *
- * @copyright Copyright (c) 2018-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @package   kickstart
+ * @copyright Copyright (c)2008-2021 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
