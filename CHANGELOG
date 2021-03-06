@@ -1,3 +1,7 @@
+Kickstart 7.0.4
+================================================================================
+# [MEDIUM] Backup archive file(s) not deleted on Clean Up (gh-21)
+
 Kickstart 7.0.3
 ================================================================================
 + You can now try to resume the extraction on error

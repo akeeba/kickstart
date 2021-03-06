@@ -433,7 +433,6 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 
 			// Reset internal state, prevents __wakeup from trying to open a non-existent file
 			$this->currentPartNumber = -1;
-			$this->archiveList = [];
 		}
 		elseif (!empty($error))
 		{
