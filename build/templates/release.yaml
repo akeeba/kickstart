@@ -55,9 +55,9 @@ files:
   -
     title: 'Akeeba Kickstart Professional'
     connection: sftp
-    directory: '%%SFTP.DIR%%/files/normal/admintools'
+    directory: '%%SFTP.DIR%%/files/normal/kickstart'
     source: '%%RELEASEDIR%%/kickstart-pro-*.zip'
-    access: 8
+    access: 19
   -
     title: 'Documentation (PDF)'
     connection: s3
