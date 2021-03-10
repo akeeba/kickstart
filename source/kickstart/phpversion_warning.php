@@ -159,7 +159,7 @@ if (!function_exists('akeeba_common_phpversion_warning'))
 					Your site is currently using PHP <?php echo $longVersion ?>. This version of PHP has become <a href="https://php.net/eol.php" target="_blank">End-of-Life since <?php echo $eolDateFormatted ?></a>. It has not received security updates for a <em>very long time</em>. You MUST NOT use it for a live site!
 				</p>
 				<p>
-					<?php echo $softwareName ?> will stop supporting your version of PHP very soon. You must <strong>very urgently</strong> upgrade to a newer version of PHP. You can check <a href="https://www.akeeba.com/compatiblity.html">our Compatibility page</a> to see which versions of PHP are supported by each version of our software, select the newest one that fits your site's needs and upgrade your site to it. You can ask your host or your system administrator for instructions on upgrading PHP. It's easy and it will make your site faster and more secure.
+					<?php echo $softwareName ?> will stop supporting your version of PHP very soon. You must <strong>very urgently</strong> upgrade to a newer version of PHP. You can check <a href="https://www.akeeba.com/compatibility.html">our Compatibility page</a> to see which versions of PHP are supported by each version of our software, select the newest one that fits your site's needs and upgrade your site to it. You can ask your host or your system administrator for instructions on upgrading PHP. It's easy and it will make your site faster and more secure.
 				</p>
 			</div>
 		<?php
