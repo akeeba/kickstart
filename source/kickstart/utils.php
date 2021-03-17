@@ -29,6 +29,7 @@ class AKKickstartUtils
 			$basePath . '/kicktemp',
 			// Akeeba Backup for Joomla!, default output directory
 			$basePathSlash . 'administrator/components/com_akeeba/backup',
+			$basePathSlash . 'administrator/components/com_akeebabackup/backup',
 			// Akeeba Solo, default output directory
 			$basePathSlash . 'backups',
 			// Akeeba Backup for WordPress, default output directory

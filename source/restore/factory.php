@@ -147,6 +147,7 @@ class AKFactory
 				$moreSkippedFiles     = array(
 					// Akeeba Backup for Joomla!
 					'administrator/components/com_akeeba/restoration.php',
+					'administrator/components/com_akeebabackup/restoration.php',
 					// Joomla! Update
 					'administrator/components/com_joomlaupdate/restoration.php',
 					// Akeeba Backup for WordPress
