@@ -456,7 +456,10 @@ class AKPostprocHybrid extends AKAbstractPostproc
 	{
 		if ($this->useFTP)
 		{
-			@ftp_close($this->handle);
+			if (!is_null($this->handle) && is_resource($this->handle))
+			{
+				@ftp_close($this->handle);
+			}
 		}
 	}
 
