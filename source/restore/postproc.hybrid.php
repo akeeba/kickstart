@@ -454,7 +454,7 @@ class AKPostprocHybrid extends AKAbstractPostproc
 
 	public function __destruct()
 	{
-		if (!$this->useFTP)
+		if ($this->useFTP)
 		{
 			@ftp_close($this->handle);
 		}
