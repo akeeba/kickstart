@@ -444,7 +444,7 @@ class AKPostprocHybrid extends AKAbstractPostproc
 	/**
 	 * Called after unserialisation, tries to reconnect to FTP
 	 */
-	function __wakeup()
+	public function __wakeup()
 	{
 		if ($this->useFTP)
 		{
@@ -452,7 +452,7 @@ class AKPostprocHybrid extends AKAbstractPostproc
 		}
 	}
 
-	function __destruct()
+	public function __destruct()
 	{
 		if (!$this->useFTP)
 		{
