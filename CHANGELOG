@@ -1,3 +1,7 @@
+Kickstart 7.0.5
+================================================================================
+# [LOW] Fixed fatal error on extraction completed under certain circumstances (gh-22)
+
 Kickstart 7.0.4
 ================================================================================
 # [MEDIUM] Backup archive file(s) not deleted on Clean Up (gh-21)
