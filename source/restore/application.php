@@ -309,3 +309,117 @@ function recursive_remove_directory($directory)
 		return true;
 	}
 }
+
+function createStealthURL()
+{
+	$filename = AKFactory::get('kickstart.stealth.url', '');
+
+	// We need an HTML file!
+	if (empty($filename))
+	{
+		return;
+	}
+
+	// Make sure it ends in .html or .htm
+	$filename = basename($filename);
+
+	if ((strtolower(substr($filename, -5)) != '.html') && (strtolower(substr($filename, -4)) != '.htm'))
+	{
+		return;
+	}
+
+	$filename_quoted = str_replace('.', '\\.', $filename);
+	$rewrite_base    = trim(dirname(AKFactory::get('kickstart.stealth.url', '')), '/');
+
+	// Get the IP
+	$userIP = $_SERVER['REMOTE_ADDR'];
+	$userIP = str_replace('.', '\.', $userIP);
+
+	// Get the .htaccess contents
+	$stealthHtaccess = <<<ENDHTACCESS
+RewriteEngine On
+RewriteBase /$rewrite_base
+RewriteCond %{REMOTE_ADDR}		!$userIP
+RewriteCond %{REQUEST_URI}		!$filename_quoted
+RewriteCond %{REQUEST_URI}		!(\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.swf|\.css|\.js)$
+RewriteRule (.*)				$filename	[R=307,L]
+
+ENDHTACCESS;
+
+	$customHandlers = portPhpHandlers();
+
+	// Port any custom handlers in the stealth file
+	if ($customHandlers)
+	{
+		$stealthHtaccess .= "\n".$customHandlers."\n";
+	}
+
+	// Write the new .htaccess, removing the old one first
+	$postproc = AKFactory::getpostProc();
+	$postproc->unlink('.htaccess');
+	$tempfile = $postproc->processFilename('.htaccess');
+	@file_put_contents($tempfile, $stealthHtaccess);
+	$postproc->process();
+}
+
+/**
+ * Checks if there is an .htaccess file and has any AddHandler directive in it.
+ * In that case, we return the affected lines so they could be stored for later use
+ *
+ * @return  array
+ */
+function getPhpHandlers()
+{
+	$root       = AKKickstartUtils::getPath();
+	$htaccess   = $root.'/.htaccess';
+	$directives = array();
+
+	if (!file_exists($htaccess))
+	{
+		return $directives;
+	}
+
+	$contents   = file_get_contents($htaccess);
+	$directives = AKKickstartUtils::extractHandler($contents);
+	$directives = explode("\n", $directives);
+
+	return $directives;
+}
+
+/**
+ * Fetches any stored php handler directive stored inside the factory and creates a string with the correct markers
+ *
+ * @return string
+ */
+function portPhpHandlers()
+{
+	$phpHandlers = AKFactory::get('kickstart.setup.phphandlers', array());
+
+	if (!$phpHandlers)
+	{
+		return '';
+	}
+
+	$customHandler  = "### AKEEBA_KICKSTART_PHP_HANDLER_BEGIN ###\n";
+	$customHandler .= implode("\n", $phpHandlers)."\n";
+	$customHandler .= "### AKEEBA_KICKSTART_PHP_HANDLER_END ###\n";
+
+	return $customHandler;
+}
+
+function writePhpHandlers()
+{
+	$contents = portPhpHandlers();
+
+	if (!$contents)
+	{
+		return;
+	}
+
+	// Write the new .htaccess, removing the old one first
+	$postproc = AKFactory::getpostProc();
+	$postproc->unlink('.htaccess');
+	$tempfile = $postproc->processFilename('.htaccess');
+	@file_put_contents($tempfile, $contents);
+	$postproc->process();
+}
