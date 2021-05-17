@@ -380,7 +380,7 @@ function getPhpHandlers()
 	}
 
 	$contents   = file_get_contents($htaccess);
-	$directives = AKKickstartUtils::extractHandler($contents);
+	$directives = AKUtilsHtaccess::extractHandler($contents);
 	$directives = explode("\n", $directives);
 
 	return $directives;
