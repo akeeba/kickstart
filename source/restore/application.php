@@ -78,6 +78,24 @@ if (!defined('KICKSTART'))
 			 */
 			case 'startRestore':
 			case 'stepRestore':
+				if ($task == 'startRestore')
+				{
+					// Before starting, read and save any custom AddHandler directive
+					$phpHandlers = getPhpHandlers();
+					AKFactory::set('kickstart.setup.phphandlers', $phpHandlers);
+
+					// If the Stealth Mode is enabled, create the .htaccess file
+					if (AKFactory::get('kickstart.stealth.enable', false))
+					{
+						createStealthURL();
+					}
+					// No stealth mode, but we have custom handler directives, must write our own file
+					elseif ($phpHandlers)
+					{
+						writePhpHandlers();
+					}
+				}
+
 				/**
 				 * First try to run the filesystem zapper (remove all existing files and folders). If the Zapper is
 				 * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
