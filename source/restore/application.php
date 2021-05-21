@@ -80,19 +80,22 @@ if (!defined('KICKSTART'))
 			case 'stepRestore':
 				if ($task == 'startRestore')
 				{
+					// Fetch path to the site root from the restoration.php file, so we can tell the engine where it should operate
+					$siteRoot = AKFactory::get('kickstart.setup.destdir', '');
+
 					// Before starting, read and save any custom AddHandler directive
-					$phpHandlers = getPhpHandlers();
+					$phpHandlers = getPhpHandlers($siteRoot);
 					AKFactory::set('kickstart.setup.phphandlers', $phpHandlers);
 
 					// If the Stealth Mode is enabled, create the .htaccess file
 					if (AKFactory::get('kickstart.stealth.enable', false))
 					{
-						createStealthURL();
+						createStealthURL($siteRoot);
 					}
 					// No stealth mode, but we have custom handler directives, must write our own file
 					elseif ($phpHandlers)
 					{
-						writePhpHandlers();
+						writePhpHandlers($siteRoot);
 					}
 				}
 
@@ -328,7 +331,7 @@ function recursive_remove_directory($directory)
 	}
 }
 
-function createStealthURL()
+function createStealthURL($siteRoot = '')
 {
 	$filename = AKFactory::get('kickstart.stealth.url', '');
 
@@ -344,6 +347,11 @@ function createStealthURL()
 	if ((strtolower(substr($filename, -5)) != '.html') && (strtolower(substr($filename, -4)) != '.htm'))
 	{
 		return;
+	}
+
+	if ($siteRoot)
+	{
+		$siteRoot = rtrim($siteRoot, '/').'/';
 	}
 
 	$filename_quoted = str_replace('.', '\\.', $filename);
@@ -374,8 +382,8 @@ ENDHTACCESS;
 
 	// Write the new .htaccess, removing the old one first
 	$postproc = AKFactory::getpostProc();
-	$postproc->unlink('.htaccess');
-	$tempfile = $postproc->processFilename('.htaccess');
+	$postproc->unlink($siteRoot.'.htaccess');
+	$tempfile = $postproc->processFilename($siteRoot.'.htaccess');
 	@file_put_contents($tempfile, $stealthHtaccess);
 	$postproc->process();
 }
@@ -386,9 +394,13 @@ ENDHTACCESS;
  *
  * @return  array
  */
-function getPhpHandlers()
+function getPhpHandlers($root = null)
 {
-	$root       = AKKickstartUtils::getPath();
+	if (!$root)
+	{
+		$root = AKKickstartUtils::getPath();
+	}
+
 	$htaccess   = $root.'/.htaccess';
 	$directives = array();
 
@@ -425,7 +437,7 @@ function portPhpHandlers()
 	return $customHandler;
 }
 
-function writePhpHandlers()
+function writePhpHandlers($siteRoot = '')
 {
 	$contents = portPhpHandlers();
 
@@ -434,10 +446,15 @@ function writePhpHandlers()
 		return;
 	}
 
+	if ($siteRoot)
+	{
+		$siteRoot = rtrim($siteRoot, '/').'/';
+	}
+
 	// Write the new .htaccess, removing the old one first
 	$postproc = AKFactory::getpostProc();
-	$postproc->unlink('.htaccess');
-	$tempfile = $postproc->processFilename('.htaccess');
+	$postproc->unlink($siteRoot.'.htaccess');
+	$tempfile = $postproc->processFilename($siteRoot.'.htaccess');
 	@file_put_contents($tempfile, $contents);
 	$postproc->process();
 }
