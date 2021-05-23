@@ -1,3 +1,8 @@
+Kickstart 7.0.6
+================================================================================
+~ Improvements for the integrated restoration in our backup software
++ Default stealth mode HTML file is now ANGIE's built-in offline.html file
+
 Kickstart 7.0.5
 ================================================================================
 # [LOW] Fixed fatal error on extraction completed under certain circumstances (gh-22)

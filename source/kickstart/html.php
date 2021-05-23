@@ -200,7 +200,7 @@ function echoPage()
 						<label for="kickstart.stealth.enable">STEALTH_MODE</label>
 						<span class="field"><input type="checkbox" id="kickstart.stealth.enable"/></span><br/>
 						<label for="kickstart.stealth.url">STEALTH_URL</label>
-						<span class="field"><input type="text" id="kickstart.stealth.url" value=""/></span><br/>
+						<span class="field"><input type="text" id="kickstart.stealth.url" value="installation/offline.html"/></span><br/>
                         <div class="help">STEALTH_MODE_HELP</div>
 
                         <?php if (defined('KICKSTARTPRO') && KICKSTARTPRO): ?>
