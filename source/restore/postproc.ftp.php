@@ -38,6 +38,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 		$this->passive = AKFactory::get('kickstart.ftp.passive', true);
 		$this->host    = AKFactory::get('kickstart.ftp.host', '');
 		$this->port    = AKFactory::get('kickstart.ftp.port', 21);
+
 		if (trim($this->port) == '')
 		{
 			$this->port = 21;
@@ -73,10 +74,12 @@ class AKPostprocFTP extends AKAbstractPostproc
 				}
 				$absoluteDirToHere = $tempDir;
 				$tempDir           = rtrim(str_replace('\\', '/', $tempDir), '/');
+
 				if (!empty($tempDir))
 				{
 					$tempDir .= '/';
 				}
+
 				$this->tempDir = $tempDir;
 				// Is this directory writable?
 				$writable = $this->isDirWritable($tempDir);
@@ -98,6 +101,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 			{
 				// Let's see if the user has specified one
 				$userdir = AKFactory::get('kickstart.ftp.tempdir', '');
+
 				if (!empty($userdir))
 				{
 					// Is it an absolute or a relative directory?
@@ -105,6 +109,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 					$absolute = $absolute || (substr($userdir, 0, 1) == '/');
 					$absolute = $absolute || (substr($userdir, 1, 1) == ':');
 					$absolute = $absolute || (substr($userdir, 2, 1) == ':');
+
 					if (!$absolute)
 					{
 						// Make absolute
@@ -123,6 +128,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 					}
 				}
 			}
+
 			$this->tempDir = $tempDir;
 
 			if (!$writable)
@@ -149,6 +155,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 		{
 			$this->handle = @ftp_connect($this->host, $this->port);
 		}
+
 		if ($this->handle === false)
 		{
 			$this->setError(AKText::_('WRONG_FTP_HOST'));
@@ -187,6 +194,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 		// Try to download ourselves
 		$testFilename = defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__);
 		$tempHandle   = fopen('php://temp', 'r+');
+
 		if (@ftp_fget($this->handle, $tempHandle, $testFilename, FTP_ASCII, 0) === false)
 		{
 			$this->setError(AKText::_('WRONG_FTP_PATH2'));
@@ -195,6 +203,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 
 			return false;
 		}
+
 		fclose($tempHandle);
 
 		return true;
@@ -203,6 +212,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 	private function isDirWritable($dir)
 	{
 		$fp = @fopen($dir . '/kickstart.dat', 'wb');
+
 		if ($fp === false)
 		{
 			return false;
@@ -220,6 +230,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 	{
 		// Strip absolute filesystem path to website's root
 		$removePath = AKFactory::get('kickstart.setup.destdir', '');
+
 		if (!empty($removePath))
 		{
 			// UNIXize the paths
@@ -230,17 +241,20 @@ class AKPostprocFTP extends AKAbstractPostproc
 			$dirName    = rtrim($dirName, '/\\') . '/';
 			// Process the path removal
 			$left = substr($dirName, 0, strlen($removePath));
+
 			if ($left == $removePath)
 			{
 				$dirName = substr($dirName, strlen($removePath));
 			}
 		}
+
 		if (empty($dirName))
 		{
 			$dirName = '';
 		} // 'cause the substr() above may return FALSE.
 
 		$check = '/' . trim($this->dir, '/') . '/' . trim($dirName, '/');
+
 		if ($this->is_dir($check))
 		{
 			return true;
@@ -248,9 +262,11 @@ class AKPostprocFTP extends AKAbstractPostproc
 
 		$alldirs     = explode('/', $dirName);
 		$previousDir = '/' . trim($this->dir);
+
 		foreach ($alldirs as $curdir)
 		{
 			$check = $previousDir . '/' . $curdir;
+
 			if (!$this->is_dir($check))
 			{
 				// Proactively try to delete a file by the same name
@@ -260,6 +276,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 				{
 					// If we couldn't create the directory, attempt to fix the permissions in the PHP level and retry!
 					$this->fixPermissions($removePath . $check);
+
 					if (@ftp_mkdir($this->handle, $check) === false)
 					{
 						// Can we fall back to pure PHP mode, sire?
@@ -280,8 +297,11 @@ class AKPostprocFTP extends AKAbstractPostproc
 						}
 					}
 				}
+
 				@ftp_chmod($this->handle, $perms, $check);
+
 			}
+
 			$previousDir = $check;
 		}
 
@@ -305,17 +325,21 @@ class AKPostprocFTP extends AKAbstractPostproc
 		$relPath  = str_replace('\\', '/', $path);
 		$basePath = rtrim(str_replace('\\', '/', KSROOTDIR), '/');
 		$basePath = rtrim($basePath, '/');
+
 		if (!empty($basePath))
 		{
 			$basePath .= '/';
 		}
+
 		// Remove the leading relative root
 		if (substr($relPath, 0, strlen($basePath)) == $basePath)
 		{
 			$relPath = substr($relPath, strlen($basePath));
 		}
+
 		$dirArray  = explode('/', $relPath);
 		$pathBuilt = rtrim($basePath, '/');
+
 		foreach ($dirArray as $dir)
 		{
 			if (empty($dir))
@@ -324,6 +348,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 			}
 			$oldPath = $pathBuilt;
 			$pathBuilt .= '/' . $dir;
+
 			if (is_dir($oldPath . $dir))
 			{
 				$trustMeIKnowWhatImDoing = 500 + 10 + 1; // working around overzealous scanners written by bozos
@@ -346,7 +371,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 		}
 	}
 
-	function __wakeup()
+	public function __wakeup()
 	{
 		$this->connect();
 	}
@@ -362,11 +387,13 @@ class AKPostprocFTP extends AKAbstractPostproc
 
 		$remotePath = dirname($this->filename);
 		$removePath = AKFactory::get('kickstart.setup.destdir', '');
+
 		if (!empty($removePath))
 		{
 			$removePath = ltrim($removePath, "/");
 			$remotePath = ltrim($remotePath, "/");
 			$left       = substr($remotePath, 0, strlen($removePath));
+
 			if ($left == $removePath)
 			{
 				$remotePath = substr($remotePath, strlen($removePath));
@@ -381,16 +408,20 @@ class AKPostprocFTP extends AKAbstractPostproc
 		$remoteName = $absoluteFTPPath . '/' . $onlyFilename;
 
 		$ret = @ftp_chdir($this->handle, $absoluteFTPPath);
+
 		if ($ret === false)
 		{
 			$ret = $this->createDirRecursive($absoluteFSPath, 0755);
+
 			if ($ret === false)
 			{
 				$this->setError(AKText::sprintf('FTP_COULDNT_UPLOAD', $this->filename));
 
 				return false;
 			}
+
 			$ret = @ftp_chdir($this->handle, $absoluteFTPPath);
+
 			if ($ret === false)
 			{
 				$this->setError(AKText::sprintf('FTP_COULDNT_UPLOAD', $this->filename));
@@ -400,6 +431,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 		}
 
 		$ret = @ftp_put($this->handle, $remoteName, $this->tempFilename, FTP_BINARY);
+
 		if ($ret === false)
 		{
 			// If we couldn't create the file, attempt to fix the permissions in the PHP level and retry!
@@ -407,6 +439,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 			$this->unlink($this->filename);
 
 			$fp = @fopen($this->tempFilename, 'rb');
+
 			if ($fp !== false)
 			{
 				$ret = @ftp_fput($this->handle, $remoteName, $fp, FTP_BINARY);
@@ -417,6 +450,7 @@ class AKPostprocFTP extends AKAbstractPostproc
 				$ret = false;
 			}
 		}
+
 		@unlink($this->tempFilename);
 
 		if ($ret === false)
@@ -425,7 +459,9 @@ class AKPostprocFTP extends AKAbstractPostproc
 
 			return false;
 		}
+
 		$restorePerms = AKFactory::get('kickstart.setup.restoreperms', false);
+
 		if ($restorePerms)
 		{
 			@ftp_chmod($this->_handle, $this->perms, $remoteName);
@@ -447,9 +483,11 @@ class AKPostprocFTP extends AKAbstractPostproc
 	public function unlink($file)
 	{
 		$removePath = AKFactory::get('kickstart.setup.destdir', '');
+
 		if (!empty($removePath))
 		{
 			$left = substr($file, 0, strlen($removePath));
+
 			if ($left == $removePath)
 			{
 				$file = substr($file, strlen($removePath));
@@ -481,9 +519,11 @@ class AKPostprocFTP extends AKAbstractPostproc
 
 		// Strip absolute filesystem path to website's root
 		$removePath = AKFactory::get('kickstart.setup.destdir', '');
+
 		if (!empty($removePath))
 		{
 			$left = substr($filename, 0, strlen($removePath));
+
 			if ($left == $removePath)
 			{
 				$filename = substr($filename, strlen($removePath));
@@ -519,9 +559,11 @@ class AKPostprocFTP extends AKAbstractPostproc
 	public function rmdir($directory)
 	{
 		$removePath = AKFactory::get('kickstart.setup.destdir', '');
+
 		if (!empty($removePath))
 		{
 			$left = substr($directory, 0, strlen($removePath));
+
 			if ($left == $removePath)
 			{
 				$directory = substr($directory, strlen($removePath));
@@ -539,27 +581,33 @@ class AKPostprocFTP extends AKAbstractPostproc
 		$originalTo   = $to;
 
 		$removePath = AKFactory::get('kickstart.setup.destdir', '');
+
 		if (!empty($removePath))
 		{
 			$left = substr($from, 0, strlen($removePath));
+
 			if ($left == $removePath)
 			{
 				$from = substr($from, strlen($removePath));
 			}
 		}
+
 		$from = '/' . trim($this->dir, '/') . '/' . trim($from, '/');
 
 		if (!empty($removePath))
 		{
 			$left = substr($to, 0, strlen($removePath));
+
 			if ($left == $removePath)
 			{
 				$to = substr($to, strlen($removePath));
 			}
 		}
+
 		$to = '/' . trim($this->dir, '/') . '/' . trim($to, '/');
 
 		$result = @ftp_rename($this->handle, $from, $to);
+
 		if ($result !== true)
 		{
 			return @rename($from, $to);

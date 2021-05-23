@@ -78,6 +78,27 @@ if (!defined('KICKSTART'))
 			 */
 			case 'startRestore':
 			case 'stepRestore':
+				if ($task == 'startRestore')
+				{
+					// Fetch path to the site root from the restoration.php file, so we can tell the engine where it should operate
+					$siteRoot = AKFactory::get('kickstart.setup.destdir', '');
+
+					// Before starting, read and save any custom AddHandler directive
+					$phpHandlers = getPhpHandlers($siteRoot);
+					AKFactory::set('kickstart.setup.phphandlers', $phpHandlers);
+
+					// If the Stealth Mode is enabled, create the .htaccess file
+					if (AKFactory::get('kickstart.stealth.enable', false))
+					{
+						createStealthURL($siteRoot);
+					}
+					// No stealth mode, but we have custom handler directives, must write our own file
+					elseif ($phpHandlers)
+					{
+						writePhpHandlers($siteRoot);
+					}
+				}
+
 				/**
 				 * First try to run the filesystem zapper (remove all existing files and folders). If the Zapper is
 				 * disabled or has already finished running we will get a FALSE result. Otherwise it's a status array
@@ -308,4 +329,132 @@ function recursive_remove_directory($directory)
 		// return success
 		return true;
 	}
+}
+
+function createStealthURL($siteRoot = '')
+{
+	$filename = AKFactory::get('kickstart.stealth.url', '');
+
+	// We need an HTML file!
+	if (empty($filename))
+	{
+		return;
+	}
+
+	// Make sure it ends in .html or .htm
+	$filename = basename($filename);
+
+	if ((strtolower(substr($filename, -5)) != '.html') && (strtolower(substr($filename, -4)) != '.htm'))
+	{
+		return;
+	}
+
+	if ($siteRoot)
+	{
+		$siteRoot = rtrim($siteRoot, '/').'/';
+	}
+
+	$filename_quoted = str_replace('.', '\\.', $filename);
+	$rewrite_base    = trim(dirname(AKFactory::get('kickstart.stealth.url', '')), '/');
+
+	// Get the IP
+	$userIP = $_SERVER['REMOTE_ADDR'];
+	$userIP = str_replace('.', '\.', $userIP);
+
+	// Get the .htaccess contents
+	$stealthHtaccess = <<<ENDHTACCESS
+RewriteEngine On
+RewriteBase /$rewrite_base
+RewriteCond %{REMOTE_ADDR}		!$userIP
+RewriteCond %{REQUEST_URI}		!$filename_quoted
+RewriteCond %{REQUEST_URI}		!(\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.swf|\.css|\.js)$
+RewriteRule (.*)				$filename	[R=307,L]
+
+ENDHTACCESS;
+
+	$customHandlers = portPhpHandlers();
+
+	// Port any custom handlers in the stealth file
+	if ($customHandlers)
+	{
+		$stealthHtaccess .= "\n".$customHandlers."\n";
+	}
+
+	// Write the new .htaccess, removing the old one first
+	$postproc = AKFactory::getpostProc();
+	$postproc->unlink($siteRoot.'.htaccess');
+	$tempfile = $postproc->processFilename($siteRoot.'.htaccess');
+	@file_put_contents($tempfile, $stealthHtaccess);
+	$postproc->process();
+}
+
+/**
+ * Checks if there is an .htaccess file and has any AddHandler directive in it.
+ * In that case, we return the affected lines so they could be stored for later use
+ *
+ * @return  array
+ */
+function getPhpHandlers($root = null)
+{
+	if (!$root)
+	{
+		$root = AKKickstartUtils::getPath();
+	}
+
+	$htaccess   = $root.'/.htaccess';
+	$directives = array();
+
+	if (!file_exists($htaccess))
+	{
+		return $directives;
+	}
+
+	$contents   = file_get_contents($htaccess);
+	$directives = AKUtilsHtaccess::extractHandler($contents);
+	$directives = explode("\n", $directives);
+
+	return $directives;
+}
+
+/**
+ * Fetches any stored php handler directive stored inside the factory and creates a string with the correct markers
+ *
+ * @return string
+ */
+function portPhpHandlers()
+{
+	$phpHandlers = AKFactory::get('kickstart.setup.phphandlers', array());
+
+	if (!$phpHandlers)
+	{
+		return '';
+	}
+
+	$customHandler  = "### AKEEBA_KICKSTART_PHP_HANDLER_BEGIN ###\n";
+	$customHandler .= implode("\n", $phpHandlers)."\n";
+	$customHandler .= "### AKEEBA_KICKSTART_PHP_HANDLER_END ###\n";
+
+	return $customHandler;
+}
+
+function writePhpHandlers($siteRoot = '')
+{
+	$contents = portPhpHandlers();
+
+	if (!$contents)
+	{
+		return;
+	}
+
+	if ($siteRoot)
+	{
+		$siteRoot = rtrim($siteRoot, '/').'/';
+	}
+
+	// Write the new .htaccess, removing the old one first
+	$postproc = AKFactory::getpostProc();
+	$postproc->unlink($siteRoot.'.htaccess');
+	$tempfile = $postproc->processFilename($siteRoot.'.htaccess');
+	@file_put_contents($tempfile, $contents);
+	$postproc->process();
 }

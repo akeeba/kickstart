@@ -13,6 +13,7 @@ restore/unarchiver.jpa.php
 restore/unarchiver.zip.php
 restore/unarchiver.jps.php
 restore/core.timer.php
+restore/utils.htaccess.php
 restore/utils.lister.php
 restore/utils.zapper.php
 restore/text.php
