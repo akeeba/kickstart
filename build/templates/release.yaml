@@ -67,7 +67,7 @@ files:
 # Update sources
 updates:
   -
-    title: 'Admin Tools Core updates'
+    title: 'Kickstart Core updates'
     connection: s3
     directory: 'updates'
     stream: 11
@@ -75,7 +75,7 @@ updates:
     formats:
       - 'ini'
   -
-    title: 'Admin Tools Pro updates'
+    title: 'Kickstart Pro updates'
     connection: s3
     directory: 'updates'
     stream: 13
