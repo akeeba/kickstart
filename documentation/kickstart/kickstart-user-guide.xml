@@ -523,7 +523,7 @@
               <para>This mode combines the previous two in an intelligent
               manner. When selected, Kickstart will first attempt to write to
               the files directly. If this is not possible, i.e. due to
-              permissions or ownership of the file or folder being exracted,
+              permissions or ownership of the file or folder being extracted,
               it will automatically make use of the FTP mode to overcome the
               permissions / ownership problem. It effectively works around a
               situation commonly called "permissions hell", where different
@@ -541,7 +541,7 @@
 
         <para>Moreover, there is also the <guilabel>Ignore most
         errors</guilabel> checkbox. When it's checked, Kickstart will not
-        throw an error when a file is not writeable. This is useful when you
+        throw an error when a file is not writable. This is useful when you
         are restoring a backup taken on a Linux server to a Windows server. In
         that case, some filenames may contain characters which are valid in
         Linux (e.g. colons) but not on Windows. Checking that option will tell
@@ -550,7 +550,7 @@
         <warning>
           <para>When that option is enabled, Kickstart will not warn you even
           if a file could not be overwritten because, for example, its
-          permissions made it unwriteable. Use with extreme caution and always
+          permissions made it unwritable. Use with extreme caution and always
           check that all of your files have been extracted properly.</para>
         </warning>
 
@@ -834,7 +834,7 @@
             <para>This option does not restore folder permissions. Folders are
             listed before files in the archive and there's no guarantee that
             you're "done" extracting files to a folder. Therefore changing the
-            folder permissions could easily make the folder unwriteable before
+            folder permissions could easily make the folder unwritable before
             we are done writing files to it, therefore causing the extraction
             to fail. As a result the folders always get 0755
             permissions.</para>
@@ -1728,7 +1728,7 @@
       an existing installation of Joomla! which doesn't use per-account web
       server process ownership through FastCGI or suPHP, i.e. the majority of
       cheap shared hosting. You might want to try using the FTP or Hybrid file
-      writing mode. </para>
+      writing mode.</para>
 
       <para>If this still doesn't work for you, try removing all existing
       files and directories from your server before restoring the backup
