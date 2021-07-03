@@ -1,0 +1,17 @@
+{
+	"name": "akeeba/kickstart",
+	"description": "Kickstart – An archive extraction script",
+	"minimum-stability": "stable",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Nicholas K. Dionysopoulos",
+			"homepage": "https://www.akeeba.com",
+			"role": "Lead Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.6 <8.1",
+		"composer/ca-bundle": "^1.2"
+	}
+}

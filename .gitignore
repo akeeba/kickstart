@@ -16,3 +16,5 @@
 output/*.php
 
 /source/buildscripts/debug.txt
+
+/vendor

@@ -77,12 +77,6 @@
         <copy file="${dirs.release}/kickstart.php" tofile="${dirs.root}/output/kickstart_core.php" />
 
 		<copy todir="${dirs.release}">
-			<fileset dir="${dirs.kickstart}/dist">
-				<include name="*.js" />
-			</fileset>
-		</copy>
-
-		<copy todir="${dirs.release}">
 			<fileset dir="${dirs.translations}/kickstart">
 				<include name="*.kickstart.ini" />
 			</fileset>
@@ -115,12 +109,8 @@
 
         <copy file="${dirs.release}/kickstart.php" tofile="${dirs.root}/output/kickstart_pro.php" />
 
-		<copy todir="${dirs.release}">
-			<fileset dir="${dirs.kickstart}">
-				<include name="*.js" />
-				<include name="cacert.pem" />
-			</fileset>
-		</copy>
+		<copy file="${dirs.root}/vendor/composer/ca-bundle/res/cacert.pem"
+			  tofile="${dirs.release}/cacert.pem" />
 
 		<copy todir="${dirs.release}">
 			<fileset dir="${dirs.translations}/kickstart">
@@ -144,7 +134,6 @@
         <delete>
 			<fileset dir="${dirs.release}">
 				<include name="*.kickstart.ini" />
-				<include name="*.js" />
 				<include name="cacert.pem" />
 			</fileset>
 		</delete>
